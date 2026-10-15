@@ -6,10 +6,10 @@ import Trabalhos from '@/components/inicio/Trabalhos';
 import Estudio from '@/components/inicio/Estudio';
 import Avaliacoes from '@/components/inicio/Avaliacoes';
 import { Indique } from '@/components/inicio/Programa';
-import { ChamadaCuidados, ChamadaOrcamento, Comunidade } from '@/components/inicio/Chamadas';
+import { ChamadaOrcamento, Comunidade } from '@/components/inicio/Chamadas';
 
 // ocultos por pedido dele (15/10), prontos para voltar: Quadrinhos («Do rascunho
-// à pele») e Fidelidade, de components/inicio
+// à pele»), Fidelidade e ChamadaCuidados, de components/inicio
 export default function Inicio() {
   return (
     <>
@@ -20,7 +20,6 @@ export default function Inicio() {
         <Equipe />
         <Estudio />
         <Avaliacoes />
-        <ChamadaCuidados />
         <Trabalhos />
         <Comunidade />
         <ChamadaOrcamento />
