@@ -34,3 +34,13 @@ npx next build && node scripts/servir.mjs 3000
 
 Scripts de apoio: `scripts/tijolos.mjs` (parede em vetor), `scripts/og.cjs` (imagens de prévia de link),
 `scripts/fotos-varias.cjs` (fotos de tela para conferir o visual), `scripts/teste-api.mjs` (teste da API).
+
+## Prévia do Instagram
+
+O Instagram não abre o perfil para servidores (nem Supabase nem GitHub), então a prévia é
+atualizada por um robô que roda no computador do Gabriel: tarefa agendada do Windows
+«Fosco - prévia do Instagram», todo dia às 12h30 (ou quando o computador ligar), que executa
+`scripts/instagram-robo.cmd` → `scripts/instagram.cjs`. Ele abre o perfil num navegador, pega as
+12 últimas postagens e manda para a função `fosco-instagram` com a chave do robô (guardada em
+`C:\Users\gabri\.supabase\fosco_robo_chave.txt`, fora do repositório). Registro em `_originais/instagram-robo.log`.
+Para rodar à mão: `node scripts/instagram.cjs foscotattoo`.
