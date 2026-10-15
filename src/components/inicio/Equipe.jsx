@@ -7,8 +7,9 @@ import { arroba, instagramUrl, urlFoto } from '@/lib/formatos';
 
 // O cartão tem duas faces: na frente o retrato, no verso as artes da pessoa (como os
 // compilados dos stories) e quem ela é. No computador vira com o mouse; no celular vira
-// sozinho quando a equipe chega no meio da tela. O cartão inteiro leva ao Instagram.
-function Cartao({ artista, prioridade, virado, atraso = 0 }) {
+// só o cartão da frente do carrossel, depois que ele para (e desvira quando o carrossel
+// anda ou a equipe sai da tela). O cartão inteiro leva ao Instagram.
+function Cartao({ artista, prioridade, virado }) {
   const { nome, nome_completo, funcao, estilos, bio, instagram, foto } = artista;
   const trabalhos = (artista.trabalhos || []).filter(Boolean).slice(0, 4);
   const temVerso = trabalhos.length > 0;
@@ -22,7 +23,7 @@ function Cartao({ artista, prioridade, virado, atraso = 0 }) {
       className={`cartao-giro block h-full rounded-2xl ${temVerso ? 'com-verso' : ''}`}
       data-virado={temVerso && virado ? 'sim' : undefined}
     >
-      <div className="cartao-giro-miolo relative h-full" style={atraso ? { transitionDelay: `${atraso}ms` } : undefined}>
+      <div className="cartao-giro-miolo relative h-full">
         {/* frente */}
         <div className="cartao-face cartao-frente flex h-full flex-col overflow-hidden rounded-2xl border border-osso/10 bg-carvao">
           <div className="relative aspect-[4/5] overflow-hidden bg-fuligem">
@@ -96,30 +97,50 @@ export function CarrosselEquipe({ artistas, intervalo = 3200 }) {
   const parado = useRef(false);
   const ate = useRef(0);
   const [toque, setToque] = useState(false);
-  const [virados, setVirados] = useState(false);
+  const [virado, setVirado] = useState(-1);
 
-  // no celular (sem mouse), os cartões viram quando a equipe passa do meio da tela e
-  // desviram quando ela volta para baixo
+  // no celular (sem mouse): com a equipe na tela, o cartão da frente mostra o retrato,
+  // depois de um segundo vira para as artes; quando o carrossel anda, ele desvira e o
+  // próximo repete. Fora da tela, todos ficam de frente.
   useEffect(() => {
     if (!window.matchMedia('(hover: none)').matches) return;
     setToque(true);
     const el = trilho.current;
-    let quadro = 0;
-    const ver = () => {
-      quadro = 0;
-      if (!el) return;
-      const r = el.getBoundingClientRect();
-      const meio = (r.top + r.height / 2) / window.innerHeight;
-      setVirados((v) => (v ? meio < 0.64 : meio < 0.5));
+    if (!el) return;
+    let visivel = false;
+    let espera = 0;
+    let parada = 0;
+    const daFrente = () => {
+      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 8) return el.children.length - 1;
+      const card = el.firstElementChild;
+      const passo = card ? card.getBoundingClientRect().width + parseFloat(getComputedStyle(el).columnGap || '0') : 1;
+      return Math.round(el.scrollLeft / passo);
     };
-    const rolou = () => {
-      if (!quadro) quadro = requestAnimationFrame(ver);
+    const agendar = () => {
+      clearTimeout(espera);
+      setVirado(-1);
+      if (visivel) espera = setTimeout(() => setVirado(daFrente()), 1000);
     };
-    window.addEventListener('scroll', rolou, { passive: true });
-    ver();
+    const olho = new IntersectionObserver(
+      ([e]) => {
+        visivel = e.isIntersecting;
+        agendar();
+      },
+      { threshold: 0.6 }
+    );
+    olho.observe(el);
+    const andou = () => {
+      clearTimeout(espera);
+      clearTimeout(parada);
+      setVirado(-1);
+      parada = setTimeout(agendar, 160);
+    };
+    el.addEventListener('scroll', andou, { passive: true });
     return () => {
-      window.removeEventListener('scroll', rolou);
-      cancelAnimationFrame(quadro);
+      olho.disconnect();
+      el.removeEventListener('scroll', andou);
+      clearTimeout(espera);
+      clearTimeout(parada);
     };
   }, []);
 
@@ -147,14 +168,15 @@ export function CarrosselEquipe({ artistas, intervalo = 3200 }) {
     let visivel = false;
     const olho = new IntersectionObserver(([e]) => (visivel = e.isIntersecting), { threshold: 0.35 });
     olho.observe(el);
+    // no celular cada cartão fica mais tempo, para dar tempo de ver o retrato e as artes
     const t = setInterval(() => {
       if (visivel && !parado.current && Date.now() > ate.current && !document.hidden) andar(1);
-    }, intervalo);
+    }, toque ? Math.max(intervalo, 5200) : intervalo);
     return () => {
       clearInterval(t);
       olho.disconnect();
     };
-  }, [intervalo]);
+  }, [intervalo, toque]);
 
   return (
     <div className="relative">
@@ -174,8 +196,7 @@ export function CarrosselEquipe({ artistas, intervalo = 3200 }) {
             <Cartao
               artista={a}
               prioridade={i < 4}
-              virado={toque && virados}
-              atraso={toque ? (i % 3) * 110 : 0}
+              virado={toque && virado === i}
             />
           </div>
         ))}

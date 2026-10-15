@@ -49,14 +49,14 @@ export default function Estudio() {
           <p className="mt-7 flex items-start gap-2.5 text-[15px] text-osso-2">
             <IconePino width={18} height={18} className="mt-0.5 shrink-0 text-ambar" /> {estudio.endereco}
           </p>
-          <div className="mt-7 flex flex-wrap gap-3">
+          <div className="mt-7 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-3">
             {estudio.mapa && (
-              <a href={estudio.mapa} target="_blank" rel="noopener noreferrer" className="botao-linha">
-                <IconePino width={16} height={16} /> Como chegar
+              <a href={estudio.mapa} target="_blank" rel="noopener noreferrer" className="botao-linha gap-2 whitespace-nowrap px-3 py-3 text-[13.5px] sm:gap-[0.6rem] sm:px-[1.6rem] sm:py-[0.95rem] sm:text-[15px]">
+                <IconePino width={15} height={15} /> Como chegar
               </a>
             )}
-            <a href={linkOrcamento(estudio)} target="_blank" rel="noopener noreferrer" className="botao-linha">
-              <IconeZap width={16} height={16} /> Falar no WhatsApp
+            <a href={linkOrcamento(estudio)} target="_blank" rel="noopener noreferrer" className="botao-linha gap-2 whitespace-nowrap px-3 py-3 text-[13.5px] sm:gap-[0.6rem] sm:px-[1.6rem] sm:py-[0.95rem] sm:text-[15px]">
+              <IconeZap width={15} height={15} /> Falar no WhatsApp
             </a>
           </div>
         </Revelar>
