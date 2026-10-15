@@ -13,7 +13,8 @@ const CAMPOS_ESTUDIO = [
   ['nome_curto', 'Nome curto (o grandão da página)'],
   ['cidade', 'Cidade'],
   ['chamada', 'Frase de abertura'],
-  ['endereco_publico', 'Texto sobre o endereço'],
+  ['endereco', 'Endereço (aparece no rodapé e na /bio)'],
+  ['mapa', 'Link do mapa (Google Maps)'],
   ['horario', 'Horário'],
   ['whatsapp', 'WhatsApp do estúdio (DDD + número)'],
   ['instagram', 'Instagram (sem @)'],
@@ -38,7 +39,7 @@ function Estudio() {
   return (
     <form onSubmit={salvar} className="grid gap-4 sm:grid-cols-2">
       {CAMPOS_ESTUDIO.map(([k, r]) => (
-        <Campo key={k} rotulo={r} id={`e-${k}`} className={k === 'chamada' || k === 'endereco_publico' ? 'sm:col-span-2' : ''}>
+        <Campo key={k} rotulo={r} id={`e-${k}`} className={k === 'chamada' || k === 'mapa' ? 'sm:col-span-2' : ''}>
           <input id={`e-${k}`} className="campo" value={f[k] ?? ''} onChange={(e) => setF({ ...f, [k]: e.target.value })} />
         </Campo>
       ))}

@@ -46,7 +46,8 @@ export function filtrar(lista, filtro, programa) {
 
 // ------------------------------------------------------------------ sessão
 function FormSessao({ detalhe, aoSalvar }) {
-  const { artistas, config } = usePainel();
+  const { artistas, config, modelos } = usePainel();
+  const [feita, setFeita] = useState(false);
   const avisar = useAvisar();
   const hoje = new Date().toLocaleDateString('sv-SE');
   const [f, setF] = useState({ artista: '', data: hoje, valor: '', descricao: '', conta: true, desconto: false, premio: false });
@@ -76,6 +77,7 @@ function FormSessao({ detalhe, aoSalvar }) {
     if (Number(data.premio_valor) > 0) partes.push(`prêmio de ${reais(data.premio_valor)} usado`);
     if (data.valor_final !== null) partes.push(`valor final ${reais(data.valor_final, true)}`);
     avisar(partes.join(' · '));
+    setFeita(true);
     setF({ ...f, valor: '', descricao: '', desconto: false, premio: false });
     aoSalvar();
   }
@@ -125,6 +127,22 @@ function FormSessao({ detalhe, aoSalvar }) {
       <button type="submit" className="botao" disabled={salvando}>
         <IconeAgulha width={18} height={18} /> {salvando ? 'Salvando...' : 'Registrar sessão'}
       </button>
+      {feita && (
+        <div className="flex flex-wrap items-center gap-3 rounded-xl border border-osso/10 bg-noite/60 p-3">
+          <span className="flex-1 text-[14px] text-osso-2">Sessão salva. Quer mandar os cuidados com a tattoo nova?</span>
+          <a
+            href={linkZap(
+              detalhe.cliente.whatsapp,
+              preencher(modelos.find((m) => m.chave === 'cuidados')?.texto || 'Oi, {nome}! Os cuidados com a tattoo nova: {link_cuidados}', variaveis(detalhe.cliente, config.estudio, config.programa)),
+            )}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="botao-mini"
+          >
+            <IconeZap width={15} height={15} /> Mandar os cuidados
+          </a>
+        </div>
+      )}
     </form>
   );
 }

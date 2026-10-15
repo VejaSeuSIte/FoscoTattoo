@@ -5,10 +5,10 @@ import { Assinatura } from './Marca';
 import { IconeMenu, IconeFechar } from './Icones';
 
 const LINKS = [
-  { href: '/#vagas', rotulo: 'Vagas do mês' },
   { href: '/#equipe', rotulo: 'Equipe' },
+  { href: '/#trabalhos', rotulo: 'Trabalhos' },
   { href: '/#indique', rotulo: 'Indique e ganhe' },
-  { href: '/#fidelidade', rotulo: 'Fidelidade' },
+  { href: '/cuidados/', rotulo: 'Cuidados' },
   { href: '/orcamento/', rotulo: 'Orçamento' },
 ];
 

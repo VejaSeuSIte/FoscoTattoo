@@ -77,11 +77,11 @@ export default function Painel() {
   const recarregarBase = useCallback(async () => {
     const db = supa();
     const [c, a, m] = await Promise.all([
-      db.from('fosco_config').select('estudio, programa').eq('id', 1).maybeSingle(),
+      db.from('fosco_config').select('estudio, programa, instagram').eq('id', 1).maybeSingle(),
       db.from('fosco_artistas').select('*').order('ordem').order('criado_em'),
       db.from('fosco_modelos').select('*').order('ordem').order('criado_em'),
     ]);
-    if (c.data) setConfig({ estudio: { ...ESTUDIO_PADRAO, ...c.data.estudio }, programa: { ...PROGRAMA_PADRAO, ...c.data.programa } });
+    if (c.data) setConfig({ estudio: { ...ESTUDIO_PADRAO, ...c.data.estudio }, programa: { ...PROGRAMA_PADRAO, ...c.data.programa }, instagram: c.data.instagram || {} });
     if (a.data) setArtistas(a.data);
     if (m.data) setModelos(m.data);
   }, []);

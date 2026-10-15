@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import Revelar from '../Revelar';
 import Marca from '../Marca';
-import { IconeSeta, IconeZap } from '../Icones';
+import { IconeGota, IconeSeta, IconeZap } from '../Icones';
 import { useVitrine } from '@/lib/vitrine';
 
 export function ChamadaOrcamento() {
@@ -10,13 +10,40 @@ export function ChamadaOrcamento() {
     <section className="relative overflow-hidden bg-noite py-24 sm:py-32">
       <Marca className="pointer-events-none absolute left-1/2 top-1/2 h-[140%] w-auto -translate-x-1/2 -translate-y-1/2 rotate-[24deg] text-osso/[0.04]" titulo="" />
       <Revelar className="relative mx-auto max-w-3xl px-4 text-center sm:px-6">
-        <p className="kicker">Nº 06 · orçamento</p>
-        <h2 className="titulo mt-3 text-[clamp(56px,10vw,120px)]">Tem uma ideia?</h2>
+        <h2 className="titulo text-[clamp(56px,10vw,120px)]">Tem uma ideia?</h2>
         <p className="mx-auto mt-5 max-w-xl text-[17px] leading-relaxed text-osso-2">
           Conta onde vai ser, o tamanho e manda uma referência. A gente responde pelo WhatsApp com o valor.
         </p>
         <Link href="/orcamento/" className="botao mt-9 px-8 py-4 text-[16px]">
           Pedir orçamento <IconeSeta width={18} height={18} />
+        </Link>
+      </Revelar>
+    </section>
+  );
+}
+
+// faixa de papel chamando para a página de cuidados
+export function ChamadaCuidados() {
+  return (
+    <section className="relative bg-noite px-4 py-16 sm:px-6">
+      <Revelar className="mx-auto max-w-4xl">
+        <Link
+          href="/cuidados/"
+          className="papel group flex flex-col items-start gap-5 rounded-xl px-6 py-6 transition-transform duration-300 hover:-rotate-0 sm:flex-row sm:items-center sm:px-9"
+          style={{ transform: 'rotate(-0.8deg)' }}
+        >
+          <span className="flex h-16 w-16 shrink-0 -rotate-6 items-center justify-center rounded-full bg-selo text-[#fbeee0] transition-transform group-hover:rotate-0">
+            <IconeGota width={30} height={30} />
+          </span>
+          <span className="flex-1">
+            <span className="block font-gotica text-[34px] font-bold leading-none text-papel-tinta">Tattoo nova?</span>
+            <span className="mt-1.5 block text-[15.5px] leading-relaxed text-[#4a3a2c]">
+              O passo a passo do Fosco pra cicatrizar bonito: o que fazer e o que evitar nos primeiros dias.
+            </span>
+          </span>
+          <span className="botao-tinta shrink-0">
+            Ver os cuidados <IconeSeta width={16} height={16} />
+          </span>
         </Link>
       </Revelar>
     </section>

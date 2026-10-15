@@ -1,115 +1,86 @@
 'use client';
-import { useEffect, useState } from 'react';
 import Revelar from '../Revelar';
-import { IconeFechar, IconeInsta } from '../Icones';
+import Marca from '../Marca';
+import { IconeExterno, IconeInsta } from '../Icones';
 import { useVitrine } from '@/lib/vitrine';
 import { arroba, instagramUrl, urlFoto } from '@/lib/formatos';
 
-function Ampliada({ foto, artista, aoFechar }) {
-  useEffect(() => {
-    const f = (e) => e.key === 'Escape' && aoFechar();
-    window.addEventListener('keydown', f);
-    return () => window.removeEventListener('keydown', f);
-  }, [aoFechar]);
+// a prévia do Instagram do estúdio, montada como a grade do perfil
+function Grade({ itens, usuario }) {
   return (
-    <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/90 p-4" role="dialog" aria-modal="true" onClick={aoFechar}>
-      <button type="button" className="absolute right-4 top-4 rounded-full bg-noite/80 p-2 text-osso" aria-label="Fechar" onClick={aoFechar}>
-        <IconeFechar width={26} height={26} />
-      </button>
-      <figure className="max-h-full max-w-3xl" onClick={(e) => e.stopPropagation()}>
-        <img src={urlFoto(foto.imagem)} alt={foto.legenda || 'Tatuagem feita no Fosco'} className="max-h-[80svh] w-auto rounded-lg object-contain" />
-        {(foto.legenda || artista) && (
-          <figcaption className="mt-3 text-center text-[14px] text-osso-2">
-            {foto.legenda}
-            {artista ? ` · ${artista}` : ''}
-          </figcaption>
-        )}
-      </figure>
+    <div className="grid grid-cols-3 gap-[3px] sm:grid-cols-4 lg:grid-cols-6">
+      {itens.map((p) => (
+        <a
+          key={p.chave}
+          href={p.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group relative block aspect-square overflow-hidden bg-fuligem"
+          aria-label={p.legenda ? `Postagem de ${p.legenda} no Instagram` : 'Postagem no Instagram do Fosco'}
+        >
+          <img src={urlFoto(p.imagem)} alt="" loading="lazy" className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.05]" />
+          <span className="absolute inset-0 flex items-center justify-center bg-noite/0 text-osso opacity-0 transition duration-300 group-hover:bg-noite/55 group-hover:opacity-100">
+            <IconeInsta width={30} height={30} />
+          </span>
+          {p.video && (
+            <svg viewBox="0 0 24 24" className="absolute right-2 top-2 h-5 w-5 drop-shadow" fill="#fff" aria-hidden="true">
+              <path d="M8 5.5v13l10.5-6.5z" />
+            </svg>
+          )}
+        </a>
+      ))}
     </div>
   );
 }
 
 export default function Trabalhos() {
-  const { trabalhos, artistas, estudio, carregado } = useVitrine();
-  const [filtro, setFiltro] = useState('');
-  const [aberta, setAberta] = useState(null);
+  const { instagram, trabalhos, estudio, perfil, carregado } = useVitrine();
   if (!carregado) return null;
-
-  const nomeDe = (id) => artistas?.find((a) => a.id === id)?.nome || '';
-  const comFoto = artistas?.filter((a) => a.nome && trabalhos.some((t) => t.artista_id === a.id)) ?? [];
-  const lista = filtro ? trabalhos.filter((t) => t.artista_id === filtro) : trabalhos;
+  const usuario = String(estudio.instagram || 'foscotattoo').replace(/^@/, '');
+  const itens = instagram.length
+    ? instagram.map((p) => ({ chave: p.shortcode, imagem: p.imagem, legenda: p.legenda, video: p.video, href: `https://www.instagram.com/${p.video ? 'reel' : 'p'}/${p.shortcode}/` }))
+    : trabalhos.slice(0, 12).map((t) => ({ chave: t.id, imagem: t.imagem, legenda: t.legenda, href: instagramUrl(usuario) }));
+  const seguidores = perfil?.seguidores ? Number(perfil.seguidores).toLocaleString('pt-BR') : null;
 
   return (
     <section id="trabalhos" className="relative scroll-mt-16 bg-noite py-20 sm:py-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <Revelar className="flex flex-wrap items-end justify-between gap-6">
-          <div className="max-w-xl">
-            <p className="kicker">Nº 03 · trabalhos</p>
-            <h2 className="titulo mt-3 text-[clamp(44px,7vw,76px)]">Tinta na pele</h2>
-          </div>
-          {estudio.instagram && (
-            <a href={instagramUrl(estudio.instagram)} target="_blank" rel="noopener noreferrer" className="botao-linha">
-              <IconeInsta /> {arroba(estudio.instagram)}
-            </a>
-          )}
+        <Revelar className="max-w-2xl">
+          <h2 className="titulo text-[clamp(48px,8vw,84px)]">Tinta na pele</h2>
+          <p className="mt-3 text-[16px] leading-relaxed text-osso-2">O que saiu da agulha nas últimas semanas, direto do nosso Instagram.</p>
         </Revelar>
 
-        {trabalhos.length === 0 ? (
-          <Revelar className="mt-10">
-            <a
-              href={instagramUrl(estudio.instagram)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group block overflow-hidden rounded-2xl border border-osso/10 bg-carvao p-8 transition hover:border-ambar/40 sm:p-12"
-            >
-              <p className="max-w-xl font-gotica text-[30px] font-semibold leading-tight text-osso sm:text-[38px]">
-                Os trabalhos mais novos saem primeiro no nosso Instagram.
-              </p>
-              <span className="mt-5 inline-flex items-center gap-2 text-[15px] font-semibold text-ambar-claro">
-                Ver o portfólio no {arroba(estudio.instagram)} →
-              </span>
-            </a>
-          </Revelar>
-        ) : (
-          <>
-            {comFoto.length > 1 && (
-              <div className="mt-8 flex flex-wrap gap-2">
-                <button type="button" onClick={() => setFiltro('')} className={`botao-mini ${!filtro ? 'border-ambar text-ambar-claro' : ''}`}>
-                  Todos
-                </button>
-                {comFoto.map((a) => (
-                  <button key={a.id} type="button" onClick={() => setFiltro(a.id)} className={`botao-mini ${filtro === a.id ? 'border-ambar text-ambar-claro' : ''}`}>
-                    {a.nome}
-                  </button>
-                ))}
+        <Revelar className="mt-10 overflow-hidden rounded-[22px] border-2 border-osso/15 bg-carvao">
+          <div className="flex flex-wrap items-center gap-4 border-b-2 border-osso/10 px-4 py-4 sm:px-6">
+            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-noite ring-2 ring-ambar ring-offset-2 ring-offset-carvao">
+              <Marca className="h-10 w-auto text-osso" titulo="" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <div className="font-semibold text-osso">{arroba(usuario)}</div>
+              <div className="text-[13.5px] text-osso-3">
+                {seguidores ? `${seguidores} seguidores · ` : ''}
+                {estudio.nome}
               </div>
-            )}
-            <div className="mt-8 columns-2 gap-3 sm:gap-4 md:columns-3">
-              {lista.map((t) => (
-                <button
-                  key={t.id}
-                  type="button"
-                  onClick={() => setAberta(t)}
-                  className="group relative mb-3 block w-full overflow-hidden rounded-lg bg-carvao sm:mb-4"
-                >
-                  <img
-                    src={urlFoto(t.imagem)}
-                    alt={t.legenda || 'Tatuagem feita no Fosco'}
-                    loading="lazy"
-                    className="w-full transition duration-500 group-hover:scale-[1.03] group-hover:brightness-110"
-                  />
-                  {nomeDe(t.artista_id) && (
-                    <span className="absolute bottom-2 left-2 rounded-full bg-noite/80 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-osso-2">
-                      {nomeDe(t.artista_id)}
-                    </span>
-                  )}
-                </button>
-              ))}
             </div>
-          </>
-        )}
+            <a href={instagramUrl(usuario)} target="_blank" rel="noopener noreferrer" className="botao px-5 py-3">
+              <IconeInsta width={17} height={17} /> Seguir
+            </a>
+          </div>
+          {itens.length > 0 ? (
+            <Grade itens={itens} usuario={usuario} />
+          ) : (
+            <p className="px-6 py-12 text-center text-[15px] text-osso-3">Os trabalhos mais novos estão no nosso perfil.</p>
+          )}
+          <a
+            href={instagramUrl(usuario)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 border-t-2 border-osso/10 px-4 py-4 text-[15px] font-semibold text-ambar-claro transition hover:bg-osso/[0.04]"
+          >
+            Ver o perfil inteiro no Instagram <IconeExterno width={16} height={16} />
+          </a>
+        </Revelar>
       </div>
-      {aberta && <Ampliada foto={aberta} artista={nomeDe(aberta.artista_id)} aoFechar={() => setAberta(null)} />}
     </section>
   );
 }

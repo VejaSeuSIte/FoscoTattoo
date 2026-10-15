@@ -44,10 +44,18 @@ const convite = base(`
 </div>
 <svg viewBox="0 0 100 372" style="position:absolute;right:120px;top:70px;height:480px;filter:drop-shadow(0 10px 40px rgba(240,160,80,.35))">${marca}</svg>`, '82% 45%');
 
+const cuidados = base(`
+<div style="position:absolute;left:80px;top:90px;width:760px">
+  <div class="k">fosco tattoo studio</div>
+  <div class="t" style="font-size:118px;margin-top:18px">Como cuidar<br>da sua <span style="color:#d4914a">tattoo</span></div>
+  <div style="font-size:27px;line-height:1.4;color:#c9b996;margin-top:26px">O passo a passo pra cicatrizar bonito:<br>o que fazer e o que evitar nos primeiros dias.</div>
+</div>
+<svg viewBox="0 0 100 372" style="position:absolute;right:130px;top:80px;height:470px;filter:drop-shadow(0 10px 40px rgba(240,160,80,.35))">${marca}</svg>`, '80% 40%');
+
 (async () => {
   const nav = await chromium.launch();
   const p = await nav.newPage({ viewport: { width: 1200, height: 630 } });
-  for (const [nome, html] of [['fosco', site], ['convite', convite]]) {
+  for (const [nome, html] of [['fosco', site], ['convite', convite], ['cuidados', cuidados]]) {
     await p.setContent(html, { waitUntil: 'networkidle' });
     await p.evaluate(() => document.fonts.ready);
     await p.waitForTimeout(400);

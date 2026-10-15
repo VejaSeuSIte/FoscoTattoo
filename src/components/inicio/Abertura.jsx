@@ -52,7 +52,11 @@ export default function Abertura() {
     >
       <div className="mx-auto grid min-h-[calc(100svh-68px)] max-w-6xl items-center gap-6 px-4 pb-24 pt-8 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:gap-10 lg:pb-16">
         <div className="relative z-10 order-2 lg:order-1">
-          <p className="kicker">Estúdio privado · {estudio.cidade}</p>
+          <p className="inline-flex items-center gap-2 font-mono text-[11px] font-medium uppercase tracking-[0.22em] text-ambar-claro">
+            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-selo" />
+            {estudio.cidade}
+            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-selo" />
+          </p>
           <h1 className="titulo mt-4 text-[clamp(88px,19vw,184px)] drop-shadow-[0_6px_30px_rgba(0,0,0,.6)]">
             {estudio.nome_curto || 'Fosco'}
           </h1>
@@ -62,7 +66,7 @@ export default function Abertura() {
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link href="/orcamento/" className="botao">
-              Pedir orçamento <IconeSeta width={18} height={18} />
+              Pedir orçamento <IconeSeta width={17} height={17} />
             </Link>
             {programa.indicacao_ativa !== false && (
               <Link href="/#indique" className="botao-linha">
@@ -89,9 +93,9 @@ export default function Abertura() {
       </div>
 
       <Link
-        href="/#vagas"
+        href="/#equipe"
         className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-osso-3 transition hover:text-ambar-claro sm:flex"
-        aria-label="Descer para as vagas do mês"
+        aria-label="Descer para a equipe"
       >
         <span className="font-mono text-[10px] uppercase tracking-[0.3em]">role</span>
         <Marca className="boiar h-9 w-auto" titulo="" />

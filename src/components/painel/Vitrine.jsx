@@ -7,7 +7,7 @@ import { usePainel } from './contexto';
 import { supa, erroLegivel } from '@/lib/supabase';
 import { BALDE_PUBLICO } from '@/lib/config';
 import { limparCacheVitrine } from '@/lib/vitrine';
-import { reais, urlFoto } from '@/lib/formatos';
+import { haQuanto, urlFoto } from '@/lib/formatos';
 
 async function subirFoto(arquivo, pasta) {
   const arq = await encolherImagem(arquivo, 1600, 0.86);
@@ -142,7 +142,8 @@ function Equipe() {
 
 // ------------------------------------------------------------------ trabalhos
 function Trabalhos() {
-  const { artistas } = usePainel();
+  const { artistas, config } = usePainel();
+  const ig = config.instagram || {};
   const avisar = useAvisar();
   const [lista, setLista] = useState(null);
   const [subindo, setSubindo] = useState(0);
@@ -189,6 +190,10 @@ function Trabalhos() {
   if (!lista) return <Carregando />;
   return (
     <div className="space-y-4">
+      <div className="rounded-2xl border border-ambar/30 bg-ambar/[0.07] p-4 text-[14px] leading-relaxed text-osso-2">
+        <b className="text-osso">Prévia do Instagram:</b> a seção «Tinta na pele» mostra as 12 últimas postagens do @{String(config.estudio.instagram || 'foscotattoo').replace(/^@/, '')}.
+        Um robô atualiza todo dia sozinho{ig.atualizado_em ? ` (última vez ${haQuanto(ig.atualizado_em)})` : ''}. As fotos que você subir aqui só aparecem se a prévia estiver vazia.
+      </div>
       <div className="flex flex-wrap items-center gap-3">
         <button type="button" className="botao" onClick={() => entrada.current?.click()} disabled={subindo > 0}>
           <IconeMais width={18} height={18} /> {subindo > 0 ? `Subindo ${subindo}...` : 'Subir fotos de trabalhos'}
@@ -228,109 +233,6 @@ function Trabalhos() {
   );
 }
 
-// ------------------------------------------------------------------ vagas
-function Vagas() {
-  const { artistas } = usePainel();
-  const avisar = useAvisar();
-  const [lista, setLista] = useState(null);
-
-  async function carregar() {
-    const { data } = await supa().from('fosco_promocoes').select('*').order('ordem').order('criado_em', { ascending: false });
-    setLista(data || []);
-  }
-  useEffect(() => {
-    carregar();
-  }, []);
-
-  async function salvar(id, campos, aviso = 'Salvo') {
-    const { error } = await supa().from('fosco_promocoes').update(campos).eq('id', id);
-    if (error) return avisar(erroLegivel(error), 'erro');
-    setLista((l) => l.map((p) => (p.id === id ? { ...p, ...campos } : p)));
-    limparCacheVitrine();
-    avisar(aviso);
-  }
-  async function nova() {
-    const { error } = await supa().from('fosco_promocoes').insert({ titulo: 'Vaga nova', ativa: false, ordem: (lista?.length || 0) + 1 });
-    if (error) return avisar(erroLegivel(error), 'erro');
-    carregar();
-  }
-  async function apagar(p) {
-    if (!confirm(`Apagar «${p.titulo}»?`)) return;
-    await supa().from('fosco_promocoes').delete().eq('id', p.id);
-    limparCacheVitrine();
-    carregar();
-  }
-  const dinheiro = (v) => {
-    const n = Number(String(v).replace(/\./g, '').replace(',', '.'));
-    return v === '' || Number.isNaN(n) ? null : n;
-  };
-
-  if (!lista) return <Carregando />;
-  return (
-    <div className="space-y-4">
-      <p className="text-[14px] text-osso-3">
-        Aparecem em «Vagas do mês» na página inicial e na /bio. Você controla quantas vagas mostrar: mexa nos botões − e + quando alguém fechar. Depois da data, a vaga sai sozinha do site.
-      </p>
-      {lista.length === 0 && <Vazio>Nenhuma vaga cadastrada.</Vazio>}
-      <ul className="space-y-3">
-        {lista.map((p) => (
-          <li key={p.id} className={`space-y-3 rounded-2xl border bg-carvao/70 p-4 ${p.ativa ? 'border-ambar/30' : 'border-osso/10 opacity-80'}`}>
-            <div className="grid gap-3 sm:grid-cols-[2fr_1fr_1fr]">
-              <Texto id={`p-t-${p.id}`} rotulo="Título" valor={p.titulo} aoSalvar={(v) => salvar(p.id, { titulo: v.trim() || 'Vaga' })} />
-              <Texto id={`p-d-${p.id}`} rotulo="De (R$)" valor={p.preco_de ?? ''} aoSalvar={(v) => salvar(p.id, { preco_de: dinheiro(v) })} />
-              <Texto id={`p-p-${p.id}`} rotulo="Por (R$)" valor={p.preco_por ?? ''} aoSalvar={(v) => salvar(p.id, { preco_por: dinheiro(v) })} />
-            </div>
-            <Texto id={`p-x-${p.id}`} rotulo="Descrição" valor={p.descricao} aoSalvar={(v) => salvar(p.id, { descricao: v })} />
-            <div className="grid gap-3 sm:grid-cols-3">
-              <Campo rotulo="Vagas à mostra" id={`p-v-${p.id}`}>
-                <div className="flex items-center gap-2">
-                  <button type="button" className="botao-mini h-10 w-10" onClick={() => salvar(p.id, { vagas: Math.max(0, (p.vagas ?? 1) - 1) }, 'Vagas atualizadas')}>
-                    −
-                  </button>
-                  <span className="w-12 text-center font-gotica text-[30px] font-bold">{p.vagas ?? '—'}</span>
-                  <button type="button" className="botao-mini h-10 w-10" onClick={() => salvar(p.id, { vagas: (p.vagas ?? 0) + 1 }, 'Vagas atualizadas')}>
-                    +
-                  </button>
-                  {p.vagas !== null && (
-                    <button type="button" className="text-[12px] text-osso-3 underline" onClick={() => salvar(p.id, { vagas: null }, 'Sem contagem')}>
-                      não mostrar número
-                    </button>
-                  )}
-                </div>
-              </Campo>
-              <Campo rotulo="Vale até" id={`p-a-${p.id}`}>
-                <input id={`p-a-${p.id}`} type="date" className="campo py-2" value={p.valida_ate || ''} onChange={(e) => salvar(p.id, { valida_ate: e.target.value || null })} />
-              </Campo>
-              <Campo rotulo="Com quem" id={`p-r-${p.id}`}>
-                <select id={`p-r-${p.id}`} className="campo py-2" value={p.artista_id || ''} onChange={(e) => salvar(p.id, { artista_id: e.target.value || null })}>
-                  <option value="">Qualquer artista</option>
-                  {artistas
-                    .filter((a) => a.nome)
-                    .map((a) => (
-                      <option key={a.id} value={a.id}>
-                        {a.nome}
-                      </option>
-                    ))}
-                </select>
-              </Campo>
-            </div>
-            <div className="flex items-center justify-between gap-3">
-              <Interruptor ligado={p.ativa} aoMudar={(v) => salvar(p.id, { ativa: v })} rotulo={p.ativa ? 'No site' : 'Fora do site'} />
-              {p.preco_de && p.preco_por && <span className="text-[13px] text-osso-3">{Math.round((1 - p.preco_por / p.preco_de) * 100)}% off · {reais(p.preco_por)}</span>}
-              <button type="button" className="botao-perigo" onClick={() => apagar(p)}>
-                <IconeLixo width={15} height={15} />
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
-      <button type="button" className="botao" onClick={nova}>
-        <IconeMais width={18} height={18} /> Nova vaga
-      </button>
-    </div>
-  );
-}
-
 export default function Vitrine() {
   const [aba, setAba] = useState('equipe');
   return (
@@ -343,15 +245,11 @@ export default function Vitrine() {
         <Chip ativo={aba === 'equipe'} aoClicar={() => setAba('equipe')}>
           Equipe
         </Chip>
-        <Chip ativo={aba === 'vagas'} aoClicar={() => setAba('vagas')}>
-          Vagas do mês
-        </Chip>
         <Chip ativo={aba === 'trabalhos'} aoClicar={() => setAba('trabalhos')}>
           Trabalhos
         </Chip>
       </div>
       {aba === 'equipe' && <Equipe />}
-      {aba === 'vagas' && <Vagas />}
       {aba === 'trabalhos' && <Trabalhos />}
     </div>
   );

@@ -134,7 +134,6 @@ body::after {
 }
 .brasa {
   color: var(--ambar);
-  text-shadow: 0 0 28px rgba(236, 160, 80, 0.35);
 }
 .dinheiro {
   font-family: var(--fonte-corpo);
@@ -142,49 +141,111 @@ body::after {
   font-stretch: 82%;
   letter-spacing: -0.02em;
 }
-.risco-tinta {
-  /* sublinhado de pincel */
-  background-image: linear-gradient(transparent 72%, rgba(212, 145, 74, 0.55) 72%, rgba(212, 145, 74, 0.55) 88%, transparent 88%);
-  background-repeat: no-repeat;
-}
 
 /* ---------------------------------------------------------------------
-   Botões
+   Botões (o desenho da Raposa: cor chapada, sem brilho; no hover a tinta
+   varre o botão da esquerda pra direita e volta pelo mesmo caminho)
    --------------------------------------------------------------------- */
+.botao,
+.botao-linha,
+.botao-mini,
+.botao-perigo,
+.botao-tinta {
+  --b-fundo: transparent;
+  --b-texto: var(--osso);
+  --b-borda: rgba(235, 223, 199, 0.32);
+  --b-varre: rgba(235, 223, 199, 0.1);
+  --b-texto-varre: var(--osso);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.95rem 1.6rem;
+  font-family: var(--fonte-corpo);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  text-align: center;
+  color: var(--b-texto);
+  background: var(--b-fundo);
+  border: 1.5px solid var(--b-borda);
+  border-radius: 999px;
+  cursor: pointer;
+  overflow: hidden;
+  isolation: isolate;
+  transition: color 0.45s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.botao::before,
+.botao-linha::before,
+.botao-mini::before,
+.botao-perigo::before,
+.botao-tinta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--b-varre);
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+:is(.botao, .botao-linha, .botao-mini, .botao-perigo, .botao-tinta):hover::before,
+:is(.botao, .botao-linha, .botao-mini, .botao-perigo, .botao-tinta):focus-visible::before {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+:is(.botao, .botao-linha, .botao-mini, .botao-perigo, .botao-tinta):hover,
+:is(.botao, .botao-linha, .botao-mini, .botao-perigo, .botao-tinta):focus-visible {
+  color: var(--b-texto-varre);
+  border-color: var(--b-varre);
+}
+:is(.botao, .botao-linha, .botao-mini, .botao-perigo, .botao-tinta):disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+:is(.botao, .botao-linha, .botao-mini, .botao-perigo, .botao-tinta) svg {
+  flex: none;
+}
+/* a ação principal: âmbar chapado; no hover a laca vermelha do selo varre */
 .botao {
-  @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-corpo text-[15px] font-semibold transition duration-200;
-  background: linear-gradient(180deg, #e3a35d, #c98339);
-  color: #1a0f07;
-  box-shadow: inset 0 1px 0 rgba(255, 236, 205, 0.55), 0 10px 28px -10px rgba(236, 150, 60, 0.75);
+  --b-fundo: #d8954c;
+  --b-texto: #170e08;
+  --b-borda: #d8954c;
+  --b-varre: #b5402e;
+  --b-texto-varre: #fbeee0;
 }
-.botao:hover {
-  filter: brightness(1.08);
-  box-shadow: inset 0 1px 0 rgba(255, 236, 205, 0.6), 0 14px 34px -10px rgba(246, 160, 70, 0.95);
-  transform: translateY(-1px);
-}
-.botao:disabled {
-  @apply cursor-not-allowed opacity-50;
-  transform: none;
-}
+/* contorno: a ação secundária */
 .botao-linha {
-  @apply inline-flex items-center justify-center gap-2 rounded-full border border-osso/35 px-6 py-3 text-[15px] font-semibold text-osso transition duration-200;
-  background: rgba(11, 8, 6, 0.35);
-  backdrop-filter: blur(4px);
+  --b-borda: rgba(235, 223, 199, 0.38);
 }
-.botao-linha:hover {
-  @apply border-ambar text-ambar-claro;
+/* em cima do papel: tinta chapada, varre o vermelho */
+.botao-tinta {
+  --b-fundo: #261a14;
+  --b-texto: #efe3c9;
+  --b-borda: #261a14;
+  --b-varre: #b5402e;
+  --b-texto-varre: #fbeee0;
 }
-.botao-mini {
-  @apply inline-flex items-center justify-center gap-1.5 rounded-full border border-osso/20 px-3 py-1.5 text-[13px] font-medium text-osso transition;
-}
-.botao-mini:hover {
-  @apply border-ambar/70 text-ambar-claro;
+.botao-mini,
+.botao-perigo {
+  gap: 0.4rem;
+  padding: 0.55rem 0.95rem;
+  font-size: 13px;
+  border-color: rgba(235, 223, 199, 0.22);
 }
 .botao-perigo {
-  @apply inline-flex items-center justify-center gap-1.5 rounded-full border border-selo/60 px-3 py-1.5 text-[13px] font-medium text-[#f0a596] transition;
+  --b-texto: #f0a596;
+  --b-borda: rgba(181, 64, 46, 0.6);
+  --b-varre: #b5402e;
+  --b-texto-varre: #fbeee0;
+  border-color: var(--b-borda);
 }
-.botao-perigo:hover {
-  @apply bg-selo/20;
+@media (prefers-reduced-motion: reduce) {
+  :is(.botao, .botao-linha, .botao-mini, .botao-perigo, .botao-tinta)::before {
+    transition: none;
+  }
 }
 
 /* ---------------------------------------------------------------------
@@ -329,14 +390,29 @@ select.campo {
   60% { transform: scale(0.94) rotate(var(--giro, -8deg)); opacity: 1; }
   100% { transform: scale(1) rotate(var(--giro, -8deg)); opacity: 1; }
 }
+@keyframes bio-entra {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+.bio-entra {
+  animation: bio-entra 0.45s ease both;
+}
 .carimbo-entra {
   animation: carimbar 0.5s cubic-bezier(0.3, 0.8, 0.3, 1.2) both;
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .parede::after, .boiar, .carimbo-entra { animation: none; }
+  .parede::after, .boiar, .carimbo-entra, .bio-entra { animation: none; }
   .revelar { opacity: 1; transform: none; transition: none; }
   .quadro, .grupo-quadro:hover .quadro { transition: none; }
+}
+
+@media print {
+  body::after { display: none; }
+  header.fixed, footer { display: none !important; }
+  .parede { background: none !important; }
+  .parede::before, .parede::after { display: none; }
+  main { padding-top: 0 !important; }
 }
 
 /* barra de rolagem discreta */

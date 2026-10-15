@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import Marca from './Marca';
-import { IconeInsta, IconeZap } from './Icones';
+import { IconeInsta, IconePino, IconeZap } from './Icones';
 import { useVitrine } from '@/lib/vitrine';
 import { arroba, instagramUrl, linkZap, mascaraZap } from '@/lib/formatos';
 
@@ -20,8 +20,14 @@ export default function Rodape() {
               <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.3em] text-osso-2">tattoo studio · {estudio.cidade}</div>
             </div>
           </div>
-          <p className="mt-5 max-w-sm text-[15px] leading-relaxed text-osso-2">{estudio.endereco_publico}</p>
-          {estudio.horario && <p className="mt-2 text-[14px] text-osso-3">{estudio.horario}</p>}
+          {estudio.endereco ? (
+            <a href={estudio.mapa || '#'} target="_blank" rel="noopener noreferrer" className="mt-5 flex max-w-sm items-start gap-2.5 text-[15px] leading-relaxed text-osso-2 hover:text-ambar-claro">
+              <IconePino className="mt-0.5 shrink-0" /> {estudio.endereco}
+            </a>
+          ) : (
+            <p className="mt-5 max-w-sm text-[15px] leading-relaxed text-osso-2">{estudio.endereco_publico}</p>
+          )}
+          {estudio.horario && <p className="mt-2 pl-[30px] text-[14px] text-osso-3">{estudio.horario}</p>}
         </div>
         <div>
           <div className="kicker mb-4">Fale com a gente</div>
@@ -54,6 +60,7 @@ export default function Rodape() {
           <ul className="space-y-2.5 text-[15px] text-osso-2">
             <li><Link href="/orcamento/" className="hover:text-ambar-claro">Pedir orçamento</Link></li>
             <li><Link href="/cadastro/" className="hover:text-ambar-claro">Indique e ganhe</Link></li>
+            <li><Link href="/cuidados/" className="hover:text-ambar-claro">Como cuidar da tattoo</Link></li>
             <li><Link href="/entrar/" className="hover:text-ambar-claro">Minha área</Link></li>
             <li><Link href="/privacidade/" className="hover:text-ambar-claro">Privacidade</Link></li>
           </ul>

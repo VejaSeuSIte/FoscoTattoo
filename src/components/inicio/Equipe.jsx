@@ -13,8 +13,7 @@ export default function Equipe() {
     <section id="equipe" className="parede parede-topo relative scroll-mt-16 py-20 sm:py-28" style={{ '--luz-abre': '95%' }}>
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <Revelar className="mx-auto max-w-2xl text-center">
-          <p className="kicker">Nº 02 · a equipe</p>
-          <h2 className="titulo mt-3 text-[clamp(48px,8vw,84px)]">Quem tatua aqui</h2>
+          <h2 className="titulo text-[clamp(48px,8vw,84px)]">Quem tatua aqui</h2>
           <p className="mt-4 text-[16px] leading-relaxed text-osso-2">
             Cada artista com o seu traço. No pedido de orçamento você escolhe com quem quer fazer, ou deixa que a gente indica.
           </p>

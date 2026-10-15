@@ -27,6 +27,7 @@ export function variaveis(c, estudio, programa, extra = {}) {
     link: c.codigo ? linkIndicacao(c.codigo) : urlSite('/cadastro/'),
     site: urlSite('/'),
     link_entrar: urlSite('/entrar/'),
+    link_cuidados: urlSite('/cuidados/'),
     faltam: `${k.faltam} ${k.faltam === 1 ? 'sessão' : 'sessões'}`,
     premio: numero(programa.fidelidade_premio),
     estudio: estudio.nome_curto || 'Fosco',

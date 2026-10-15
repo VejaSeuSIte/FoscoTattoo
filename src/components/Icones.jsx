@@ -149,3 +149,77 @@ export const IconeEmail = (p) => (
     <path d="M4 7l8 6 8-6" />
   </svg>
 );
+export const IconePino = (p) => (
+  <svg {...base} {...p}>
+    <path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z" />
+    <circle cx="12" cy="10" r="2.4" />
+  </svg>
+);
+export const IconeGota = (p) => (
+  <svg {...base} {...p}>
+    <path d="M12 3.5s6 6.6 6 10.8a6 6 0 0 1-12 0C6 10.1 12 3.5 12 3.5z" />
+    <path d="M9.2 14.6a2.9 2.9 0 0 0 2.8 2.6" />
+  </svg>
+);
+export const IconeSol = (p) => (
+  <svg {...base} {...p}>
+    <circle cx="12" cy="12" r="4" />
+    <path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.5 1.5M17.2 17.2l1.5 1.5M5.3 18.7l1.5-1.5M17.2 6.8l1.5-1.5" />
+  </svg>
+);
+export const IconeOndas = (p) => (
+  <svg {...base} {...p}>
+    <path d="M3 9c1.5-1.4 3-1.4 4.5 0s3 1.4 4.5 0 3-1.4 4.5 0 3 1.4 4.5 0M3 14c1.5-1.4 3-1.4 4.5 0s3 1.4 4.5 0 3-1.4 4.5 0 3 1.4 4.5 0M3 19c1.5-1.4 3-1.4 4.5 0s3 1.4 4.5 0 3-1.4 4.5 0 3 1.4 4.5 0" />
+  </svg>
+);
+export const IconeHaltere = (p) => (
+  <svg {...base} {...p}>
+    <path d="M7 8v8M4.5 9.5v5M17 8v8M19.5 9.5v5M7 12h10" />
+  </svg>
+);
+export const IconeCamarao = (p) => (
+  <svg {...base} {...p}>
+    <path d="M18.5 6.5c-4.5-1.5-11 .5-12 6-.6 3.3 1.5 5.5 4 5.5 2 0 3-1.4 3-2.8" />
+    <path d="M18.5 6.5c.6 2.6-.6 5.4-3.5 6.4M9.5 9.3l1.4 2.6M12.5 8.2l.8 2.7M6.9 12.7l2.6.6M13.5 15.2c-1.2 1.1-1.2 2.6 0 3.8M18.5 6.5l2-2" />
+  </svg>
+);
+export const IconePata = (p) => (
+  <svg {...base} {...p}>
+    <path d="M12 12.5c-2.6 0-4.8 2.6-4.8 4.6 0 1.6 1.4 2.4 2.7 2 1.4-.4 2.8-.4 4.2 0 1.3.4 2.7-.4 2.7-2 0-2-2.2-4.6-4.8-4.6z" />
+    <ellipse cx="8" cy="8.3" rx="1.6" ry="2.1" />
+    <ellipse cx="16" cy="8.3" rx="1.6" ry="2.1" />
+    <ellipse cx="4.9" cy="12.3" rx="1.4" ry="1.8" />
+    <ellipse cx="19.1" cy="12.3" rx="1.4" ry="1.8" />
+  </svg>
+);
+export const IconeCasquinha = (p) => (
+  <svg {...base} {...p}>
+    <path d="M4.5 15.5l9.8-9.8a3 3 0 0 1 4.2 4.2l-9.8 9.8a3 3 0 0 1-4.2-4.2z" />
+    <path d="M10 10l4 4M11.6 8.4l.9.9M8.4 11.6l.9.9M13.2 13.2l.9.9" />
+  </svg>
+);
+export const IconeCartao = (p) => (
+  <svg {...base} {...p}>
+    <rect x="3" y="5.5" width="18" height="13" rx="2" />
+    <circle cx="8" cy="12" r="1.8" />
+    <circle cx="12.5" cy="12" r="1.8" />
+    <circle cx="17" cy="12" r="1.8" strokeDasharray="1.5 1.6" />
+  </svg>
+);
+export const IconePresente = (p) => (
+  <svg {...base} {...p}>
+    <rect x="4" y="9" width="16" height="11" rx="1.5" />
+    <path d="M3 9h18M12 9v11M12 9C10 5 6.5 5.2 7 7.6 7.3 9 12 9 12 9zM12 9c2-4 5.5-3.8 5-1.4C16.7 9 12 9 12 9z" />
+  </svg>
+);
+export const IconeImprimir = (p) => (
+  <svg {...base} {...p}>
+    <path d="M7 9V4h10v5M7 17H5a1.5 1.5 0 0 1-1.5-1.5v-5A1.5 1.5 0 0 1 5 9h14a1.5 1.5 0 0 1 1.5 1.5v5A1.5 1.5 0 0 1 19 17h-2" />
+    <rect x="7" y="14" width="10" height="6" rx="1" />
+  </svg>
+);
+export const IconeExterno = (p) => (
+  <svg {...base} {...p}>
+    <path d="M14 4.5h5.5V10M19.5 4.5L11 13M17 14v4.5a1.5 1.5 0 0 1-1.5 1.5h-10A1.5 1.5 0 0 1 4 18.5v-10A1.5 1.5 0 0 1 5.5 7H10" />
+  </svg>
+);

@@ -4,7 +4,7 @@
 import { createContext, createElement, useContext, useEffect, useState } from 'react';
 import { SUPABASE_URL, SUPABASE_CHAVE, ESTUDIO_PADRAO, PROGRAMA_PADRAO } from './config';
 
-const CHAVE_CACHE = 'fosco-vitrine-v1';
+const CHAVE_CACHE = 'fosco-vitrine-v2';
 
 async function ler(tabela, consulta) {
   const r = await fetch(`${SUPABASE_URL}/rest/v1/${tabela}?${consulta}`, {
@@ -15,19 +15,19 @@ async function ler(tabela, consulta) {
 }
 
 export async function carregarVitrine() {
-  const hoje = new Date().toISOString().slice(0, 10);
-  const [config, artistas, promocoes, trabalhos] = await Promise.all([
-    ler('fosco_config', 'select=estudio,programa&id=eq.1'),
+  const [config, artistas, trabalhos, instagram] = await Promise.all([
+    ler('fosco_config', 'select=estudio,programa,instagram&id=eq.1'),
     ler('fosco_artistas', 'select=id,nome,funcao,estilos,bio,instagram,foto,ordem&ativo=eq.true&order=ordem.asc,criado_em.asc'),
-    ler('fosco_promocoes', `select=id,titulo,descricao,preco_de,preco_por,vagas,valida_ate,artista_id,ordem&ativa=eq.true&or=(valida_ate.is.null,valida_ate.gte.${hoje})&order=ordem.asc,criado_em.desc`),
     ler('fosco_trabalhos', 'select=id,artista_id,imagem,legenda,estilo,ordem&publicado=eq.true&order=ordem.asc,criado_em.desc&limit=60'),
+    ler('fosco_instagram', 'select=shortcode,imagem,legenda,video&order=ordem.asc&limit=12'),
   ]);
   return {
     estudio: { ...ESTUDIO_PADRAO, ...(config[0]?.estudio || {}) },
     programa: { ...PROGRAMA_PADRAO, ...(config[0]?.programa || {}) },
+    perfil: config[0]?.instagram || {},
     artistas,
-    promocoes,
     trabalhos,
+    instagram,
     carregado: true,
   };
 }
@@ -35,9 +35,10 @@ export async function carregarVitrine() {
 const VAZIO = {
   estudio: ESTUDIO_PADRAO,
   programa: PROGRAMA_PADRAO,
+  perfil: {},
   artistas: null,
-  promocoes: [],
   trabalhos: [],
+  instagram: [],
   carregado: false,
 };
 
