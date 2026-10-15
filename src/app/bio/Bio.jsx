@@ -6,7 +6,7 @@ import {
 } from '@/components/Icones';
 import { useVitrine } from '@/lib/vitrine';
 import { BASE } from '@/lib/config';
-import { instagramUrl, linkOrcamento, linkZap, numero, urlFoto } from '@/lib/formatos';
+import { instagramUrl, linkOrcamento, linkZap, numero, regraIndicacao, urlFoto } from '@/lib/formatos';
 
 // cada link é um cartão escuro e reto; só o indique e ganhe vem em âmbar
 function Opcao({ href, externo, icone: Icone, titulo, sub, destaque, i }) {
@@ -65,11 +65,11 @@ function Redondo({ href, rotulo, children }) {
 export default function Bio() {
   const { estudio, programa, artistas, instagram } = useVitrine();
   const rostos = artistas ?? Array.from({ length: 8 }, (_, i) => ({ id: i, foto: `equipe/0${i + 1}.webp` }));
-  const porAmigo = Number(programa.pontos_por_indicacao) * Number(programa.percentual_por_ponto) || 1;
+  const { primeira } = regraIndicacao(programa);
   const fotos = (instagram || []).slice(0, 6);
 
   const opcoes = [
-    programa.indicacao_ativa !== false && { href: '/cadastro/', icone: IconePresente, titulo: `Indique e ganhe até ${programa.desconto_maximo}%`, sub: `Sua 1ª indicação já vale ${numero(porAmigo)}% de desconto`, destaque: true },
+    programa.indicacao_ativa !== false && { href: '/cadastro/', icone: IconePresente, titulo: `Indique e ganhe até ${programa.desconto_maximo}%`, sub: `Sua 1ª indicação já vale ${numero(primeira)}% de desconto`, destaque: true },
     { href: linkOrcamento(estudio), externo: true, icone: IconeZap, titulo: 'Pedir orçamento', sub: 'Conta sua ideia no WhatsApp' },
     { href: '/cuidados/', icone: IconeGota, titulo: 'Como cuidar da sua tattoo', sub: 'O passo a passo pra cicatrizar bonito' },
     { href: '/entrar/', icone: IconePessoas, titulo: 'Minha área', sub: 'Seus pontos, seu link e o cartão fidelidade' },

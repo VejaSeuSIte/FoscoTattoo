@@ -6,7 +6,7 @@ import { Carregando, Interruptor, Secao, useAvisar } from './ui';
 import { usePainel } from './contexto';
 import { funcao, supa, erroLegivel } from '@/lib/supabase';
 import { limparCacheVitrine } from '@/lib/vitrine';
-import { numero, reais } from '@/lib/formatos';
+import { numero, reais, regraIndicacao } from '@/lib/formatos';
 
 const CAMPOS_ESTUDIO = [
   ['nome', 'Nome do estúdio'],
@@ -58,13 +58,13 @@ function Programa() {
   const [p, setP] = useState(config.programa);
   useEffect(() => setP(config.programa), [config.programa]);
   const n = (k) => Number(p[k]) || 0;
-  const porAmigo = n('pontos_por_indicacao') * n('percentual_por_ponto');
-  const amigosMax = porAmigo > 0 ? Math.ceil(n('desconto_maximo') / porAmigo) : 0;
+  const regra = regraIndicacao(p);
+  const amigosMax = regra.amigos(regra.max);
 
   async function salvar(e) {
     e.preventDefault();
     const programa = { ...p };
-    for (const k of ['pontos_por_indicacao', 'pontos_boas_vindas', 'pontos_boas_vindas_indicado', 'pontos_indicado_tatuou', 'percentual_por_ponto', 'desconto_maximo', 'fidelidade_sessoes', 'fidelidade_premio', 'sinal_percentual']) {
+    for (const k of ['pontos_primeira_indicacao', 'pontos_por_indicacao', 'pontos_boas_vindas', 'pontos_boas_vindas_indicado', 'pontos_indicado_tatuou', 'percentual_por_ponto', 'desconto_maximo', 'fidelidade_sessoes', 'fidelidade_premio', 'sinal_percentual']) {
       programa[k] = Math.max(0, Number(String(p[k]).replace(',', '.')) || 0);
     }
     programa.desconto_maximo = Math.min(100, programa.desconto_maximo);
@@ -87,7 +87,8 @@ function Programa() {
       <div className="space-y-4">
         <Interruptor ligado={p.indicacao_ativa !== false} aoMudar={(v) => setP({ ...p, indicacao_ativa: v })} rotulo="Indique e ganhe ligado" />
         <div className="grid gap-4 sm:grid-cols-3">
-          {num('pontos_por_indicacao', 'Pontos por amigo cadastrado', 'Quem indica ganha, a cada amigo que se cadastra pelo link (10 = 10%). É o que o site anuncia.')}
+          {num('pontos_primeira_indicacao', 'Pontos da 1ª indicação', 'Quem indica ganha no 1º amigo que se cadastra pelo link (10 = 10%). É o que o site anuncia.')}
+          {num('pontos_por_indicacao', 'Pontos por amigo depois do 1º', 'Cada amigo a partir do 2º (1 = 1%).')}
           {num('percentual_por_ponto', '% de desconto por ponto')}
           {num('desconto_maximo', 'Desconto máximo (%)')}
           {num('pontos_boas_vindas_indicado', 'Pontos de quem chega pelo convite', 'O amigo indicado ganha ao se cadastrar pelo link (1 = 1%). Regra interna: não aparece no site.')}
@@ -95,7 +96,7 @@ function Programa() {
           {num('pontos_indicado_tatuou', 'Bônus quando o indicado tatua', 'Extra pra quem indicou na 1ª sessão do amigo (0 = nada).')}
         </div>
         <p className="rounded-xl bg-ambar/10 p-3 text-[14px] text-ambar-claro">
-          Com essas regras: cada amigo vale {numero(porAmigo)}% e com {amigosMax} amigos a pessoa chega em {numero(n('desconto_maximo'))}%.
+          Com essas regras: a 1ª indicação vale {numero(regra.primeira)}%, cada amigo depois vale {numero(regra.depois)}% e com {amigosMax} amigos a pessoa chega em {numero(regra.max)}%.
         </p>
       </div>
       <div className="space-y-4">

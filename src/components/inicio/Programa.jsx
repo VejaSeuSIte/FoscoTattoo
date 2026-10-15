@@ -7,7 +7,7 @@ import CartaoFidelidade from '../CartaoFidelidade';
 import { IconeSeta } from '../Icones';
 import { GravuraFundo, Marcado } from '../Emprestimos';
 import { useVitrine } from '@/lib/vitrine';
-import { numero, reais } from '@/lib/formatos';
+import { numero, reais, regraIndicacao } from '@/lib/formatos';
 
 // quando entra na tela, liga (para animar os carimbos)
 function useAoVer() {
@@ -43,11 +43,11 @@ export function Indique() {
   const { programa } = useVitrine();
   if (programa.indicacao_ativa === false) return null;
 
-  const porAmigo = Number(programa.pontos_por_indicacao) * Number(programa.percentual_por_ponto) || 10;
-  const max = Number(programa.desconto_maximo) || 50;
+  const { primeira, depois, max, amigos } = regraIndicacao(programa);
   // as tirinhas de destacar do cartaz: quantos amigos, quanto de desconto
-  const passos = [0.1, 0.2, 0.4, 0.6, 0.8, 1].map((f) => Math.max(porAmigo, Math.round((max * f) / porAmigo) * porAmigo));
-  const tiras = [...new Set(passos)].map((pct) => ({ pct, amigos: Math.ceil(pct / porAmigo) }));
+  // a 1ª tira é a 1ª indicação; as outras vão subindo de 10 em 10 até o teto
+  const passos = [primeira, ...[20, 30, 40, 50].map((p) => Math.round((max * p) / 50))].filter((p, i, l) => p <= max && (i === 0 || p > primeira) && l.indexOf(p) === i);
+  const tiras = passos.map((pct) => ({ pct, amigos: amigos(pct) }));
 
   return (
     <section id="indique" className="parede relative scroll-mt-16 overflow-hidden py-20 sm:py-28" style={{ '--luz-x': '30%', '--luz-y': '30%', '--luz-abre': '90%' }}>
@@ -69,10 +69,10 @@ export function Indique() {
                 aria-hidden="true"
               >
                 <span className="font-mono text-[10px] uppercase tracking-[0.18em]">1 amigo</span>
-                <span className="font-gotica text-[44px] font-bold">{numero(porAmigo)}%</span>
+                <span className="font-gotica text-[44px] font-bold">{numero(primeira)}%</span>
               </div>
               <p className="text-[16px] leading-relaxed text-[#3e2f24]">
-                Cada amigo que se cadastrar pelo <b>seu link</b> vira {numero(porAmigo)}% de desconto na sua próxima tattoo, até <b>{max}%</b>.
+                O 1º amigo que se cadastrar pelo <b>seu link</b> vira {numero(primeira)}% de desconto na sua próxima tattoo. Cada amigo depois soma mais {numero(depois)}%, até <b>{max}%</b>.
               </p>
             </div>
           </div>
@@ -109,14 +109,14 @@ export function Indique() {
         {/* a promessa e o como, em três frases */}
         <Revelar atraso={120}>
           <h2 className="titulo text-[clamp(30px,4.4vw,46px)]">
-            Faça sua 1ª indicação e ganhe <span className="text-ambar">{numero(porAmigo)}%</span> de desconto
+            Faça sua 1ª indicação e ganhe <span className="text-ambar">{numero(primeira)}%</span> de desconto
           </h2>
           <span className="linha-ambar" />
           <ul className="mt-9 space-y-6">
             {[
               ['Faz seu cadastro', 'Leva um minuto. O seu link sai na hora.'],
               ['Manda pros amigos', 'No WhatsApp, no direct do Instagram, no grupo da família.'],
-              ['Ganha a cada amigo', `Cada amigo cadastrado pelo seu link vale ${numero(porAmigo)}% pra você, até ${max}%. Na sessão, é só avisar.`],
+              ['Ganha a cada amigo', `A 1ª indicação vale ${numero(primeira)}% pra você, e cada amigo depois soma mais ${numero(depois)}%, até ${max}%. Na sessão, é só avisar.`],
             ].map(([t, d], i) => (
               <li key={t} className="flex gap-4">
                 <span className="w-9 shrink-0 font-corpo text-[22px] font-extrabold leading-none text-ambar">0{i + 1}</span>

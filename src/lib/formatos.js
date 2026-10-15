@@ -114,3 +114,16 @@ export const nomeBonito = (n) => {
   const p = primeiroNome(n);
   return p ? p.charAt(0).toLocaleUpperCase('pt-BR') + p.slice(1).toLocaleLowerCase('pt-BR') : '';
 };
+
+// Regra da indicação: a 1ª indicação vale `primeira`% e cada amigo depois dela vale
+// `depois`%, até o teto. `desconto(n)` = quanto valem n amigos; `amigos(pct)` = quantos
+// amigos faltam para chegar em pct partindo do zero.
+export function regraIndicacao(programa = {}) {
+  const pp = Number(programa.percentual_por_ponto) || 1;
+  const depois = Number(programa.pontos_por_indicacao ?? 1) * pp || 0;
+  const primeira = Number(programa.pontos_primeira_indicacao ?? programa.pontos_por_indicacao ?? 10) * pp || 0;
+  const max = Number(programa.desconto_maximo) || 50;
+  const desconto = (n) => (n <= 0 ? 0 : Math.min(max, primeira + (n - 1) * depois));
+  const amigos = (pct) => (pct <= 0 ? 0 : pct <= primeira ? 1 : depois > 0 ? 1 + Math.ceil((pct - primeira) / depois) : 0);
+  return { primeira, depois, max, desconto, amigos };
+}

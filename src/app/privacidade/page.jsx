@@ -5,13 +5,16 @@ export const metadata = { title: 'Privacidade', description: 'Como o Fosco Tatto
 const BLOCOS = [
   [
     'O que a gente guarda',
-    'No cadastro: nome, CPF, WhatsApp, data de nascimento e, se você quiser, e-mail. Quando você tatua, o estúdio anota a data da sessão para o cartão fidelidade.',
+    'No cadastro: nome completo, CPF, WhatsApp, e-mail e data de nascimento. Quando você tatua, o estúdio anota a data da sessão para o cartão fidelidade.',
   ],
   [
     'Pra que serve',
-    'O CPF garante que cada pessoa tenha um cadastro só, o que mantém o programa de indicação justo. O WhatsApp é por onde a gente responde orçamento e fala com você. A data de nascimento é para a mensagem de aniversário.',
+    'O CPF garante que cada pessoa tenha um cadastro só, o que mantém o programa de indicação justo. O WhatsApp e o e-mail são por onde a gente responde orçamento e fala com você. A data de nascimento é para a mensagem de aniversário.',
   ],
-  ['Promoções', 'Mensagem de vaga com desconto e novidade só vai para quem marcou que quer receber. Você muda isso quando quiser na sua área do site.'],
+  [
+    'Avisos por WhatsApp e e-mail',
+    'Fazer parte do programa de indicação e fidelidade inclui receber os avisos dele: o desconto que você juntou, vagas com desconto, a mensagem de aniversário e as novidades do Fosco. Isso fica dito na hora do cadastro. A gente manda pouco e nunca passa seu contato para outra empresa. Se quiser parar, desmarque na sua área do site ou responda «parar» na mensagem: seu cadastro e seu desconto continuam valendo.',
+  ],
   ['Quem vê', 'Só o estúdio. Seus dados não são vendidos nem passados para ninguém. Quem você indicou aparece para você só pelo primeiro nome.'],
   ['Seus direitos', 'Você pode ver e corrigir seus dados na sua área. Para apagar o cadastro inteiro, é só pedir pelo WhatsApp ou pelo direct do Instagram que a gente apaga.'],
 ];

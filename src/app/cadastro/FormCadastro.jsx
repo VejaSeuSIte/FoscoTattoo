@@ -7,12 +7,12 @@ import { IconeSeta } from '@/components/Icones';
 import Regua from '@/components/Regua';
 import { funcao, supa, minhaArea } from '@/lib/supabase';
 import { useVitrine, lerIndicacao, esquecerIndicacao } from '@/lib/vitrine';
-import { cpfValido, mascaraCpf, mascaraZap, numero, soDigitos } from '@/lib/formatos';
+import { cpfValido, mascaraCpf, mascaraZap, numero, regraIndicacao, soDigitos } from '@/lib/formatos';
 
 // o formulário em si, usado aqui e na página do convite
 export function FormularioCadastro({ codigo = '', quem = '', className = '' }) {
   const router = useRouter();
-  const [f, setF] = useState({ nome: '', cpf: '', whatsapp: '', nascimento: '', email: '', senha: '', aceita_promocoes: false, aceite: false });
+  const [f, setF] = useState({ nome: '', cpf: '', whatsapp: '', nascimento: '', email: '', senha: '', aceite: false });
   const [erros, setErros] = useState({});
   const [erro, setErro] = useState('');
   const [enviando, setEnviando] = useState(false);
@@ -25,9 +25,10 @@ export function FormularioCadastro({ codigo = '', quem = '', className = '' }) {
     if (!cpfValido(f.cpf)) e.cpf = 'Esse CPF não parece certo. Confira os números.';
     if (soDigitos(f.whatsapp).length < 10) e.whatsapp = 'Coloque o WhatsApp com DDD.';
     if (!f.nascimento) e.nascimento = 'Coloque sua data de nascimento.';
-    if (f.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.email.trim())) e.email = 'Esse e-mail não parece certo.';
+    if (!f.email.trim()) e.email = 'Coloque seu e-mail.';
+    else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.email.trim())) e.email = 'Esse e-mail não parece certo.';
     if (f.senha.length < 6) e.senha = 'A senha precisa ter pelo menos 6 caracteres.';
-    if (!f.aceite) e.aceite = 'Precisa aceitar pra gente guardar seus dados.';
+    if (!f.aceite) e.aceite = 'Pra se cadastrar, marque que leu e aceita.';
     setErros(e);
     return Object.keys(e).length === 0;
   }
@@ -37,7 +38,7 @@ export function FormularioCadastro({ codigo = '', quem = '', className = '' }) {
     setErro('');
     if (!validar()) return;
     setEnviando(true);
-    const { dados, erro: falha } = await funcao('fosco-cadastro', { ...f, codigo });
+    const { dados, erro: falha } = await funcao('fosco-cadastro', { ...f, aceita_promocoes: f.aceite, codigo });
     if (falha) {
       setEnviando(false);
       if (dados?.campo) setErros({ [dados.campo]: falha });
@@ -75,7 +76,7 @@ export function FormularioCadastro({ codigo = '', quem = '', className = '' }) {
         <Campo rotulo="Data de nascimento" id="nascimento" erro={erros.nascimento} dica="No seu aniversário tem mensagem nossa.">
           <input id="nascimento" type="date" className="campo" value={f.nascimento} onChange={mudar('nascimento')} max={new Date().toISOString().slice(0, 10)} aria-invalid={erros.nascimento ? 'true' : undefined} />
         </Campo>
-        <Campo rotulo="E-mail (opcional)" id="email" erro={erros.email}>
+        <Campo rotulo="E-mail" id="email" erro={erros.email}>
           <input id="email" type="email" className="campo" value={f.email} onChange={mudar('email')} autoComplete="email" maxLength={160} aria-invalid={erros.email ? 'true' : undefined} />
         </Campo>
       </div>
@@ -83,11 +84,7 @@ export function FormularioCadastro({ codigo = '', quem = '', className = '' }) {
         <CampoSenha id="senha" valor={f.senha} aoMudar={(v) => setF((x) => ({ ...x, senha: v }))} erro={erros.senha} autoComplete="new-password" />
       </Campo>
 
-      <div className="space-y-3 border-t border-osso/10 pt-5">
-        <label className="flex cursor-pointer items-start gap-3 text-[14.5px] leading-snug text-osso-2">
-          <input type="checkbox" className="caixa mt-0.5" checked={f.aceita_promocoes} onChange={(e) => setF((x) => ({ ...x, aceita_promocoes: e.target.checked }))} />
-          Quero receber vaga com desconto, aviso de aniversário e novidades do Fosco no WhatsApp.
-        </label>
+      <div className="space-y-2 border-t border-osso/10 pt-5">
         <label className="flex cursor-pointer items-start gap-3 text-[14.5px] leading-snug text-osso-2">
           <input type="checkbox" className="caixa mt-0.5" checked={f.aceite} onChange={(e) => setF((x) => ({ ...x, aceite: e.target.checked }))} aria-invalid={erros.aceite ? 'true' : undefined} />
           <span>
@@ -95,10 +92,11 @@ export function FormularioCadastro({ codigo = '', quem = '', className = '' }) {
             <Link href="/privacidade/" target="_blank" className="text-osso underline decoration-ambar/60 underline-offset-4">
               política de privacidade
             </Link>
-            .
+            . Sei que o Fosco vai me mandar no WhatsApp e no e-mail os avisos do programa: vagas com desconto, aniversário e novidades.
           </span>
         </label>
-        {erros.aceite && <p className="text-[13px] text-[#f0a596]">{erros.aceite}</p>}
+        <p className="pl-8 text-[12.5px] leading-snug text-osso-3">Dá pra parar de receber quando quiser, na sua área do site.</p>
+        {erros.aceite && <p className="pl-8 text-[13px] text-[#f0a596]">{erros.aceite}</p>}
       </div>
 
       {codigo && quem && <p className="font-mono text-[12px] text-osso-3">convite de {quem} · código {codigo}</p>}
@@ -134,8 +132,7 @@ export default function FormCadastro() {
     minhaArea().then((data) => data?.cliente && setJaCliente(true));
   }, [router]);
 
-  const porAmigo = Number(programa.pontos_por_indicacao) * Number(programa.percentual_por_ponto) || 10;
-  const max = Number(programa.desconto_maximo) || 50;
+  const { primeira, depois, max, amigos } = regraIndicacao(programa);
 
   if (!pronto) return <div className="min-h-[60svh]" />;
 
@@ -159,14 +156,14 @@ export default function FormCadastro() {
         </h1>
         <span className="linha-ambar" />
         <p className="mt-6 max-w-md text-[17px] leading-relaxed text-osso-2">
-          Faça sua 1ª indicação e ganhe {numero(porAmigo)}% de desconto. O cadastro te dá na hora um link só seu, e cada amigo a mais que se cadastrar por ele soma outros {numero(porAmigo)}%, até {max}%.
+          Faça sua 1ª indicação e ganhe {numero(primeira)}% de desconto. O cadastro te dá na hora um link só seu, e cada amigo a mais que se cadastrar por ele soma mais {numero(depois)}%, até {max}%.
         </p>
         <div className="cartao mt-10 hidden p-6 lg:block">
-          <Regua valor={Math.round(max * 0.36)} maximo={max} marcos={[Math.round(max / 5), Math.round(max / 2), max]} legenda={(m) => `${Math.ceil(m / porAmigo)} amigos`} />
+          <Regua valor={Math.round(max * 0.36)} maximo={max} marcos={[primeira, Math.round(max / 2), max]} legenda={(m) => `${amigos(m)} ${amigos(m) === 1 ? 'amigo' : 'amigos'}`} />
         </div>
         <ul className="mt-8 hidden space-y-2 text-[15px] text-osso-2 lg:block">
           <li>· Seu cartão fidelidade também fica na sua área.</li>
-          <li>· A gente não manda spam: promoção só se você marcar que quer.</li>
+          <li>· Sem spam: só os avisos do programa, e dá pra parar quando quiser.</li>
         </ul>
       </div>
       <FormularioCadastro />

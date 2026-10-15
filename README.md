@@ -14,7 +14,7 @@ cadastro com link de indicação, cartão fidelidade, área do cliente e painel 
 |---|---|
 | `/` | página inicial |
 | `/bio/` | página de links para a bio do Instagram |
-| `/convite/?i=codigo` | para onde vai o link de indicação: «faça sua 1ª indicação e ganhe 10%» (`pontos_por_indicacao` = 10), trabalhos, equipe e cadastro. O amigo que chega ganha 1 ponto (`pontos_boas_vindas_indicado`), regra interna que o site não anuncia |
+| `/convite/?i=codigo` | para onde vai o link de indicação: «faça sua 1ª indicação e ganhe 10%»: a 1ª vale 10 pontos (`pontos_primeira_indicacao`) e cada amigo depois vale 1 (`pontos_por_indicacao`), até 50%, trabalhos, equipe e cadastro. O amigo que chega ganha 1 ponto (`pontos_boas_vindas_indicado`), regra interna que o site não anuncia |
 | `/cadastro/` | cadastro de quem quer o próprio link (com código, manda para o convite) |
 | `/cuidados/` | como cuidar da tattoo |
 | `/entrar/`, `/minha-area/` | login (CPF + senha) e área do cliente |

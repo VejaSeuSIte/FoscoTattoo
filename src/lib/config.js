@@ -25,7 +25,8 @@ export const ESTUDIO_PADRAO = {
 
 export const PROGRAMA_PADRAO = {
   indicacao_ativa: true,
-  pontos_por_indicacao: 10,
+  pontos_primeira_indicacao: 10,
+  pontos_por_indicacao: 1,
   pontos_boas_vindas: 0,
   pontos_boas_vindas_indicado: 1,
   pontos_indicado_tatuou: 0,

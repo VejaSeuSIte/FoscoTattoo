@@ -43,10 +43,11 @@ Deno.serve(async (req) => {
   if (nome.length < 4 || !nome.includes(' ')) return responder({ erro: 'Escreva nome e sobrenome.', campo: 'nome' }, 400, h);
   if (!cpfValido(cpf)) return responder({ erro: 'Esse CPF não parece certo. Confira os números.', campo: 'cpf' }, 400, h);
   if (!whatsapp) return responder({ erro: 'WhatsApp inválido: use DDD + número.', campo: 'whatsapp' }, 400, h);
-  if (email === null) return responder({ erro: 'Esse e-mail não parece certo.', campo: 'email' }, 400, h);
+  if (!email) return responder({ erro: email === null ? 'Esse e-mail não parece certo.' : 'Coloque seu e-mail.', campo: 'email' }, 400, h);
   if (!nascimento) return responder({ erro: 'Confira a data de nascimento.', campo: 'nascimento' }, 400, h);
   if (senha.length < 6 || senha.length > 72) return responder({ erro: 'A senha precisa ter pelo menos 6 caracteres.', campo: 'senha' }, 400, h);
-  if (corpo.aceite !== true) return responder({ erro: 'Para se cadastrar, aceite a política de privacidade.', campo: 'aceite' }, 400, h);
+  // a caixa única do cadastro: política de privacidade + avisos do programa no WhatsApp e no e-mail
+  if (corpo.aceite !== true) return responder({ erro: 'Para se cadastrar, marque que leu e aceita.', campo: 'aceite' }, 400, h);
 
   const { data: jaCpf } = await db.from('fosco_clientes').select('id').eq('cpf', cpf).maybeSingle();
   if (jaCpf) return responder({ erro: 'Esse CPF já tem cadastro. É só entrar com a sua senha.', campo: 'cpf', existe: true }, 409, h);
@@ -70,9 +71,9 @@ Deno.serve(async (req) => {
     p_nome: nome,
     p_cpf: cpf,
     p_whatsapp: whatsapp,
-    p_email: email || null,
+    p_email: email,
     p_nascimento: nascimento,
-    p_aceita: corpo.aceita_promocoes === true,
+    p_aceita: true,
     p_codigo_indicacao: codigo || null,
     p_origem: 'site',
   });

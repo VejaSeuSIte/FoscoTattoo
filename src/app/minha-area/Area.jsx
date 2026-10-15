@@ -9,7 +9,7 @@ import { Aviso, Campo, CampoSenha } from '@/components/Formulario';
 import { IconeCheck, IconeCompartilhar, IconeCopiar, IconeSair, IconeZap } from '@/components/Icones';
 import { supa, erroLegivel } from '@/lib/supabase';
 import { useVitrine } from '@/lib/vitrine';
-import { dataCurta, haQuanto, linkIndicacao, linkOrcamento, linkZap, mascaraZap, numero, primeiroNome, reais } from '@/lib/formatos';
+import { dataCurta, haQuanto, linkIndicacao, linkOrcamento, linkZap, mascaraZap, numero, primeiroNome, reais, regraIndicacao } from '@/lib/formatos';
 
 const MOTIVOS = {
   indicacao: 'Indicação',
@@ -29,10 +29,10 @@ function Bloco({ titulo, kicker, children, className = '' }) {
   );
 }
 
-function Compartilhar({ codigo, nome, porAmigo }) {
+function Compartilhar({ codigo, nome, primeira }) {
   const [copiou, setCopiou] = useState(false);
   const link = linkIndicacao(codigo);
-  const mensagem = `Te indiquei o Fosco Tattoo Studio, aqui em Recife. Faz teu cadastro pelo meu link: na tua 1ª indicação tu ganha ${numero(porAmigo)}% de desconto. Meu link: ${link}`;
+  const mensagem = `Te indiquei o Fosco Tattoo Studio, aqui em Recife. Faz teu cadastro pelo meu link: na tua 1ª indicação tu ganha ${numero(primeira)}% de desconto. Meu link: ${link}`;
   async function copiar() {
     try {
       await navigator.clipboard.writeText(link);
@@ -92,6 +92,7 @@ function MeusDados({ cliente, aoSalvar }) {
   const [salvando, setSalvando] = useState(false);
   async function salvar(e) {
     e.preventDefault();
+    if (!email.trim()) return setMsg({ tipo: 'erro', t: 'Coloque seu e-mail.' });
     setSalvando(true);
     setMsg(null);
     const db = supa();
@@ -131,7 +132,7 @@ function MeusDados({ cliente, aoSalvar }) {
       </Campo>
       <label className="flex cursor-pointer items-start gap-3 text-[14.5px] text-osso-2">
         <input type="checkbox" className="caixa mt-0.5" checked={aceita} onChange={(e) => setAceita(e.target.checked)} />
-        Quero receber vagas com desconto, aviso de aniversário e novidades do Fosco.
+        Receber no WhatsApp e no e-mail as vagas com desconto, o aviso de aniversário e as novidades do Fosco. Desmarque pra parar.
       </label>
       {msg && <Aviso tipo={msg.tipo}>{msg.t}</Aviso>}
       <button type="submit" className="botao" disabled={salvando}>
@@ -194,10 +195,12 @@ export default function Area() {
 
   const { cliente, pontos, desconto, regras, indicados, extrato, fidelidade, sessoes } = area;
   const max = Number(regras.desconto_maximo);
-  const porAmigo = Number(regras.pontos_por_indicacao) * Number(regras.percentual_por_ponto);
+  const { primeira, depois, amigos } = regraIndicacao({ ...programa, ...regras });
+  // quantos amigos faltam para o teto, contando que a 1ª indicação vale mais
+  const faltam = indicados.length === 0 ? amigos(Math.max(0, max - desconto)) : Math.ceil(Math.max(0, max - desconto) / depois);
   const tatuaram = indicados.filter((i) => i.tatuou).length;
   // o ponto de quem chegou pelo convite é regra interna: só fala de desconto quando já veio de indicação
-  const textoZap = desconto >= porAmigo
+  const textoZap = desconto >= primeira
     ? `Oi! Me cadastrei no site do Fosco e tenho ${numero(desconto)}% de desconto. Quero fazer um orçamento de tattoo.`
     : 'Oi! Me cadastrei no site do Fosco e quero fazer um orçamento de tattoo.';
 
@@ -234,9 +237,9 @@ export default function Area() {
         <div className="mt-6 rounded-2xl border border-ambar/40 bg-ambar/[0.07] p-5 sm:flex sm:items-center sm:justify-between sm:gap-6 sm:p-6">
           <div>
             <p className="text-[17px] font-bold text-osso">
-              Cadastro feito! Faça sua 1ª indicação e ganhe {numero(porAmigo)}% de desconto.
+              Cadastro feito! Faça sua 1ª indicação e ganhe {numero(primeira)}% de desconto.
             </p>
-            <p className="mt-1 text-[15px] text-osso-2">Seu link está aqui embaixo: cada amigo que se cadastrar por ele vale {numero(porAmigo)}%, até {max}%. E quando quiser, conta sua ideia no WhatsApp.</p>
+            <p className="mt-1 text-[15px] text-osso-2">Seu link está aqui embaixo: a 1ª indicação vale {numero(primeira)}% e cada amigo depois soma {numero(depois)}%, até {max}%. E quando quiser, conta sua ideia no WhatsApp.</p>
           </div>
           <a href={linkZap(estudio.whatsapp, textoZap)} target="_blank" rel="noopener noreferrer" className="botao mt-4 shrink-0 sm:mt-0">
             <IconeZap width={18} height={18} /> Contar minha ideia
@@ -254,21 +257,21 @@ export default function Area() {
             <div className="pb-1 text-[14px] leading-snug text-osso-3">
               {pontos} {pontos === 1 ? 'ponto' : 'pontos'}
               <br />
-              {numero(porAmigo)}% por amigo · até {max}%
+              {numero(primeira)}% na 1ª indicação · +{numero(depois)}% por amigo depois · até {max}%
             </div>
           </div>
-          <Regua valor={desconto} maximo={max} marcos={[Math.round(max / 2), max]} legenda={(m) => `${Math.ceil(m / porAmigo)} amigos`} className="mt-4" />
+          <Regua valor={desconto} maximo={max} marcos={[Math.round(max / 2), max]} legenda={(m) => `${amigos(m)} amigos`} className="mt-4" />
           <p className="mt-2 text-[14px] leading-relaxed text-osso-2">
             {desconto >= max
               ? 'Você chegou no máximo! Avise no estúdio que quer usar na próxima sessão.'
               : desconto > 0
-                ? `Pra usar, é só avisar no estúdio na hora da sessão. Faltam ${Math.ceil((max - desconto) / porAmigo)} amigos pra chegar em ${max}%.`
+                ? `Pra usar, é só avisar no estúdio na hora da sessão. Faltam ${faltam} ${faltam === 1 ? 'amigo' : 'amigos'} pra chegar em ${max}%.`
                 : 'Mande seu link: cada amigo que se cadastrar por ele aparece aqui.'}
           </p>
         </Bloco>
 
         <Bloco kicker="seu link de indicação" titulo="Manda pra galera">
-          <Compartilhar codigo={cliente.codigo} nome={primeiroNome(cliente.nome)} porAmigo={porAmigo} />
+          <Compartilhar codigo={cliente.codigo} nome={primeiroNome(cliente.nome)} primeira={primeira} />
         </Bloco>
       </div>
 

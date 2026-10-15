@@ -10,7 +10,7 @@ import { IconeCheck, IconeInsta, IconeSeta } from '@/components/Icones';
 import { FormularioCadastro } from '../cadastro/FormCadastro';
 import { supa, minhaArea } from '@/lib/supabase';
 import { useVitrine, guardarIndicacao, lerIndicacao } from '@/lib/vitrine';
-import { instagramUrl, nomeBonito, numero, urlFoto } from '@/lib/formatos';
+import { instagramUrl, nomeBonito, numero, regraIndicacao, urlFoto } from '@/lib/formatos';
 
 // A página para onde vai o link de indicação: a chamada para indicar na abertura, os
 // trabalhos, a equipe, como funciona e o cadastro. Tudo leva para o mesmo botão.
@@ -26,8 +26,7 @@ export default function Convite() {
   const abertura = useRef(null);
   const cadastro = useRef(null);
 
-  const porAmigo = Number(programa.pontos_por_indicacao) * (Number(programa.percentual_por_ponto) || 1) || 10;
-  const max = Number(programa.desconto_maximo) || 50;
+  const { primeira, depois, max } = regraIndicacao(programa);
   const fotos = (instagram || []).slice(0, 12);
 
   useEffect(() => {
@@ -59,7 +58,8 @@ export default function Convite() {
     return () => olho.disconnect();
   }, []);
 
-  const pct = `${numero(porAmigo)}%`;
+  const pct = `${numero(primeira)}%`;
+  const mais = `${numero(depois)}%`;
 
   return (
     <>
@@ -95,7 +95,7 @@ export default function Convite() {
                 <span className="titulo mt-3 block text-[clamp(22px,3.4vw,32px)]">de desconto na sua tattoo</span>
               </h1>
               <p className="mt-5 max-w-[28rem] text-[17px] leading-relaxed text-osso-2">
-                Faz o cadastro em um minuto e seu link sai na hora. Cada amigo que se cadastrar por ele vale {pct}, até {max}%.
+                Faz o cadastro em um minuto e seu link sai na hora. A 1ª indicação vale {pct} e cada amigo a mais soma {mais}, até {max}%.
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
                 <a href="#cadastro" className="botao">
@@ -163,7 +163,7 @@ export default function Convite() {
             <ol className="mt-10 grid gap-8 md:grid-cols-3">
               {[
                 ['Faz o cadastro', 'Um minuto, com CPF e WhatsApp. Seu link de indicação sai na hora.'],
-                ['Manda pros amigos', `Cada amigo que se cadastrar pelo seu link vale ${pct} de desconto pra você, até ${max}%.`],
+                ['Manda pros amigos', `A 1ª indicação vale ${pct} de desconto pra você, e cada amigo depois soma mais ${mais}, até ${max}%.`],
                 ['Tatua com desconto', 'Conta sua ideia no WhatsApp e, na sessão, é só avisar. O estúdio confere pelo seu CPF.'],
               ].map(([t, d], i) => (
                 <li key={t} className="border-t border-osso/15 pt-5">
@@ -188,8 +188,8 @@ export default function Convite() {
                 {[
                   'Não custa nada',
                   'Seu link de indicação sai na hora',
-                  `Cada amigo cadastrado vale ${pct}, até ${max}%`,
-                  'Promoção só se você marcar que quer, sem spam',
+                  `Depois, cada amigo a mais soma ${mais}, até ${max}%`,
+                  'Sem spam: só os avisos do programa',
                 ].map((t) => (
                   <li key={t} className="flex items-start gap-3 text-[16px] text-osso">
                     <IconeCheck width={19} height={19} className="mt-0.5 shrink-0 text-ambar" /> {t}
@@ -219,7 +219,7 @@ export default function Convite() {
             <div className="mt-8 divide-y divide-osso/10 border-y border-osso/10">
               {[
                 ['Tem algum custo?', 'Não. O cadastro é de graça.'],
-                ['Quando o desconto entra?', `Assim que o amigo se cadastra pelo seu link: ${pct} por amigo, até ${max}% no total. Você acompanha tudo na sua área do site.`],
+                ['Quando o desconto entra?', `Assim que o amigo se cadastra pelo seu link: ${pct} na 1ª indicação e ${mais} em cada uma depois, até ${max}% no total. Você acompanha tudo na sua área do site.`],
                 ['Como eu uso o desconto?', 'Na conversa do orçamento pelo WhatsApp, avise que tem desconto. Na sessão o estúdio confere no seu CPF.'],
               ].map(([q, r]) => (
                 <details key={q} className="group py-4">

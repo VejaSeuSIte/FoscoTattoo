@@ -1,22 +1,26 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import Revelar from '../Revelar';
-import { IconeExterno, IconeInsta, IconeSeta, IconeVirar, IconeVoltar } from '../Icones';
+import { IconeInsta, IconeSeta, IconeVirar, IconeVoltar } from '../Icones';
 import { useVitrine } from '@/lib/vitrine';
 import { arroba, instagramUrl, urlFoto } from '@/lib/formatos';
 
 // O cartão tem duas faces: na frente o retrato, no verso as artes da pessoa (como os
 // compilados dos stories) e quem ela é. No computador vira com o mouse; no celular vira
-// sozinho quando a equipe chega no meio da tela, e um toque desvira.
-function Cartao({ artista, prioridade, virado, aoTocar, atraso = 0 }) {
-  const { nome, nome_completo, funcao, estilos, bio, instagram, site, foto } = artista;
+// sozinho quando a equipe chega no meio da tela. O cartão inteiro leva ao Instagram.
+function Cartao({ artista, prioridade, virado, atraso = 0 }) {
+  const { nome, nome_completo, funcao, estilos, bio, instagram, foto } = artista;
   const trabalhos = (artista.trabalhos || []).filter(Boolean).slice(0, 4);
   const temVerso = trabalhos.length > 0;
+  const Raiz = instagram ? 'a' : 'article';
+  const link = instagram
+    ? { href: instagramUrl(instagram), target: '_blank', rel: 'noopener noreferrer', 'aria-label': `${nome_completo || nome} no Instagram (${arroba(instagram)})`, draggable: false }
+    : {};
   return (
-    <article
-      className={`cartao-giro h-full ${temVerso ? 'com-verso' : ''}`}
+    <Raiz
+      {...link}
+      className={`cartao-giro block h-full rounded-2xl ${temVerso ? 'com-verso' : ''}`}
       data-virado={temVerso && virado ? 'sim' : undefined}
-      onClick={(e) => temVerso && !e.target.closest('a') && aoTocar?.()}
     >
       <div className="cartao-giro-miolo relative h-full" style={atraso ? { transitionDelay: `${atraso}ms` } : undefined}>
         {/* frente */}
@@ -35,14 +39,15 @@ function Cartao({ artista, prioridade, virado, aoTocar, atraso = 0 }) {
           <div className="flex flex-1 flex-col px-4 pb-4 pt-3">
             <h3 className="font-gotica text-[28px] font-bold leading-none text-osso">{nome || '—'}</h3>
             <p className="mt-1.5 text-[12.5px] font-semibold uppercase tracking-[0.14em] text-latao">{funcao || 'Tatuagem'}</p>
-            {temVerso ? (
-              <p className="mt-auto flex items-center gap-2 pt-3 text-[12.5px] text-osso-3">
-                <IconeVirar width={16} height={16} className="shrink-0 text-ambar" />
-                <span className="hidden [@media(hover:hover)]:inline">Passe o mouse pra ver os trabalhos</span>
-                <span className="[@media(hover:hover)]:hidden">Toque pra ver os trabalhos</span>
+            {temVerso && (
+              <p className="mt-auto hidden items-center gap-2 pt-3 text-[12.5px] text-osso-3 [@media(hover:hover)]:flex">
+                <IconeVirar width={16} height={16} className="shrink-0 text-ambar" /> Passe o mouse pra ver os trabalhos
               </p>
-            ) : (
-              <span className="mt-auto block h-[30px]" aria-hidden="true" />
+            )}
+            {instagram && (
+              <p className={`mt-auto items-center gap-2 pt-3 text-[12.5px] text-osso-3 ${temVerso ? 'flex [@media(hover:hover)]:hidden' : 'flex'}`}>
+                <IconeInsta width={16} height={16} className="shrink-0 text-ambar" /> {arroba(instagram)}
+              </p>
             )}
           </div>
         </div>
@@ -72,23 +77,16 @@ function Cartao({ artista, prioridade, virado, aoTocar, atraso = 0 }) {
               <h3 className="font-gotica text-[23px] font-bold leading-none text-osso">{nome_completo || nome}</h3>
               {estilos && <p className="mt-1.5 text-[11.5px] leading-snug font-semibold uppercase tracking-[0.12em] text-latao">{estilos}</p>}
               {bio && <p className="mt-2 line-clamp-3 text-[13.5px] leading-snug text-osso-2">{bio}</p>}
-              <div className="mt-3 flex gap-2">
-                {instagram && (
-                  <a href={instagramUrl(instagram)} target="_blank" rel="noopener noreferrer" className="botao-mini" aria-label={`Instagram de ${nome}`}>
-                    <IconeInsta width={15} height={15} className="shrink-0" /> Instagram
-                  </a>
-                )}
-                {site && (
-                  <a href={site} target="_blank" rel="noopener noreferrer" className="botao-mini" aria-label={`Portfólio de ${nome}`}>
-                    <IconeExterno width={15} height={15} className="shrink-0" /> Portfólio
-                  </a>
-                )}
-              </div>
+              {instagram && (
+                <span className="botao-mini mt-3" aria-hidden="true">
+                  <IconeInsta width={15} height={15} className="shrink-0" /> Ver no Instagram
+                </span>
+              )}
             </div>
           </div>
         )}
       </div>
-    </article>
+    </Raiz>
   );
 }
 
@@ -99,10 +97,9 @@ export function CarrosselEquipe({ artistas, intervalo = 3200 }) {
   const ate = useRef(0);
   const [toque, setToque] = useState(false);
   const [virados, setVirados] = useState(false);
-  const [trocados, setTrocados] = useState({});
 
   // no celular (sem mouse), os cartões viram quando a equipe passa do meio da tela e
-  // desviram quando ela volta para baixo; o toque troca um cartão só
+  // desviram quando ela volta para baixo
   useEffect(() => {
     if (!window.matchMedia('(hover: none)').matches) return;
     setToque(true);
@@ -125,7 +122,6 @@ export function CarrosselEquipe({ artistas, intervalo = 3200 }) {
       cancelAnimationFrame(quadro);
     };
   }, []);
-  useEffect(() => setTrocados({}), [virados]);
 
   const passo = () => {
     const el = trilho.current;
@@ -178,9 +174,8 @@ export function CarrosselEquipe({ artistas, intervalo = 3200 }) {
             <Cartao
               artista={a}
               prioridade={i < 4}
-              virado={toque && (trocados[a.id] ?? virados)}
+              virado={toque && virados}
               atraso={toque ? (i % 3) * 110 : 0}
-              aoTocar={() => toque && (segurar(), setTrocados((t) => ({ ...t, [a.id]: !(t[a.id] ?? virados) })))}
             />
           </div>
         ))}
