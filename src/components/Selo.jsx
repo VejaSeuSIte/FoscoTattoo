@@ -27,10 +27,9 @@ export default function Selo({ tamanho = 64, giro = -8, entrar = false, atraso =
       <g filter={`url(#tinta-${id})`} fill={cor} opacity="0.92">
         <path fillRule="evenodd" d="M60 4a56 56 0 1 0 0.01 0ZM60 12a48 48 0 1 1-0.01 0Z" />
         <circle cx="60" cy="60" r="42" />
-        <g transform="translate(49 22.5) scale(0.205)" fill="#efe3c9">
-          <circle cx="59" cy="25" r="16.5" />
+        <g transform="translate(51.7 25.5) scale(0.166)" fill="#efe3c9">
           {CAMINHOS_MARCA.map((d, i) => (
-            <path key={i} d={d} />
+            <path key={i} fillRule="evenodd" d={d} />
           ))}
         </g>
       </g>

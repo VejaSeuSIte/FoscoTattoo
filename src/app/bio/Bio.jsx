@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import Marca from '@/components/Marca';
+import { Logotipo } from '@/components/Marca';
 import {
   IconeGota, IconeInsta, IconePessoas, IconePino, IconeSeta, IconeZap, IconePresente, IconeExterno,
 } from '@/components/Icones';
@@ -87,13 +87,10 @@ export default function Bio() {
         />
         <div className="bio-veu absolute inset-0 -z-10" aria-hidden="true" />
         <div className="mx-auto max-w-[440px] text-center">
-          <span className="mx-auto flex h-[96px] w-[96px] items-center justify-center rounded-full border border-ambar/60 bg-noite/75 shadow-[0_10px_30px_rgba(0,0,0,.55)]">
-            <Marca className="h-[58px] w-auto text-osso" titulo="" />
-          </span>
-          <h1 className="mt-5 font-gotica text-[68px] font-bold leading-[0.88] text-osso [text-shadow:0_4px_22px_rgba(0,0,0,.6)]">
-            {estudio.nome_curto || 'Fosco'}
+          <h1 className="m-0 text-osso [filter:drop-shadow(0_6px_22px_rgba(0,0,0,.6))]">
+            <Logotipo compacto className="mx-auto h-[150px] w-auto" />
           </h1>
-          <p className="mt-3 text-[12.5px] font-extrabold uppercase tracking-[0.24em] text-ambar-claro">Tattoo &amp; piercing · Recife</p>
+          <p className="mt-4 text-[11.5px] font-semibold uppercase tracking-[0.3em] text-osso-2">Tattoo &amp; piercing · Recife</p>
           {estudio.endereco && <p className="mt-2 text-[14px] text-osso-2">{estudio.endereco}</p>}
           <div className="mt-6 flex items-center justify-center gap-3">
             {estudio.instagram && (

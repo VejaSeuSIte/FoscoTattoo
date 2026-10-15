@@ -13,7 +13,8 @@ const LINKS = [
   { href: '/#trabalhos', rotulo: 'Trabalhos' },
 ];
 
-export default function Cabecalho({ solido = false }) {
+// na página inicial o logo grande da abertura já está na tela: o do cabeçalho só aparece ao rolar
+export default function Cabecalho({ solido = false, logoSoAoRolar = false }) {
   const { estudio } = useVitrine();
   const [rolou, setRolou] = useState(solido);
   const [aberto, setAberto] = useState(false);
@@ -40,7 +41,12 @@ export default function Cabecalho({ solido = false }) {
       }`}
     >
       <div className="mx-auto flex h-[68px] max-w-6xl items-center justify-between px-4 sm:px-6">
-        <Link href="/" className="text-osso" aria-label="Fosco Tattoo Studio, página inicial" onClick={() => setAberto(false)}>
+        <Link
+          href="/"
+          className={`text-osso transition-opacity duration-300 ${logoSoAoRolar && !rolou && !aberto ? 'pointer-events-none opacity-0' : 'opacity-100'}`}
+          aria-label="Fosco Tattoo Studio, página inicial"
+          onClick={() => setAberto(false)}
+        >
           <Assinatura pequeno />
         </Link>
         <nav className="hidden items-center gap-7 lg:flex" aria-label="Principal">

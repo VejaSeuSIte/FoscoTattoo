@@ -12,7 +12,7 @@ import { ChamadaCuidados, ChamadaOrcamento, Comunidade } from '@/components/inic
 export default function Inicio() {
   return (
     <>
-      <Cabecalho />
+      <Cabecalho logoSoAoRolar />
       <main>
         <Abertura />
         <Indique />

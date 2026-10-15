@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import Marca from './Marca';
+import Marca, { Logotipo } from './Marca';
 import { IconeInsta, IconePino, IconeZap } from './Icones';
 import { useVitrine } from '@/lib/vitrine';
 import { arroba, instagramUrl, linkOrcamento, linkZap, mascaraZap } from '@/lib/formatos';
@@ -27,13 +27,7 @@ export default function Rodape() {
       <Marca className="pointer-events-none absolute -right-10 -top-24 h-[560px] w-auto text-osso/[0.035]" titulo="" />
       <div className="relative mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr]">
         <div>
-          <div className="flex items-center gap-3">
-            <Marca className="h-14 w-auto text-osso" titulo="" />
-            <div>
-              <div className="font-gotica text-[34px] font-bold leading-none">{estudio.nome_curto || 'Fosco'}</div>
-              <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.3em] text-osso-2">tattoo studio · {estudio.cidade}</div>
-            </div>
-          </div>
+          <Logotipo compacto className="h-[92px] w-auto text-osso" />
           {estudio.endereco ? (
             <a href={estudio.mapa || '#'} target="_blank" rel="noopener noreferrer" className="mt-5 flex max-w-sm items-start gap-2.5 text-[15px] leading-relaxed text-osso-2 hover:text-ambar-claro">
               <IconePino className="mt-0.5 shrink-0" /> {estudio.endereco}

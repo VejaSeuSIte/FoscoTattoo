@@ -64,7 +64,7 @@ function Programa() {
   async function salvar(e) {
     e.preventDefault();
     const programa = { ...p };
-    for (const k of ['pontos_por_indicacao', 'pontos_boas_vindas', 'pontos_indicado_tatuou', 'percentual_por_ponto', 'desconto_maximo', 'fidelidade_sessoes', 'fidelidade_premio', 'sinal_percentual']) {
+    for (const k of ['pontos_por_indicacao', 'pontos_boas_vindas', 'pontos_boas_vindas_indicado', 'pontos_indicado_tatuou', 'percentual_por_ponto', 'desconto_maximo', 'fidelidade_sessoes', 'fidelidade_premio', 'sinal_percentual']) {
       programa[k] = Math.max(0, Number(String(p[k]).replace(',', '.')) || 0);
     }
     programa.desconto_maximo = Math.min(100, programa.desconto_maximo);
@@ -90,7 +90,8 @@ function Programa() {
           {num('pontos_por_indicacao', 'Pontos por amigo cadastrado')}
           {num('percentual_por_ponto', '% de desconto por ponto')}
           {num('desconto_maximo', 'Desconto máximo (%)')}
-          {num('pontos_boas_vindas', 'Pontos de boas-vindas', 'Quem se cadastra já ganha (0 = nada).')}
+          {num('pontos_boas_vindas_indicado', 'Presente de quem chega pelo convite', 'Pontos que o amigo ganha ao se cadastrar pelo link (10 = 10% com 1% por ponto).')}
+          {num('pontos_boas_vindas', 'Pontos de boas-vindas pra todos', 'Qualquer cadastro, com ou sem convite (0 = nada).')}
           {num('pontos_indicado_tatuou', 'Bônus quando o indicado tatua', 'Extra pra quem indicou na 1ª sessão do amigo (0 = nada).')}
         </div>
         <p className="rounded-xl bg-ambar/10 p-3 text-[14px] text-ambar-claro">

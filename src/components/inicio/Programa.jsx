@@ -45,6 +45,7 @@ export function Indique() {
 
   const porAmigo = Number(programa.pontos_por_indicacao) * Number(programa.percentual_por_ponto) || 1;
   const max = Number(programa.desconto_maximo) || 50;
+  const presente = Number(programa.pontos_boas_vindas_indicado ?? 10) * (Number(programa.percentual_por_ponto) || 1);
   // as tirinhas de destacar do cartaz: quantos amigos, quanto de desconto
   const passos = [0.1, 0.2, 0.4, 0.6, 0.8, 1].map((f) => Math.max(porAmigo, Math.round((max * f) / porAmigo) * porAmigo));
   const tiras = [...new Set(passos)].map((pct) => ({ pct, amigos: Math.ceil(pct / porAmigo) }));
@@ -72,7 +73,7 @@ export function Indique() {
                 <span className="font-gotica text-[44px] font-bold">{numero(porAmigo)}%</span>
               </div>
               <p className="text-[16px] leading-relaxed text-[#3e2f24]">
-                Cada amigo que se cadastrar pelo <b>seu link</b> vira {numero(porAmigo)}% de desconto na sua próxima tattoo. Dá pra juntar até <b>{max}%</b>.
+                Cada amigo que se cadastrar pelo <b>seu link</b> vira {numero(porAmigo)}% de desconto na sua próxima tattoo, até <b>{max}%</b>.{presente > 0 && <> E ele já entra com <b>{numero(presente)}%</b>.</>}
               </p>
             </div>
           </div>
@@ -108,15 +109,23 @@ export function Indique() {
 
         {/* a promessa e o como, em três frases */}
         <Revelar atraso={120}>
-          <h2 className="titulo text-[clamp(34px,5vw,54px)]">
-            Até <span className="text-ambar">{max}%</span> de desconto na sua próxima tattoo
+          <h2 className="titulo text-[clamp(30px,4.4vw,46px)]">
+            {presente > 0 ? (
+              <>
+                Seu amigo ganha {numero(presente)}%. <span className="text-ambar">Você junta até {max}%.</span>
+              </>
+            ) : (
+              <>
+                Até <span className="text-ambar">{max}%</span> de desconto na sua próxima tattoo
+              </>
+            )}
           </h2>
           <span className="linha-ambar" />
           <ul className="mt-9 space-y-6">
             {[
-              ['Faz seu cadastro', 'Nome, CPF, WhatsApp e aniversário. O seu link sai na hora.'],
-              ['Manda o link', 'No WhatsApp, no direct do Instagram, no grupo da família. Pra quem você quiser.'],
-              ['Acompanha na sua área', 'Cada cadastro pelo seu link entra lá. Na sessão, é só avisar que quer usar o desconto.'],
+              ['Faz seu cadastro', 'Leva um minuto. O seu link sai na hora.'],
+              ['Manda pros amigos', presente > 0 ? `Quem se cadastrar pelo seu link já ganha ${numero(presente)}% na primeira tattoo.` : 'No WhatsApp, no direct do Instagram, no grupo da família.'],
+              ['Ganha você também', `Cada amigo cadastrado vale ${numero(porAmigo)}% pra você, até ${max}%. Na sessão, é só avisar.`],
             ].map(([t, d], i) => (
               <li key={t} className="flex gap-4">
                 <span className="w-9 shrink-0 font-corpo text-[22px] font-extrabold leading-none text-ambar">0{i + 1}</span>

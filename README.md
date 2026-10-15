@@ -14,7 +14,9 @@ cadastro com link de indicação, cartão fidelidade, área do cliente e painel 
 |---|---|
 | `/` | página inicial |
 | `/bio/` | página de links para a bio do Instagram |
-| `/cadastro/?i=codigo` | cadastro pelo link de indicação |
+| `/convite/?i=codigo` | para onde vai o link de indicação: o presente de quem chega (`pontos_boas_vindas_indicado`, 10 = 10%), trabalhos, equipe e cadastro |
+| `/cadastro/` | cadastro de quem quer o próprio link (com código, manda para o convite) |
+| `/cuidados/` | como cuidar da tattoo |
 | `/entrar/`, `/minha-area/` | login (CPF + senha) e área do cliente |
 | `/painel/` | painel do estúdio (e-mail + senha de quem está em `fosco_admins`) |
 

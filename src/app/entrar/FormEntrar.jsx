@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Aviso, Campo, CampoSenha } from '@/components/Formulario';
-import Marca from '@/components/Marca';
+import { Logotipo } from '@/components/Marca';
 import CartaoFidelidade from '@/components/CartaoFidelidade';
 import { IconeInsta, IconeZap } from '@/components/Icones';
 import { supa, erroLegivel } from '@/lib/supabase';
@@ -46,8 +46,8 @@ export default function FormEntrar() {
   return (
     <div className="mx-auto max-w-md px-4 sm:px-6">
       <div className="text-center">
-        <Marca className="mx-auto h-24 w-auto text-osso" titulo="" />
-        <h1 className="titulo mt-5 text-[60px]">Minha área</h1>
+        <Logotipo compacto className="mx-auto h-[104px] w-auto text-osso" />
+        <h1 className="titulo mt-6 text-[clamp(34px,8vw,48px)]">Minha área</h1>
         <p className="mt-2 text-[16px] text-osso-2">Seus pontos, seu link e seu cartão fidelidade.</p>
       </div>
       {novo && (

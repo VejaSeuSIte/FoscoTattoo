@@ -52,10 +52,9 @@ function Livros({ x }) {
       <g transform={`rotate(-8 ${44} 130)`}>
         <rect x="30" y="66" width="34" height="64" rx="2" fill="#d9caa9" />
         <rect x="30" y="66" width="34" height="64" rx="2" fill="none" stroke="#7a6248" strokeWidth="1.2" />
-        <g transform="translate(40 72) scale(0.14)" fill="#3e2f24">
-          <circle cx="59" cy="25" r="16.5" />
+        <g transform="translate(40.5 70) scale(0.13)" fill="#3e2f24">
           {CAMINHOS_MARCA.map((d, i) => (
-            <path key={i} d={d} />
+            <path key={i} fillRule="evenodd" d={d} />
           ))}
         </g>
       </g>
@@ -126,7 +125,7 @@ function Retrato({ x }) {
       <g transform="translate(-4.6 85) scale(0.1)" fill="#d8954c">
         <circle cx="59" cy="25" r="16.5" />
         {CAMINHOS_MARCA.map((d, i) => (
-          <path key={i} d={d} />
+          <path key={i} fillRule="evenodd" d={d} />
         ))}
       </g>
       <rect x="-24" y="74" width="48" height="2" fill="#8a5a32" opacity=".6" />

@@ -1,14 +1,15 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { IconePino, IconeSeta, IconeZap } from '../Icones';
+import { Logotipo } from '../Marca';
+import { IconeSeta, IconeZap } from '../Icones';
 import { useVitrine } from '@/lib/vitrine';
 import { BASE } from '@/lib/config';
 import { linkOrcamento } from '@/lib/formatos';
 
 // o vídeo do salão entra por cima do primeiro quadro quando começa a tocar; quem pede
 // menos movimento ou economia de dados fica só com o quadro parado
-function Fundo() {
+export function Fundo({ className = '' }) {
   const [video, setVideo] = useState(null);
   const [tocando, setTocando] = useState(false);
   useEffect(() => {
@@ -17,7 +18,7 @@ function Fundo() {
     setVideo(window.matchMedia('(min-width: 768px)').matches ? 'abertura-larga.mp4' : 'abertura-alta.mp4');
   }, []);
   return (
-    <div className="abertura-foto absolute inset-0">
+    <div className={`abertura-foto absolute inset-0 ${className}`}>
       <picture>
         <source media="(min-width: 768px)" srcSet={`${BASE}/estudio/video-larga.webp`} />
         <img
@@ -50,64 +51,55 @@ function Fundo() {
   );
 }
 
-// a abertura é o próprio salão do estúdio: as máscaras, a fita de luz e o tijolo no fundo
+// o logo por extenso com o texto encaixado ao lado da lâmina do «f»
+export function LogoComTexto({ children, className = '', largura = 'min(72vw, 360px)', Tag = 'h1' }) {
+  return (
+    <div className={className} style={{ '--logo': largura }}>
+      <Tag className="m-0 w-[var(--logo)] text-osso [filter:drop-shadow(0_6px_24px_rgba(0,0,0,.55))]">
+        <Logotipo className="block h-auto w-full" />
+      </Tag>
+      <div className="relative pl-[calc(var(--logo)*0.17)]" style={{ marginTop: 'calc(var(--logo) * -0.27)' }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
 export default function Abertura() {
   const { estudio, programa } = useVitrine();
   const max = Number(programa.desconto_maximo) || 50;
 
   return (
     <section className="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-noite">
-      {/* no celular o vídeo fica em cima e o texto embaixo; no computador ele ocupa tudo */}
-      <div className="absolute inset-x-0 top-0 -z-10 h-[68%] overflow-hidden md:inset-0 md:h-full">
+      {/* no celular o vídeo fica em cima e o texto embaixo, no escuro; no computador ele ocupa tudo */}
+      <div className="absolute inset-x-0 top-0 -z-10 h-[58%] overflow-hidden md:inset-0 md:h-full">
         <Fundo />
         <div className="abertura-veu absolute inset-0" aria-hidden="true" />
       </div>
 
-      <div className="relative mx-auto flex w-full max-w-6xl flex-1 flex-col justify-end px-4 pb-16 pt-[120px] sm:px-6 md:justify-center md:pb-24">
-        <div className="abertura-texto max-w-[34rem]">
-          <h1 className="font-gotica text-[clamp(88px,15vw,156px)] font-bold leading-[0.86] text-osso [text-shadow:0_6px_30px_rgba(0,0,0,.55)]">
-            {estudio.nome_curto || 'Fosco'}
-          </h1>
-          <p className="mt-4 font-corpo text-[clamp(15px,2vw,19px)] font-extrabold uppercase tracking-[0.2em] text-ambar-claro">
-            Tattoo &amp; piercing · Recife
+      <div className="relative mx-auto flex w-full max-w-6xl flex-1 flex-col justify-end px-4 pb-14 pt-[110px] sm:px-6 md:justify-center md:pb-20">
+        <LogoComTexto className="abertura-texto" largura="clamp(230px, 30vw, 380px)">
+          <p className="text-[11.5px] font-semibold uppercase tracking-[0.32em] text-osso-3">Tattoo &amp; piercing · Recife</p>
+          <p className="mt-4 max-w-[24rem] text-[18px] leading-relaxed text-osso sm:text-[19px]">
+            Uma equipe de artistas de estilos diferentes. <span className="text-ambar-claro">Conta sua ideia.</span>
           </p>
-          <span className="linha-ambar" />
-          <p className="mt-6 max-w-[30rem] text-[17px] leading-relaxed text-osso-2">
-            Estúdio privado, com hora marcada e uma equipe de artistas de estilos diferentes. Conta sua ideia que a gente responde com o orçamento.
-          </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-4">
             {programa.indicacao_ativa !== false && (
               <Link href="/cadastro/" className="botao">
                 Indique e ganhe até {max}% <IconeSeta width={17} height={17} />
               </Link>
             )}
-            <a href={linkOrcamento(estudio)} target="_blank" rel="noopener noreferrer" className="botao-linha bg-noite/40">
-              <IconeZap width={17} height={17} /> Pedir orçamento
-            </a>
-          </div>
-          <p className="mt-6 text-[14px] text-osso-3">
-            Já é cliente?{' '}
-            <Link href="/entrar/" className="text-osso underline decoration-ambar/60 underline-offset-4 hover:text-ambar-claro">
-              Veja seus pontos e seu cartão
-            </Link>
-          </p>
-        </div>
-      </div>
-
-      {estudio.endereco && (
-        <div className="pointer-events-none absolute inset-x-0 bottom-7 hidden md:block">
-          <div className="mx-auto max-w-6xl px-6">
             <a
-              href={estudio.mapa || undefined}
+              href={linkOrcamento(estudio)}
               target="_blank"
               rel="noopener noreferrer"
-              className="pointer-events-auto inline-flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.16em] text-osso-3 transition hover:text-ambar-claro"
+              className="inline-flex items-center gap-2 text-[14.5px] font-semibold text-osso-2 underline decoration-osso/30 underline-offset-[6px] transition hover:text-ambar-claro hover:decoration-ambar"
             >
-              <IconePino width={15} height={15} className="text-ambar" /> {estudio.endereco}
+              <IconeZap width={16} height={16} /> Pedir orçamento
             </a>
           </div>
-        </div>
-      )}
+        </LogoComTexto>
+      </div>
       <div className="led" />
     </section>
   );

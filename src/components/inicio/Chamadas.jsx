@@ -10,7 +10,7 @@ export function ChamadaOrcamento() {
   return (
     <section className="parede relative overflow-hidden py-24 sm:py-32" style={{ '--luz-x': '50%', '--luz-y': '100%', '--luz-abre': '90%' }}>
       <Revelar className="relative mx-auto max-w-3xl px-4 text-center sm:px-6">
-        <h2 className="titulo text-[clamp(34px,5.6vw,58px)]">
+        <h2 className="titulo text-[clamp(30px,4.6vw,48px)]">
           Pronto pra sua próxima <span className="text-ambar">tattoo?</span>
         </h2>
         <span className="linha-ambar mx-auto" />

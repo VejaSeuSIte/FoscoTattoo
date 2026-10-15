@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
-import Marca from '../Marca';
+import Marca, { Logotipo } from '../Marca';
 import { Aviso, Campo, CampoSenha } from '../Formulario';
 import { IconeAjustes, IconeCasa, IconeMoldura, IconePessoas, IconeSair, IconeEmail } from '../Icones';
 import { AvisosProvider, Carregando } from './ui';
@@ -40,8 +40,8 @@ function Entrada({ aoEntrar }) {
     <main className="parede parede-topo flex min-h-[100svh] items-center justify-center px-4 py-10">
       <form onSubmit={entrar} className="cartao w-full max-w-sm space-y-5 p-7">
         <div className="text-center">
-          <Marca className="mx-auto h-20 w-auto text-osso" titulo="" />
-          <h1 className="titulo mt-4 text-[44px]">Painel</h1>
+          <Logotipo compacto className="mx-auto h-24 w-auto text-osso" />
+          <h1 className="titulo mt-5 text-[34px]">Painel</h1>
           <p className="text-[14px] text-osso-3">Só para a equipe do estúdio.</p>
         </div>
         <Campo rotulo="E-mail" id="p-email">
@@ -142,12 +142,9 @@ export default function Painel() {
         <div className="min-h-[100svh] bg-noite lg:pl-60">
           {/* menu lateral no computador */}
           <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r border-osso/10 bg-carvao px-4 py-6 lg:flex">
-            <Link href="/" className="flex items-center gap-2.5 px-2 text-osso">
-              <Marca className="h-10 w-auto" titulo="" />
-              <span className="leading-none">
-                <span className="block font-gotica text-[26px] font-bold">Fosco</span>
-                <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-osso-3">painel</span>
-              </span>
+            <Link href="/" className="block px-2 text-osso" aria-label="Fosco Tattoo Studio, página inicial">
+              <Logotipo compacto className="h-[60px] w-auto" titulo="" />
+              <span className="mt-2 block font-mono text-[9px] uppercase tracking-[0.3em] text-osso-3">painel</span>
             </Link>
             <nav className="mt-8 flex-1 space-y-1">
               {ABAS.map(({ id, rotulo, icone: Icone }) => (

@@ -23,7 +23,7 @@ export default function Estudio() {
           <img src={`${BASE}/estudio/03.webp`} alt="Um artista tatuando no estúdio" loading="lazy" className="aspect-[4/5] w-full rounded-2xl border border-osso/10 object-cover" />
         </Revelar>
         <Revelar atraso={120}>
-          <h2 className="titulo text-[clamp(34px,5vw,52px)]">O estúdio</h2>
+          <h2 className="titulo text-[clamp(30px,4.4vw,46px)]">O estúdio</h2>
           <span className="linha-ambar" />
           <p className="subtitulo max-w-lg">
             O Fosco é um estúdio privado de tatuagem e piercing no Recife. A gente atende com hora marcada, pra cada sessão ter o tempo e o cuidado que ela pede.

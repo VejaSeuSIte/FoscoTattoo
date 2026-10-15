@@ -92,7 +92,8 @@ export function urlSite(caminho = '/') {
   return window.location.origin + BASE + caminho;
 }
 
-export const linkIndicacao = (codigo) => urlSite(`/cadastro/?i=${codigo}`);
+// o link de indicação leva para a página do convite, com o presente de quem chega
+export const linkIndicacao = (codigo) => urlSite(`/convite/?i=${codigo}`);
 
 // o orçamento é pelo WhatsApp do estúdio, com a mensagem já escrita
 export const linkOrcamento = (estudio) => linkZap(estudio?.whatsapp || '81996912850', 'Oi! Vim pelo site do Fosco e quero fazer um orçamento de tattoo.');
@@ -107,3 +108,9 @@ export function urlFoto(f) {
 
 export const instagramUrl = (u) => (u ? `https://instagram.com/${String(u).replace(/^@/, '')}` : '');
 export const arroba = (u) => (u ? '@' + String(u).replace(/^@/, '') : '');
+
+// «JOSE» ou «jose» viram «Jose», para o nome de quem convidou
+export const nomeBonito = (n) => {
+  const p = primeiroNome(n);
+  return p ? p.charAt(0).toLocaleUpperCase('pt-BR') + p.slice(1).toLocaleLowerCase('pt-BR') : '';
+};

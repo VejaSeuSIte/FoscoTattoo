@@ -111,6 +111,28 @@ body {
       linear-gradient(90deg, rgba(11, 8, 6, 0.95) 0%, rgba(11, 8, 6, 0.86) 30%, rgba(11, 8, 6, 0.45) 56%, rgba(11, 8, 6, 0.12) 80%, rgba(11, 8, 6, 0.2) 100%);
   }
 }
+/* o trilho do carrossel da equipe, sem a barra de rolagem */
+.trilho {
+  scrollbar-width: none;
+}
+.trilho::-webkit-scrollbar {
+  display: none;
+}
+.botao-seta {
+  display: inline-flex;
+  height: 44px;
+  width: 44px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1.5px solid rgba(235, 223, 199, 0.25);
+  color: #ebdfc7;
+  transition: border-color 0.2s, color 0.2s;
+}
+.botao-seta:hover {
+  border-color: #d4914a;
+  color: #ecbd7c;
+}
 .bio-veu {
   background: linear-gradient(180deg, rgba(11, 8, 6, 0.5) 0%, rgba(11, 8, 6, 0.55) 40%, rgba(11, 8, 6, 0.88) 78%, #0b0806 100%);
 }
@@ -157,8 +179,8 @@ body {
   flex: none;
 }
 .titulo {
-  @apply font-corpo font-extrabold uppercase leading-[1.02] text-osso;
-  letter-spacing: 0.02em;
+  @apply font-corpo font-bold uppercase leading-[1.08] text-osso;
+  letter-spacing: 0.035em;
 }
 .subtitulo {
   @apply mt-3 text-[16.5px] leading-relaxed text-osso-2;

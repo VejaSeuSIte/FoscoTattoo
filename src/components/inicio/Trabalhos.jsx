@@ -46,7 +46,7 @@ export default function Trabalhos() {
     <section id="trabalhos" className="relative scroll-mt-16 overflow-hidden bg-noite py-20 sm:py-28">
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
         <Revelar className="max-w-2xl">
-          <h2 className="titulo text-[clamp(34px,5vw,52px)]">Trabalhos recentes</h2>
+          <h2 className="titulo text-[clamp(30px,4.4vw,46px)]">Trabalhos recentes</h2>
           <span className="linha-ambar" />
           <p className="subtitulo">O que saiu da agulha nas últimas semanas, direto do nosso Instagram.</p>
         </Revelar>
