@@ -1,0 +1,334 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =====================================================================
+   Fosco Tattoo Studio
+   Noite no estúdio: parede de tijolinho, luz âmbar de luminária,
+   tinta de nanquim e papel de flash.
+   ===================================================================== */
+
+:root {
+  --noite: #0b0806;
+  --osso: #ebdfc7;
+  --ambar: #d4914a;
+  --grao: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .93 0 0 0 0 .82 2.6 0 0 0 -1.45'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  --grao-escuro: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .15 0 0 0 0 .1 0 0 0 0 .06 1.7 0 0 0 -1.02'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  color-scheme: dark;
+}
+
+html {
+  background: var(--noite);
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  @apply bg-noite font-corpo text-osso antialiased;
+  min-height: 100svh;
+  overflow-x: hidden;
+}
+
+/* grão de filme por cima de tudo, desenhado pelo navegador */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 60;
+  background-image: var(--grao);
+  opacity: 0.16;
+  mix-blend-mode: soft-light;
+}
+
+::selection {
+  background: rgba(212, 145, 74, 0.45);
+  color: #fff8ec;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ambar);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ---------------------------------------------------------------------
+   Parede de tijolinho iluminada
+   --------------------------------------------------------------------- */
+.parede {
+  position: relative;
+  isolation: isolate;
+  background-color: #100b08;
+  background-image: url('../../public/textura/tijolos.svg');
+  background-size: 456px auto;
+  --luz-x: 28%;
+  --luz-y: 92%;
+  --luz-abre: 75%;
+}
+.parede::before {
+  /* a escuridão do quarto: só perto da luz o tijolo aparece */
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(var(--luz-abre) 85% at var(--luz-x) var(--luz-y), rgba(10, 6, 3, 0.18) 0%, rgba(10, 6, 3, 0.62) 42%, rgba(8, 5, 3, 0.95) 78%),
+    linear-gradient(180deg, rgba(8, 5, 3, 0.55), rgba(8, 5, 3, 0) 30%, rgba(8, 5, 3, 0) 70%, rgba(8, 5, 3, 0.7));
+}
+.parede::after {
+  /* o calor da luminária batendo no tijolo */
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(calc(var(--luz-abre) * 0.7) 60% at var(--luz-x) var(--luz-y), rgba(240, 168, 92, 0.30), rgba(240, 168, 92, 0.07) 45%, transparent 70%);
+  mix-blend-mode: screen;
+  animation: lampada 7s ease-in-out infinite;
+}
+.parede-topo {
+  --luz-x: 50%;
+  --luz-y: 4%;
+}
+.parede-direita {
+  --luz-x: 78%;
+  --luz-y: 70%;
+}
+
+/* a fita de luz quente rente ao chão, como nos retratos */
+.led {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #f2b46a 18%, #ffd08f 50%, #f2b46a 82%, transparent);
+  box-shadow: 0 0 22px 6px rgba(242, 160, 70, 0.42), 0 0 80px 18px rgba(242, 160, 70, 0.16);
+  opacity: 0.85;
+}
+
+@keyframes lampada {
+  0%, 100% { opacity: 1; }
+  38% { opacity: 0.93; }
+  40% { opacity: 0.84; }
+  42% { opacity: 0.96; }
+  70% { opacity: 0.9; }
+}
+
+/* ---------------------------------------------------------------------
+   Tipografia
+   --------------------------------------------------------------------- */
+.kicker {
+  @apply font-mono text-[11px] uppercase tracking-[0.28em] text-osso-2;
+}
+.titulo {
+  @apply font-gotica font-semibold leading-[0.92] text-osso;
+  letter-spacing: 0.005em;
+}
+.brasa {
+  color: var(--ambar);
+  text-shadow: 0 0 28px rgba(236, 160, 80, 0.35);
+}
+.dinheiro {
+  font-family: var(--fonte-corpo);
+  font-weight: 800;
+  font-stretch: 82%;
+  letter-spacing: -0.02em;
+}
+.risco-tinta {
+  /* sublinhado de pincel */
+  background-image: linear-gradient(transparent 72%, rgba(212, 145, 74, 0.55) 72%, rgba(212, 145, 74, 0.55) 88%, transparent 88%);
+  background-repeat: no-repeat;
+}
+
+/* ---------------------------------------------------------------------
+   Botões
+   --------------------------------------------------------------------- */
+.botao {
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-corpo text-[15px] font-semibold transition duration-200;
+  background: linear-gradient(180deg, #e3a35d, #c98339);
+  color: #1a0f07;
+  box-shadow: inset 0 1px 0 rgba(255, 236, 205, 0.55), 0 10px 28px -10px rgba(236, 150, 60, 0.75);
+}
+.botao:hover {
+  filter: brightness(1.08);
+  box-shadow: inset 0 1px 0 rgba(255, 236, 205, 0.6), 0 14px 34px -10px rgba(246, 160, 70, 0.95);
+  transform: translateY(-1px);
+}
+.botao:disabled {
+  @apply cursor-not-allowed opacity-50;
+  transform: none;
+}
+.botao-linha {
+  @apply inline-flex items-center justify-center gap-2 rounded-full border border-osso/35 px-6 py-3 text-[15px] font-semibold text-osso transition duration-200;
+  background: rgba(11, 8, 6, 0.35);
+  backdrop-filter: blur(4px);
+}
+.botao-linha:hover {
+  @apply border-ambar text-ambar-claro;
+}
+.botao-mini {
+  @apply inline-flex items-center justify-center gap-1.5 rounded-full border border-osso/20 px-3 py-1.5 text-[13px] font-medium text-osso transition;
+}
+.botao-mini:hover {
+  @apply border-ambar/70 text-ambar-claro;
+}
+.botao-perigo {
+  @apply inline-flex items-center justify-center gap-1.5 rounded-full border border-selo/60 px-3 py-1.5 text-[13px] font-medium text-[#f0a596] transition;
+}
+.botao-perigo:hover {
+  @apply bg-selo/20;
+}
+
+/* ---------------------------------------------------------------------
+   Papel de flash (cartões claros)
+   --------------------------------------------------------------------- */
+.papel {
+  position: relative;
+  color: #261a14;
+  background-color: #e8dabd;
+  background-image:
+    radial-gradient(120% 90% at 50% 40%, rgba(255, 250, 238, 0.55), rgba(0, 0, 0, 0) 60%),
+    var(--grao-escuro);
+  box-shadow: inset 0 0 40px rgba(120, 80, 40, 0.28), 0 22px 40px -18px rgba(0, 0, 0, 0.9);
+}
+.picote {
+  /* furinhos de canhoto de ingresso na borda esquerda */
+  -webkit-mask: radial-gradient(circle at 0 12px, transparent 5px, #000 5.5px) 0 0 / 100% 24px repeat-y;
+  mask: radial-gradient(circle at 0 12px, transparent 5px, #000 5.5px) 0 0 / 100% 24px repeat-y;
+}
+
+/* ---------------------------------------------------------------------
+   Quadro pendurado na parede
+   --------------------------------------------------------------------- */
+.quadro {
+  position: relative;
+  padding: 9px;
+  border-radius: 3px;
+  background: linear-gradient(145deg, #2a1e16, #120c08 60%, #1d140e);
+  box-shadow: inset 0 0 0 1px rgba(255, 230, 190, 0.08), inset 0 2px 0 rgba(255, 230, 190, 0.07);
+  filter: drop-shadow(0 22px 26px rgba(0, 0, 0, 0.75));
+  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.quadro-passe {
+  padding: 7px;
+  background: #d9caa9;
+  box-shadow: inset 0 0 0 1px rgba(60, 35, 15, 0.35), inset 0 0 18px rgba(90, 60, 25, 0.35);
+}
+.quadro-passe img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.9) saturate(0.95);
+  transition: filter 0.5s ease;
+}
+.quadro-prego::before {
+  /* o prego e o barbante */
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -34px;
+  width: 64%;
+  height: 36px;
+  transform: translateX(-50%);
+  background:
+    linear-gradient(to bottom right, transparent calc(50% - 0.6px), rgba(201, 178, 140, 0.55) 50%, transparent calc(50% + 0.6px)) left / 50% 100% no-repeat,
+    linear-gradient(to bottom left, transparent calc(50% - 0.6px), rgba(201, 178, 140, 0.55) 50%, transparent calc(50% + 0.6px)) right / 50% 100% no-repeat;
+}
+.quadro-prego::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -38px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  background: radial-gradient(circle at 35% 35%, #d6c09a, #6b5537 70%);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.7);
+}
+.grupo-quadro:hover .quadro {
+  transform: rotate(0deg) translateY(-6px) !important;
+}
+.grupo-quadro:hover .quadro-passe img {
+  filter: brightness(1.08) saturate(1.05);
+}
+.placa {
+  background: linear-gradient(180deg, #c7a46a, #96733f 55%, #b89257);
+  color: #23170c;
+  box-shadow: inset 0 1px 0 rgba(255, 240, 205, 0.7), inset 0 -1px 0 rgba(60, 35, 10, 0.5), 0 6px 14px -6px rgba(0, 0, 0, 0.9);
+}
+
+/* ---------------------------------------------------------------------
+   Formulários
+   --------------------------------------------------------------------- */
+.rotulo {
+  @apply mb-1.5 block font-mono text-[11px] uppercase tracking-[0.2em] text-osso-2;
+}
+.campo {
+  @apply w-full rounded-xl border border-osso/15 bg-noite/70 px-4 py-3 text-[16px] text-osso placeholder:text-osso-4 transition;
+}
+.campo:focus {
+  @apply border-ambar/80 outline-none;
+  box-shadow: 0 0 0 3px rgba(212, 145, 74, 0.18);
+}
+.campo[aria-invalid='true'] {
+  @apply border-selo;
+}
+select.campo {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, #c9b996 50%), linear-gradient(135deg, #c9b996 50%, transparent 50%);
+  background-position: calc(100% - 20px) 50%, calc(100% - 15px) 50%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 2.5rem;
+}
+.caixa {
+  @apply h-5 w-5 shrink-0 cursor-pointer appearance-none rounded border border-osso/40 bg-noite transition;
+}
+.caixa:checked {
+  @apply border-ambar bg-ambar;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 10.5l3 3 7-7' fill='none' stroke='%231a0f07' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.cartao {
+  @apply rounded-2xl border border-osso/10 bg-carvao/85;
+  box-shadow: inset 0 1px 0 rgba(255, 235, 200, 0.04), 0 24px 50px -30px rgba(0, 0, 0, 0.9);
+}
+
+/* ---------------------------------------------------------------------
+   Movimento
+   --------------------------------------------------------------------- */
+.revelar {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.revelar.visivel {
+  opacity: 1;
+  transform: none;
+}
+@keyframes boiar {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(7px); }
+}
+.boiar {
+  animation: boiar 2.6s ease-in-out infinite;
+}
+@keyframes carimbar {
+  0% { transform: scale(1.6) rotate(var(--giro, -8deg)); opacity: 0; }
+  60% { transform: scale(0.94) rotate(var(--giro, -8deg)); opacity: 1; }
+  100% { transform: scale(1) rotate(var(--giro, -8deg)); opacity: 1; }
+}
+.carimbo-entra {
+  animation: carimbar 0.5s cubic-bezier(0.3, 0.8, 0.3, 1.2) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .parede::after, .boiar, .carimbo-entra { animation: none; }
+  .revelar { opacity: 1; transform: none; transition: none; }
+  .quadro, .grupo-quadro:hover .quadro { transition: none; }
+}
+
+/* barra de rolagem discreta */
+* { scrollbar-width: thin; scrollbar-color: #3c2516 transparent; }

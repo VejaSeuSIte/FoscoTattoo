@@ -1,0 +1,70 @@
+'use client';
+import Link from 'next/link';
+import Marca from './Marca';
+import { IconeInsta, IconeZap } from './Icones';
+import { useVitrine } from '@/lib/vitrine';
+import { arroba, instagramUrl, linkZap, mascaraZap } from '@/lib/formatos';
+
+export default function Rodape() {
+  const { estudio } = useVitrine();
+  const ano = new Date().getFullYear();
+  return (
+    <footer className="relative overflow-hidden border-t border-osso/10 bg-noite">
+      <Marca className="pointer-events-none absolute -right-10 -top-24 h-[560px] w-auto text-osso/[0.035]" titulo="" />
+      <div className="relative mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr]">
+        <div>
+          <div className="flex items-center gap-3">
+            <Marca className="h-14 w-auto text-osso" titulo="" />
+            <div>
+              <div className="font-gotica text-[34px] font-bold leading-none">{estudio.nome_curto || 'Fosco'}</div>
+              <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.3em] text-osso-2">tattoo studio · {estudio.cidade}</div>
+            </div>
+          </div>
+          <p className="mt-5 max-w-sm text-[15px] leading-relaxed text-osso-2">{estudio.endereco_publico}</p>
+          {estudio.horario && <p className="mt-2 text-[14px] text-osso-3">{estudio.horario}</p>}
+        </div>
+        <div>
+          <div className="kicker mb-4">Fale com a gente</div>
+          <ul className="space-y-3 text-[15px]">
+            {estudio.instagram && (
+              <li>
+                <a href={instagramUrl(estudio.instagram)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2.5 text-osso hover:text-ambar-claro">
+                  <IconeInsta /> {arroba(estudio.instagram)}
+                </a>
+              </li>
+            )}
+            {estudio.whatsapp && (
+              <li>
+                <a href={linkZap(estudio.whatsapp)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2.5 text-osso hover:text-ambar-claro">
+                  <IconeZap /> {mascaraZap(estudio.whatsapp)}
+                </a>
+              </li>
+            )}
+            {estudio.grupo_whatsapp && (
+              <li>
+                <a href={estudio.grupo_whatsapp} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2.5 text-osso hover:text-ambar-claro">
+                  <IconeZap /> Grupo do Fosco
+                </a>
+              </li>
+            )}
+          </ul>
+        </div>
+        <div>
+          <div className="kicker mb-4">No site</div>
+          <ul className="space-y-2.5 text-[15px] text-osso-2">
+            <li><Link href="/orcamento/" className="hover:text-ambar-claro">Pedir orçamento</Link></li>
+            <li><Link href="/cadastro/" className="hover:text-ambar-claro">Indique e ganhe</Link></li>
+            <li><Link href="/entrar/" className="hover:text-ambar-claro">Minha área</Link></li>
+            <li><Link href="/privacidade/" className="hover:text-ambar-claro">Privacidade</Link></li>
+          </ul>
+        </div>
+      </div>
+      <div className="relative border-t border-osso/[0.07]">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-5 font-mono text-[11px] text-osso-4 sm:px-6">
+          <span>© {ano} {estudio.nome}</span>
+          <Link href="/painel/" className="hover:text-osso-2">Painel do estúdio</Link>
+        </div>
+      </div>
+    </footer>
+  );
+}
