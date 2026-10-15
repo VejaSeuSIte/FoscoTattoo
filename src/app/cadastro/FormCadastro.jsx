@@ -10,14 +10,13 @@ import { useVitrine, lerIndicacao, esquecerIndicacao } from '@/lib/vitrine';
 import { cpfValido, mascaraCpf, mascaraZap, numero, soDigitos } from '@/lib/formatos';
 
 // o formulário em si, usado aqui e na página do convite
-export function FormularioCadastro({ codigo = '', quem = '', presente = 0, className = '' }) {
+export function FormularioCadastro({ codigo = '', quem = '', className = '' }) {
   const router = useRouter();
   const [f, setF] = useState({ nome: '', cpf: '', whatsapp: '', nascimento: '', email: '', senha: '', aceita_promocoes: false, aceite: false });
   const [erros, setErros] = useState({});
   const [erro, setErro] = useState('');
   const [enviando, setEnviando] = useState(false);
   const mudar = (k, fmt) => (e) => setF((x) => ({ ...x, [k]: fmt ? fmt(e.target.value) : e.target.value }));
-  const comPresente = Boolean(codigo && presente > 0);
 
   function validar() {
     const e = {};
@@ -52,15 +51,13 @@ export function FormularioCadastro({ codigo = '', quem = '', presente = 0, class
       router.push('/entrar/?novo=1');
       return;
     }
-    router.push(`/minha-area/?novo=1${comPresente ? '&convite=1' : ''}`);
+    router.push('/minha-area/?novo=1');
   }
 
   return (
     <form onSubmit={enviar} className={`cartao space-y-5 p-5 sm:p-8 ${className}`} noValidate>
       <div>
-        <h2 className="font-corpo text-[22px] font-bold uppercase tracking-[0.04em] text-osso">
-          {comPresente ? `Garanta seus ${numero(presente)}%` : 'Cadastro'}
-        </h2>
+        <h2 className="font-corpo text-[22px] font-bold uppercase tracking-[0.04em] text-osso">Cadastro</h2>
         <p className="mt-2 text-[14px] text-osso-3">Leva um minuto. Você entra depois com CPF e senha.</p>
       </div>
       <Campo rotulo="Nome completo" id="nome" erro={erros.nome}>
@@ -107,7 +104,7 @@ export function FormularioCadastro({ codigo = '', quem = '', presente = 0, class
       {codigo && quem && <p className="font-mono text-[12px] text-osso-3">convite de {quem} · código {codigo}</p>}
       {erro && <Aviso>{erro}</Aviso>}
       <button type="submit" className="botao w-full py-4 text-[16px]" disabled={enviando}>
-        {enviando ? 'Criando seu cadastro...' : comPresente ? `Criar cadastro e garantir meus ${numero(presente)}%` : 'Criar cadastro e pegar meu link'}
+        {enviando ? 'Criando seu cadastro...' : 'Criar cadastro e pegar meu link'}
       </button>
       <p className="text-center text-[14px] text-osso-3">
         Já tem cadastro?{' '}
@@ -137,9 +134,8 @@ export default function FormCadastro() {
     minhaArea().then((data) => data?.cliente && setJaCliente(true));
   }, [router]);
 
-  const porAmigo = Number(programa.pontos_por_indicacao) * Number(programa.percentual_por_ponto) || 1;
+  const porAmigo = Number(programa.pontos_por_indicacao) * Number(programa.percentual_por_ponto) || 10;
   const max = Number(programa.desconto_maximo) || 50;
-  const presente = Number(programa.pontos_boas_vindas_indicado ?? 10) * (Number(programa.percentual_por_ponto) || 1);
 
   if (!pronto) return <div className="min-h-[60svh]" />;
 
@@ -163,8 +159,7 @@ export default function FormCadastro() {
         </h1>
         <span className="linha-ambar" />
         <p className="mt-6 max-w-md text-[17px] leading-relaxed text-osso-2">
-          Cadastre-se e ganhe na hora um link só seu. Cada pessoa que se cadastrar por ele vale {numero(porAmigo)}% de desconto na sua próxima tattoo, até {max}%
-          {presente > 0 && <>, e ela ainda entra com {numero(presente)}% de presente</>}.
+          Faça sua 1ª indicação e ganhe {numero(porAmigo)}% de desconto. O cadastro te dá na hora um link só seu, e cada amigo a mais que se cadastrar por ele soma outros {numero(porAmigo)}%, até {max}%.
         </p>
         <div className="cartao mt-10 hidden p-6 lg:block">
           <Regua valor={Math.round(max * 0.36)} maximo={max} marcos={[Math.round(max / 5), Math.round(max / 2), max]} legenda={(m) => `${Math.ceil(m / porAmigo)} amigos`} />

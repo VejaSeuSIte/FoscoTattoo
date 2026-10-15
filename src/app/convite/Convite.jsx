@@ -12,8 +12,9 @@ import { supa, minhaArea } from '@/lib/supabase';
 import { useVitrine, guardarIndicacao, lerIndicacao } from '@/lib/vitrine';
 import { instagramUrl, nomeBonito, numero, urlFoto } from '@/lib/formatos';
 
-// A página para onde vai o link de indicação: o presente na abertura, os trabalhos,
-// a equipe, como funciona e o cadastro. Tudo leva para o mesmo botão.
+// A página para onde vai o link de indicação: a chamada para indicar na abertura, os
+// trabalhos, a equipe, como funciona e o cadastro. Tudo leva para o mesmo botão.
+// O ponto que o amigo ganha ao chegar pelo convite é regra interna e não aparece aqui.
 export default function Convite() {
   const router = useRouter();
   const { programa, estudio, instagram } = useVitrine();
@@ -25,9 +26,7 @@ export default function Convite() {
   const abertura = useRef(null);
   const cadastro = useRef(null);
 
-  const percentual = Number(programa.percentual_por_ponto) || 1;
-  const presente = Number(programa.pontos_boas_vindas_indicado ?? 10) * percentual;
-  const porAmigo = Number(programa.pontos_por_indicacao) * percentual || 1;
+  const porAmigo = Number(programa.pontos_por_indicacao) * (Number(programa.percentual_por_ponto) || 1) || 10;
   const max = Number(programa.desconto_maximo) || 50;
   const fotos = (instagram || []).slice(0, 12);
 
@@ -60,7 +59,7 @@ export default function Convite() {
     return () => olho.disconnect();
   }, []);
 
-  const pct = `${numero(presente)}%`;
+  const pct = `${numero(porAmigo)}%`;
 
   return (
     <>
@@ -76,7 +75,7 @@ export default function Convite() {
       </header>
 
       <main className="bg-noite">
-        {/* abertura: o presente */}
+        {/* abertura: a chamada para indicar */}
         <section ref={abertura} className="relative isolate flex min-h-[92svh] flex-col overflow-hidden">
           <div className="absolute inset-x-0 top-0 -z-10 h-[56%] overflow-hidden md:inset-0 md:h-full">
             <Fundo />
@@ -85,18 +84,22 @@ export default function Convite() {
           <div className="relative mx-auto flex w-full max-w-6xl flex-1 flex-col justify-end px-4 pb-14 pt-[110px] sm:px-6 md:justify-center md:pb-20">
             <div className="abertura-texto max-w-[34rem]">
               <p className="text-[12px] font-semibold uppercase tracking-[0.28em] text-ambar-claro">
-                {quem ? `${quem} te mandou um presente` : 'Você recebeu um presente'}
+                {quem ? `${quem} te indicou o Fosco` : 'Você foi indicado ao Fosco'}
               </p>
               <h1 className="mt-4 leading-none text-osso">
-                <span className="block font-gotica text-[clamp(96px,22vw,180px)] font-bold leading-[0.8]">{pct}</span>
-                <span className="titulo mt-3 block text-[clamp(22px,3.4vw,32px)]">de desconto na sua tattoo no Fosco</span>
+                <span className="titulo block text-[clamp(22px,3.4vw,32px)]">
+                  Faça sua 1ª indicação
+                  <br />e ganhe
+                </span>
+                <span className="mt-2 block font-gotica text-[clamp(96px,22vw,180px)] font-bold leading-[0.8]">{pct}</span>
+                <span className="titulo mt-3 block text-[clamp(22px,3.4vw,32px)]">de desconto na sua tattoo</span>
               </h1>
               <p className="mt-5 max-w-[28rem] text-[17px] leading-relaxed text-osso-2">
-                Faz o cadastro em um minuto e o desconto fica guardado no seu nome. Depois é só contar sua ideia pra gente.
+                Faz o cadastro em um minuto e seu link sai na hora. Cada amigo que se cadastrar por ele vale {pct}, até {max}%.
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
                 <a href="#cadastro" className="botao">
-                  Quero meus {pct} <IconeSeta width={17} height={17} />
+                  Quero meu link <IconeSeta width={17} height={17} />
                 </a>
                 <a href="#trabalhos" className="text-[14.5px] font-semibold text-osso-2 underline decoration-osso/30 underline-offset-[6px] hover:text-ambar-claro hover:decoration-ambar">
                   Ver os trabalhos
@@ -159,9 +162,9 @@ export default function Convite() {
             <span className="linha-ambar" />
             <ol className="mt-10 grid gap-8 md:grid-cols-3">
               {[
-                ['Faz o cadastro', `Um minuto, com CPF e WhatsApp. Os seus ${pct} ficam guardados no seu nome.`],
-                ['Conta sua ideia', 'Pelo WhatsApp: o que quer, onde e o tamanho. A gente responde com o orçamento e o artista certo.'],
-                ['Tatua com desconto', 'Na sessão é só avisar. O estúdio confere pelo seu CPF e o desconto entra na hora.'],
+                ['Faz o cadastro', 'Um minuto, com CPF e WhatsApp. Seu link de indicação sai na hora.'],
+                ['Manda pros amigos', `Cada amigo que se cadastrar pelo seu link vale ${pct} de desconto pra você, até ${max}%.`],
+                ['Tatua com desconto', 'Conta sua ideia no WhatsApp e, na sessão, é só avisar. O estúdio confere pelo seu CPF.'],
               ].map(([t, d], i) => (
                 <li key={t} className="border-t border-osso/15 pt-5">
                   <span className="font-gotica text-[44px] font-bold leading-none text-ambar">{i + 1}</span>
@@ -170,9 +173,6 @@ export default function Convite() {
                 </li>
               ))}
             </ol>
-            <p className="mt-10 max-w-2xl rounded-2xl border border-ambar/30 bg-ambar/[0.06] px-5 py-4 text-[15px] leading-relaxed text-osso-2">
-              E você também ganha um link seu: cada amigo que se cadastrar por ele soma mais {numero(porAmigo)}% no seu desconto, até {max}%.
-            </p>
           </div>
         </section>
 
@@ -181,15 +181,15 @@ export default function Convite() {
           <div className="mx-auto grid max-w-6xl gap-12 px-4 sm:px-6 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
             <div className="lg:pt-6">
               <h2 className="titulo text-[clamp(30px,5vw,48px)]">
-                Seus <span className="text-ambar">{pct}</span> estão a um cadastro de distância
+                Sua 1ª indicação já vale <span className="text-ambar">{pct}</span>
               </h2>
               <span className="linha-ambar" />
               <ul className="mt-8 space-y-3.5">
                 {[
                   'Não custa nada',
-                  `O desconto de ${pct} fica guardado no seu nome`,
+                  'Seu link de indicação sai na hora',
+                  `Cada amigo cadastrado vale ${pct}, até ${max}%`,
                   'Promoção só se você marcar que quer, sem spam',
-                  `Seu próprio link: cada amigo vale mais ${numero(porAmigo)}%`,
                 ].map((t) => (
                   <li key={t} className="flex items-start gap-3 text-[16px] text-osso">
                     <IconeCheck width={19} height={19} className="mt-0.5 shrink-0 text-ambar" /> {t}
@@ -206,7 +206,7 @@ export default function Convite() {
                 </Link>
               </div>
             ) : (
-              <FormularioCadastro codigo={codigo} quem={quem} presente={presente} />
+              <FormularioCadastro codigo={codigo} quem={quem} />
             )}
           </div>
         </section>
@@ -218,9 +218,9 @@ export default function Convite() {
             <span className="linha-ambar" />
             <div className="mt-8 divide-y divide-osso/10 border-y border-osso/10">
               {[
-                ['Tem algum custo?', 'Não. O cadastro é de graça e o desconto já vale na sua primeira sessão.'],
-                ['Como eu uso o desconto?', 'Na conversa do orçamento pelo WhatsApp, avise que veio pelo convite. Na sessão o estúdio confere no seu CPF.'],
-                ['Dá pra juntar com mais desconto?', `Dá: com o seu link, cada amigo cadastrado soma ${numero(porAmigo)}%, até ${max}% no total.`],
+                ['Tem algum custo?', 'Não. O cadastro é de graça.'],
+                ['Quando o desconto entra?', `Assim que o amigo se cadastra pelo seu link: ${pct} por amigo, até ${max}% no total. Você acompanha tudo na sua área do site.`],
+                ['Como eu uso o desconto?', 'Na conversa do orçamento pelo WhatsApp, avise que tem desconto. Na sessão o estúdio confere no seu CPF.'],
               ].map(([q, r]) => (
                 <details key={q} className="group py-4">
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[16.5px] font-semibold text-osso">
@@ -238,7 +238,7 @@ export default function Convite() {
 
       <div className={`fixed inset-x-0 bottom-0 z-40 border-t border-osso/10 bg-noite/95 p-3 transition duration-300 md:hidden ${barra ? 'translate-y-0' : 'pointer-events-none translate-y-full'}`}>
         <a href="#cadastro" className="botao w-full py-3.5">
-          Quero meus {pct} <IconeSeta width={17} height={17} />
+          Quero meu link <IconeSeta width={17} height={17} />
         </a>
       </div>
     </>

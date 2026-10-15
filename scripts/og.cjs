@@ -37,11 +37,12 @@ const site = base(`
 </div>`);
 
 const convite = base(`
-<div style="position:absolute;left:80px;top:78px;width:640px">
-  <div class="k">te mandei um presente</div>
-  <div class="g" style="font-size:230px;margin-top:20px">10%</div>
-  <div class="t" style="font-size:40px;margin-top:6px">de desconto na sua<br>tattoo no Fosco</div>
-  <div class="s" style="margin-top:22px">Cadastro em um minuto. O desconto fica guardado no seu nome.</div>
+<div style="position:absolute;left:80px;top:78px;width:760px">
+  <div class="k">te indiquei o fosco</div>
+  <div class="t" style="font-size:40px;margin-top:22px">faça sua 1ª indicação<br>e ganhe</div>
+  <div class="g" style="font-size:200px;margin-top:10px">10%</div>
+  <div class="t" style="font-size:40px;margin-top:4px">de desconto na sua tattoo</div>
+  <div class="s" style="margin-top:20px">Cadastro em um minuto. Seu link sai na hora.</div>
 </div>
 <div style="position:absolute;right:70px;bottom:60px;width:250px;opacity:.95">${logo}</div>`);
 

@@ -29,12 +29,10 @@ function Bloco({ titulo, kicker, children, className = '' }) {
   );
 }
 
-function Compartilhar({ codigo, nome, presente }) {
+function Compartilhar({ codigo, nome, porAmigo }) {
   const [copiou, setCopiou] = useState(false);
   const link = linkIndicacao(codigo);
-  const mensagem = presente > 0
-    ? `Te mandei ${numero(presente)}% de desconto no Fosco Tattoo Studio. É só fazer o cadastro pelo meu link: ${link}`
-    : `Bora tatuar no Fosco? Faz teu cadastro pelo meu link que a gente ganha desconto: ${link}`;
+  const mensagem = `Te indiquei o Fosco Tattoo Studio, aqui em Recife. Faz teu cadastro pelo meu link: na tua 1ª indicação tu ganha ${numero(porAmigo)}% de desconto. Meu link: ${link}`;
   async function copiar() {
     try {
       await navigator.clipboard.writeText(link);
@@ -198,8 +196,8 @@ export default function Area() {
   const max = Number(regras.desconto_maximo);
   const porAmigo = Number(regras.pontos_por_indicacao) * Number(regras.percentual_por_ponto);
   const tatuaram = indicados.filter((i) => i.tatuou).length;
-  const presente = Number(programa.pontos_boas_vindas_indicado ?? 10) * (Number(regras.percentual_por_ponto) || 1);
-  const textoZap = desconto > 0
+  // o ponto de quem chegou pelo convite é regra interna: só fala de desconto quando já veio de indicação
+  const textoZap = desconto >= porAmigo
     ? `Oi! Me cadastrei no site do Fosco e tenho ${numero(desconto)}% de desconto. Quero fazer um orçamento de tattoo.`
     : 'Oi! Me cadastrei no site do Fosco e quero fazer um orçamento de tattoo.';
 
@@ -236,9 +234,9 @@ export default function Area() {
         <div className="mt-6 rounded-2xl border border-ambar/40 bg-ambar/[0.07] p-5 sm:flex sm:items-center sm:justify-between sm:gap-6 sm:p-6">
           <div>
             <p className="text-[17px] font-bold text-osso">
-              {desconto > 0 ? `Cadastro feito! Seus ${numero(desconto)}% já estão guardados.` : 'Cadastro feito!'}
+              Cadastro feito! Faça sua 1ª indicação e ganhe {numero(porAmigo)}% de desconto.
             </p>
-            <p className="mt-1 text-[15px] text-osso-2">Agora conta sua ideia no WhatsApp: o que quer, onde e o tamanho. Seu link pra chamar os amigos está aqui embaixo.</p>
+            <p className="mt-1 text-[15px] text-osso-2">Seu link está aqui embaixo: cada amigo que se cadastrar por ele vale {numero(porAmigo)}%, até {max}%. E quando quiser, conta sua ideia no WhatsApp.</p>
           </div>
           <a href={linkZap(estudio.whatsapp, textoZap)} target="_blank" rel="noopener noreferrer" className="botao mt-4 shrink-0 sm:mt-0">
             <IconeZap width={18} height={18} /> Contar minha ideia
@@ -270,7 +268,7 @@ export default function Area() {
         </Bloco>
 
         <Bloco kicker="seu link de indicação" titulo="Manda pra galera">
-          <Compartilhar codigo={cliente.codigo} nome={primeiroNome(cliente.nome)} presente={presente} />
+          <Compartilhar codigo={cliente.codigo} nome={primeiroNome(cliente.nome)} porAmigo={porAmigo} />
         </Bloco>
       </div>
 

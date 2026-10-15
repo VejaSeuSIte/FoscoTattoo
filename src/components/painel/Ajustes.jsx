@@ -87,10 +87,10 @@ function Programa() {
       <div className="space-y-4">
         <Interruptor ligado={p.indicacao_ativa !== false} aoMudar={(v) => setP({ ...p, indicacao_ativa: v })} rotulo="Indique e ganhe ligado" />
         <div className="grid gap-4 sm:grid-cols-3">
-          {num('pontos_por_indicacao', 'Pontos por amigo cadastrado')}
+          {num('pontos_por_indicacao', 'Pontos por amigo cadastrado', 'Quem indica ganha, a cada amigo que se cadastra pelo link (10 = 10%). É o que o site anuncia.')}
           {num('percentual_por_ponto', '% de desconto por ponto')}
           {num('desconto_maximo', 'Desconto máximo (%)')}
-          {num('pontos_boas_vindas_indicado', 'Presente de quem chega pelo convite', 'Pontos que o amigo ganha ao se cadastrar pelo link (10 = 10% com 1% por ponto).')}
+          {num('pontos_boas_vindas_indicado', 'Pontos de quem chega pelo convite', 'O amigo indicado ganha ao se cadastrar pelo link (1 = 1%). Regra interna: não aparece no site.')}
           {num('pontos_boas_vindas', 'Pontos de boas-vindas pra todos', 'Qualquer cadastro, com ou sem convite (0 = nada).')}
           {num('pontos_indicado_tatuou', 'Bônus quando o indicado tatua', 'Extra pra quem indicou na 1ª sessão do amigo (0 = nada).')}
         </div>
