@@ -3,12 +3,11 @@ import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import Marca from '../Marca';
 import { Aviso, Campo, CampoSenha } from '../Formulario';
-import { IconeAjustes, IconeBalao, IconeCasa, IconeMoldura, IconePessoas, IconeSair, IconeEmail } from '../Icones';
+import { IconeAjustes, IconeCasa, IconeMoldura, IconePessoas, IconeSair, IconeEmail } from '../Icones';
 import { AvisosProvider, Carregando } from './ui';
 import { PainelCtx } from './contexto';
 import Inicio from './Inicio';
 import Clientes from './Clientes';
-import Orcamentos from './Orcamentos';
 import Mensagens from './Mensagens';
 import Vitrine from './Vitrine';
 import Ajustes from './Ajustes';
@@ -18,7 +17,6 @@ import { ESTUDIO_PADRAO, PROGRAMA_PADRAO } from '@/lib/config';
 const ABAS = [
   { id: 'inicio', rotulo: 'Início', icone: IconeCasa, Comp: Inicio },
   { id: 'clientes', rotulo: 'Clientes', icone: IconePessoas, Comp: Clientes },
-  { id: 'orcamentos', rotulo: 'Orçamentos', icone: IconeBalao, Comp: Orcamentos },
   { id: 'mensagens', rotulo: 'Mensagens', icone: IconeEmail, Comp: Mensagens },
   { id: 'vitrine', rotulo: 'Vitrine', icone: IconeMoldura, Comp: Vitrine },
   { id: 'ajustes', rotulo: 'Ajustes', icone: IconeAjustes, Comp: Ajustes },
@@ -189,7 +187,7 @@ export default function Painel() {
           </main>
 
           {/* abas embaixo no celular */}
-          <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-6 border-t border-osso/10 bg-carvao/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
+          <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-osso/10 bg-carvao/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
             {ABAS.map(({ id, rotulo, icone: Icone }) => (
               <button
                 key={id}

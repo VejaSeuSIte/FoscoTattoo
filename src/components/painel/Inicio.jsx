@@ -14,12 +14,10 @@ const hojeMD = () => {
 export default function Inicio() {
   const { usuario, clientes, config, modelos, irPara } = usePainel();
   const [resumo, setResumo] = useState(null);
-  const [orcs, setOrcs] = useState([]);
 
   useEffect(() => {
     const db = supa();
     db.rpc('fosco_admin_resumo').then(({ data }) => setResumo(data));
-    db.from('fosco_orcamentos').select('id, nome, ideia, local_corpo, criado_em').eq('status', 'novo').order('criado_em', { ascending: false }).limit(5).then(({ data }) => setOrcs(data || []));
   }, []);
 
   const [mes, dia] = hojeMD();
@@ -52,14 +50,13 @@ export default function Inicio() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
         <Numero rotulo="clientes" valor={resumo?.clientes ?? '–'} detalhe={resumo ? `+${resumo.novos_7d} nos últimos 7 dias` : ''} />
         <Numero rotulo="indicações" valor={resumo?.indicacoes_30d ?? '–'} detalhe="nos últimos 30 dias" />
         <Numero rotulo="sessões" valor={resumo?.sessoes_mes ?? '–'} detalhe="registradas este mês" />
-        <Numero rotulo="orçamentos novos" valor={resumo?.orcamentos_novos ?? '–'} detalhe="esperando resposta" destaque={resumo?.orcamentos_novos > 0} />
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid gap-8">
         <Secao
           titulo="Aniversários"
           acao={doMes.length > 0 && (
@@ -94,35 +91,6 @@ export default function Inicio() {
           )}
         </Secao>
 
-        <Secao
-          titulo="Orçamentos novos"
-          acao={
-            <button type="button" className="botao-mini" onClick={() => irPara('orcamentos')}>
-              Ver todos
-            </button>
-          }
-        >
-          {orcs.length === 0 ? (
-            <Vazio>Nenhum pedido esperando resposta.</Vazio>
-          ) : (
-            <ul className="divide-y divide-osso/[0.07] rounded-2xl border border-osso/10 bg-carvao/70">
-              {orcs.map((o) => (
-                <li key={o.id}>
-                  <button type="button" className="w-full px-4 py-3 text-left hover:bg-osso/[0.03]" onClick={() => irPara('orcamentos', { orcamento: o.id })}>
-                    <span className="flex items-center justify-between gap-3">
-                      <span className="text-[15px] text-osso">{o.nome}</span>
-                      <span className="font-mono text-[11px] text-osso-3">{haQuanto(o.criado_em)}</span>
-                    </span>
-                    <span className="mt-0.5 block truncate text-[13.5px] text-osso-3">
-                      {o.local_corpo ? `${o.local_corpo} · ` : ''}
-                      {o.ideia}
-                    </span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </Secao>
       </div>
 
       <Secao titulo="Quem mais indica">

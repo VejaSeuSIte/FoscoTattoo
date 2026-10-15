@@ -5,11 +5,11 @@ export const metadata = { title: 'Privacidade', description: 'Como o Fosco Tatto
 const BLOCOS = [
   [
     'O que a gente guarda',
-    'No cadastro: nome, CPF, WhatsApp, data de nascimento e, se você quiser, e-mail. No pedido de orçamento: nome, WhatsApp, a descrição da ideia e as fotos de referência que você mandar. Quando você tatua, o estúdio anota a data da sessão para o cartão fidelidade.',
+    'No cadastro: nome, CPF, WhatsApp, data de nascimento e, se você quiser, e-mail. Quando você tatua, o estúdio anota a data da sessão para o cartão fidelidade.',
   ],
   [
     'Pra que serve',
-    'O CPF garante que cada pessoa tenha um cadastro só, o que mantém o programa de indicação justo. O WhatsApp é por onde a gente responde orçamento e fala com você. A data de nascimento é para a mensagem de aniversário. As fotos de referência servem só para montar o orçamento.',
+    'O CPF garante que cada pessoa tenha um cadastro só, o que mantém o programa de indicação justo. O WhatsApp é por onde a gente responde orçamento e fala com você. A data de nascimento é para a mensagem de aniversário.',
   ],
   ['Promoções', 'Mensagem de vaga com desconto e novidade só vai para quem marcou que quer receber. Você muda isso quando quiser na sua área do site.'],
   ['Quem vê', 'Só o estúdio. Seus dados não são vendidos nem passados para ninguém. Quem você indicou aparece para você só pelo primeiro nome.'],

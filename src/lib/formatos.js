@@ -94,6 +94,9 @@ export function urlSite(caminho = '/') {
 
 export const linkIndicacao = (codigo) => urlSite(`/cadastro/?i=${codigo}`);
 
+// o orçamento é pelo WhatsApp do estúdio, com a mensagem já escrita
+export const linkOrcamento = (estudio) => linkZap(estudio?.whatsapp || '81996912850', 'Oi! Vim pelo site do Fosco e quero fazer um orçamento de tattoo.');
+
 // foto: caminho do repositório (equipe/01.webp), do balde (balde:...) ou endereço completo
 export function urlFoto(f) {
   if (!f) return '';

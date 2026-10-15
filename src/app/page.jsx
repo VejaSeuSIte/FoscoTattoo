@@ -3,25 +3,23 @@ import Rodape from '@/components/Rodape';
 import Abertura from '@/components/inicio/Abertura';
 import Equipe from '@/components/inicio/Equipe';
 import Trabalhos from '@/components/inicio/Trabalhos';
-import Quadrinhos from '@/components/inicio/Quadrinhos';
 import Estudio from '@/components/inicio/Estudio';
-import { Indique, Fidelidade } from '@/components/inicio/Programa';
-import { ChamadaCuidados, ChamadaOrcamento, Comunidade, Dicionario } from '@/components/inicio/Chamadas';
+import { Indique } from '@/components/inicio/Programa';
+import { ChamadaCuidados, ChamadaOrcamento, Comunidade } from '@/components/inicio/Chamadas';
 
+// ocultos por pedido dele (15/10), prontos para voltar: Quadrinhos («Do rascunho
+// à pele») e Fidelidade, de components/inicio
 export default function Inicio() {
   return (
     <>
       <Cabecalho />
       <main>
         <Abertura />
-        <Equipe />
-        <Trabalhos />
-        <Quadrinhos />
         <Indique />
-        <Fidelidade />
+        <Equipe />
         <Estudio />
         <ChamadaCuidados />
-        <Dicionario />
+        <Trabalhos />
         <Comunidade />
         <ChamadaOrcamento />
       </main>

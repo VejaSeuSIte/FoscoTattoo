@@ -9,7 +9,7 @@ import { Aviso, Campo, CampoSenha } from '@/components/Formulario';
 import { IconeCheck, IconeCompartilhar, IconeCopiar, IconeSair, IconeZap } from '@/components/Icones';
 import { supa, erroLegivel } from '@/lib/supabase';
 import { useVitrine } from '@/lib/vitrine';
-import { dataCurta, haQuanto, linkIndicacao, linkZap, mascaraZap, numero, primeiroNome, reais } from '@/lib/formatos';
+import { dataCurta, haQuanto, linkIndicacao, linkOrcamento, linkZap, mascaraZap, numero, primeiroNome, reais } from '@/lib/formatos';
 
 const MOTIVOS = {
   indicacao: 'Indicação',
@@ -143,7 +143,7 @@ function MeusDados({ cliente, aoSalvar }) {
 
 export default function Area() {
   const router = useRouter();
-  const { programa } = useVitrine();
+  const { programa, estudio } = useVitrine();
   const [area, setArea] = useState(null);
   const [estado, setEstado] = useState('carregando');
   const [novo, setNovo] = useState(false);
@@ -357,9 +357,9 @@ export default function Area() {
       </Bloco>
 
       <div className="mt-10 flex flex-col items-center gap-3 text-center sm:flex-row sm:justify-center">
-        <Link href="/orcamento/" className="botao">
-          Pedir orçamento
-        </Link>
+        <a href={linkOrcamento(estudio)} target="_blank" rel="noopener noreferrer" className="botao">
+          Pedir orçamento no WhatsApp
+        </a>
         <Link href="/" className="botao-linha">
           Voltar pro site
         </Link>

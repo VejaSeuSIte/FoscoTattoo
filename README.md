@@ -14,7 +14,6 @@ cadastro com link de indicação, cartão fidelidade, área do cliente e painel 
 |---|---|
 | `/` | página inicial |
 | `/bio/` | página de links para a bio do Instagram |
-| `/orcamento/` | pedido de orçamento com fotos de referência |
 | `/cadastro/?i=codigo` | cadastro pelo link de indicação |
 | `/entrar/`, `/minha-area/` | login (CPF + senha) e área do cliente |
 | `/painel/` | painel do estúdio (e-mail + senha de quem está em `fosco_admins`) |

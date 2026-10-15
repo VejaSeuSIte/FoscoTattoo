@@ -1,28 +1,41 @@
 'use client';
-import Quadro from '../Quadro';
 import Revelar from '../Revelar';
-import Prateleira from '../Prateleira';
-import { Marcado, SombraBambu } from '../Emprestimos';
+import { IconeInsta } from '../Icones';
 import { useVitrine } from '@/lib/vitrine';
-import { BASE } from '@/lib/config';
+import { arroba, instagramUrl, urlFoto } from '@/lib/formatos';
 
-const GIROS = [-2.5, 1.8, -1, 2.6, 1.2, -2.2, 2, -1.6, 1.4, -2.8];
-// parede de galeria: as colunas não ficam na mesma altura
-const DESCE = ['', 'lg:mt-14', 'lg:mt-4', 'lg:mt-20', 'sm:mt-8 lg:mt-0', 'lg:mt-12', 'sm:mt-8 lg:mt-2', 'lg:mt-16'];
-
-// a gravura japonesa da parede, como o quadro do dragão dos retratos
-function QuadroDragao() {
+function Cartao({ artista, prioridade }) {
+  const { nome, funcao, estilos, instagram, foto } = artista;
   return (
-    <figure className="grupo-quadro relative mx-auto w-full max-w-[300px] pt-10">
-      <div className="quadro quadro-prego" style={{ transform: 'rotate(2.2deg)', '--giro': '2.2deg' }}>
-        <div className="quadro-passe p-3">
-          <img src={`${BASE}/acervo/dragao.webp`} alt="Gravura japonesa antiga de um dragão sobre um sábio" loading="lazy" className="block w-full" />
-        </div>
+    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-osso/10 bg-carvao transition-colors duration-300 hover:border-ambar/40">
+      <div className="relative aspect-[4/5] overflow-hidden bg-fuligem">
+        <img
+          src={urlFoto(foto)}
+          alt={nome ? `Retrato de ${nome}` : 'Retrato de alguém da equipe do Fosco'}
+          loading={prioridade ? 'eager' : 'lazy'}
+          decoding="async"
+          className="h-full w-full object-cover object-[50%_16%] transition duration-500 group-hover:scale-[1.03]"
+        />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-carvao to-transparent" />
       </div>
-      <figcaption className="placa mx-auto mt-5 w-fit rounded-[3px] px-3 py-1 text-center font-mono text-[9.5px] uppercase tracking-[0.2em]">
-        Yashima Gakutei · séc. XIX
-      </figcaption>
-    </figure>
+      <div className="flex flex-1 flex-col px-4 pb-4 pt-3">
+        <h3 className="font-gotica text-[28px] font-bold leading-none text-osso">{nome || '—'}</h3>
+        <p className="mt-1.5 text-[12.5px] font-semibold uppercase tracking-[0.14em] text-latao">{estilos || funcao || 'Tatuagem'}</p>
+        {instagram ? (
+          <a
+            href={instagramUrl(instagram)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="botao-mini mt-4 max-w-full self-start"
+            aria-label={`Instagram de ${nome}`}
+          >
+            <IconeInsta width={15} height={15} className="shrink-0" /> <span className="truncate">{arroba(instagram)}</span>
+          </a>
+        ) : (
+          <span className="mt-4 block h-[34px]" aria-hidden="true" />
+        )}
+      </div>
+    </article>
   );
 }
 
@@ -31,31 +44,21 @@ export default function Equipe() {
   if (artistas && artistas.length === 0) return null;
   const lista = artistas ?? Array.from({ length: 8 }, (_, i) => ({ id: i, foto: `equipe/0${i + 1}.webp`, nome: '', funcao: '' }));
   return (
-    <section id="equipe" className="parede parede-topo relative scroll-mt-16 overflow-hidden pt-20 sm:pt-28" style={{ '--luz-abre': '95%' }}>
-      <SombraBambu className="-right-[8%] top-[6%] hidden h-[70%] -scale-x-100 skew-x-6 lg:block" opacidade={0.3} />
-      <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="grid items-center gap-8 md:grid-cols-[1.3fr_1fr]">
-          <Revelar>
-            <h2 className="titulo text-[clamp(48px,8vw,84px)]">
-              Quem tatua <Marcado gesto="circulo" cor="ambar">aqui</Marcado>
-            </h2>
-            <p className="mt-5 max-w-lg text-[17px] leading-relaxed text-osso-2">
-              Cada artista com o seu traço. No pedido de orçamento você escolhe com quem quer fazer, ou deixa que a gente indica.
-            </p>
-          </Revelar>
-          <Revelar atraso={150}>
-            <QuadroDragao />
-          </Revelar>
-        </div>
-        <div className="mt-6 grid grid-cols-2 gap-x-5 gap-y-6 sm:grid-cols-3 sm:gap-x-8 lg:grid-cols-4 lg:gap-x-10">
+    <section id="equipe" className="relative scroll-mt-16 bg-noite py-20 sm:py-28">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+        <Revelar className="mx-auto max-w-2xl text-center">
+          <h2 className="titulo text-[clamp(34px,5vw,52px)]">Nossa equipe</h2>
+          <span className="linha-ambar mx-auto" />
+          <p className="subtitulo">Cada artista com o seu traço. Na conversa do orçamento você escolhe com quem quer fazer, ou deixa que a gente indica.</p>
+        </Revelar>
+        <div className="mt-12 grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-3 lg:grid-cols-4">
           {lista.map((a, i) => (
-            <Revelar key={a.id} atraso={(i % 4) * 90} className={DESCE[i % DESCE.length]}>
-              <Quadro artista={a} giro={GIROS[i % GIROS.length]} />
+            <Revelar key={a.id} atraso={(i % 4) * 70}>
+              <Cartao artista={a} prioridade={i < 4} />
             </Revelar>
           ))}
         </div>
       </div>
-      <Prateleira variante={1} className="mt-10 px-2" />
     </section>
   );
 }

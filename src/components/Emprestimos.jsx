@@ -79,7 +79,7 @@ export function SombraBambu({ className = '', opacidade = 0.42 }) {
       alt=""
       aria-hidden="true"
       className={`pointer-events-none absolute max-w-none select-none ${className}`}
-      style={{ opacity: opacidade, filter: 'blur(1.5px)' }}
+      style={{ opacity: opacidade }}
     />
   );
 }

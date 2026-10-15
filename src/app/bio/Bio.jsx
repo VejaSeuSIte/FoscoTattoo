@@ -3,10 +3,10 @@ import Link from 'next/link';
 import Marca from '@/components/Marca';
 import Padrao from '@/components/Padrao';
 import {
-  IconeBalao, IconeGota, IconeInsta, IconePessoas, IconePino, IconeSeta, IconeZap, IconePresente, IconeExterno,
+  IconeGota, IconeInsta, IconePessoas, IconePino, IconeSeta, IconeZap, IconePresente, IconeExterno,
 } from '@/components/Icones';
 import { useVitrine } from '@/lib/vitrine';
-import { instagramUrl, linkZap, numero, urlFoto } from '@/lib/formatos';
+import { instagramUrl, linkOrcamento, linkZap, numero, urlFoto } from '@/lib/formatos';
 
 // cada placa é uma gravura: cor chapada, borda e sombra de impressão no tom de
 // baixo, o carimbo do ícone inclinado e uma padronagem de flash tom sobre tom
@@ -90,9 +90,8 @@ export default function Bio() {
   const porAmigo = Number(programa.pontos_por_indicacao) * Number(programa.percentual_por_ponto) || 1;
 
   const placas = [
-    { href: '/orcamento/', icone: IconeBalao, titulo: 'Pedir orçamento', sub: 'Conta sua ideia, a gente responde com o valor', cor: 'ambar' },
-    estudio.whatsapp && { href: linkZap(estudio.whatsapp, 'Oi! Vim pelo Instagram do Fosco.'), externo: true, icone: IconeZap, titulo: 'Falar no WhatsApp', sub: 'Tira dúvida e marca horário', cor: 'bambu' },
     programa.indicacao_ativa !== false && { href: '/cadastro/', icone: IconePresente, titulo: `Indique e ganhe até ${programa.desconto_maximo}%`, sub: `Cada amigo cadastrado pelo seu link vale ${numero(porAmigo)}%`, cor: 'selo' },
+    { href: linkOrcamento(estudio), externo: true, icone: IconeZap, titulo: 'Pedir orçamento', sub: 'Conta sua ideia no WhatsApp', cor: 'ambar' },
     { href: '/cuidados/', icone: IconeGota, titulo: 'Como cuidar da sua tattoo', sub: 'O passo a passo pra cicatrizar bonito', cor: 'papel' },
     { href: '/entrar/', icone: IconePessoas, titulo: 'Minha área', sub: 'Seus pontos, seu link e o cartão fidelidade', cor: 'tijolo' },
     estudio.mapa && { href: estudio.mapa, externo: true, icone: IconePino, titulo: 'Como chegar', sub: estudio.endereco, cor: 'noite' },

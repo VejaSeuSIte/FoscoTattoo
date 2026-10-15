@@ -2,11 +2,12 @@ import { Grenze_Gotisch, Archivo, IBM_Plex_Mono } from 'next/font/google';
 import './globals.css';
 import { VitrineProvider } from '@/lib/vitrine';
 import CapturaIndicacao from '@/components/CapturaIndicacao';
+import BotaoZap from '@/components/BotaoZap';
 import { BASE } from '@/lib/config';
 
-const gotica = Grenze_Gotisch({ subsets: ['latin'], weight: ['500', '600', '700', '800'], variable: '--fonte-gotica', display: 'swap' });
+const gotica = Grenze_Gotisch({ subsets: ['latin'], weight: ['600', '700'], variable: '--fonte-gotica', display: 'swap' });
 const corpo = Archivo({ subsets: ['latin'], variable: '--fonte-corpo', display: 'swap' });
-const mono = IBM_Plex_Mono({ subsets: ['latin'], weight: ['400', '500', '600'], variable: '--fonte-mono', display: 'swap' });
+const mono = IBM_Plex_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--fonte-mono', display: 'swap' });
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || 'https://vejaseusite.github.io/FoscoTattoo';
 
@@ -32,6 +33,7 @@ export default function Layout({ children }) {
         <VitrineProvider>
           <CapturaIndicacao />
           {children}
+          <BotaoZap />
         </VitrineProvider>
       </body>
     </html>

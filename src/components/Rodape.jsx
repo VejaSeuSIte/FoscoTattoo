@@ -3,20 +3,7 @@ import Link from 'next/link';
 import Marca from './Marca';
 import { IconeInsta, IconePino, IconeZap } from './Icones';
 import { useVitrine } from '@/lib/vitrine';
-import { arroba, instagramUrl, linkZap, mascaraZap } from '@/lib/formatos';
-
-// nuvem japonesa (kumo), o outro fundo clássico da tatuagem oriental
-function Nuvens({ className = '' }) {
-  return (
-    <svg viewBox="0 0 520 220" className={className} fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
-      <path d="M20 170 q0 -34 34 -34 q6 -30 40 -30 q26 0 36 22 q12 -10 30 -6 q22 6 22 30 q20 2 20 22 q0 16 -16 16 H34 q-14 0 -14 -20z" />
-      <path d="M70 150 q10 -14 26 -6 M130 128 q14 -10 28 2 M178 154 q10 -8 20 0" />
-      <path d="M250 96 q0 -30 30 -30 q6 -26 36 -26 q24 0 32 20 q12 -8 28 -4 q20 6 20 26 q18 2 18 20 q0 14 -14 14 H262 q-12 0 -12 -20z" />
-      <path d="M296 80 q10 -12 24 -4 M352 62 q12 -8 24 2 M392 86 q10 -8 18 0" />
-      <path d="M360 190 q0 -22 22 -22 q4 -18 24 -18 q16 0 22 14 q8 -6 18 -4 q14 4 14 18 q12 2 12 14 q0 10 -10 10 H372 q-12 0 -12 -12z" />
-    </svg>
-  );
-}
+import { arroba, instagramUrl, linkOrcamento, linkZap, mascaraZap } from '@/lib/formatos';
 
 function Redondo({ href, rotulo, children }) {
   return (
@@ -38,7 +25,6 @@ export default function Rodape() {
   return (
     <footer className="relative overflow-hidden border-t border-osso/10 bg-noite">
       <Marca className="pointer-events-none absolute -right-10 -top-24 h-[560px] w-auto text-osso/[0.035]" titulo="" />
-      <Nuvens className="pointer-events-none absolute -bottom-6 left-[-40px] w-[520px] text-ambar/[0.07]" />
       <div className="relative mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr]">
         <div>
           <div className="flex items-center gap-3">
@@ -103,7 +89,7 @@ export default function Rodape() {
         <div>
           <div className="kicker mb-4">No site</div>
           <ul className="space-y-2.5 text-[15px] text-osso-2">
-            <li><Link href="/orcamento/" className="hover:text-ambar-claro">Pedir orçamento</Link></li>
+            <li><a href={linkOrcamento(estudio)} target="_blank" rel="noopener noreferrer" className="hover:text-ambar-claro">Pedir orçamento</a></li>
             <li><Link href="/cadastro/" className="hover:text-ambar-claro">Indique e ganhe</Link></li>
             <li><Link href="/cuidados/" className="hover:text-ambar-claro">Como cuidar da tattoo</Link></li>
             <li><Link href="/entrar/" className="hover:text-ambar-claro">Minha área</Link></li>

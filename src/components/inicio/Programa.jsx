@@ -5,7 +5,6 @@ import Revelar from '../Revelar';
 import Marca from '../Marca';
 import CartaoFidelidade from '../CartaoFidelidade';
 import { IconeSeta } from '../Icones';
-import Prateleira from '../Prateleira';
 import { GravuraFundo, Marcado } from '../Emprestimos';
 import { useVitrine } from '@/lib/vitrine';
 import { numero, reais } from '@/lib/formatos';
@@ -51,7 +50,7 @@ export function Indique() {
   const tiras = [...new Set(passos)].map((pct) => ({ pct, amigos: Math.ceil(pct / porAmigo) }));
 
   return (
-    <section id="indique" className="parede relative scroll-mt-16 overflow-hidden pt-20 sm:pt-28" style={{ '--luz-x': '30%', '--luz-y': '30%', '--luz-abre': '90%' }}>
+    <section id="indique" className="parede relative scroll-mt-16 overflow-hidden py-20 sm:py-28" style={{ '--luz-x': '30%', '--luz-y': '30%', '--luz-abre': '90%' }}>
       <div className="mx-auto grid max-w-6xl items-center gap-14 px-4 sm:px-6 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
         {/* o cartaz colado na parede */}
         <Revelar className="relative mx-auto w-full max-w-[520px]">
@@ -73,7 +72,7 @@ export function Indique() {
                 <span className="font-gotica text-[44px] font-bold">{numero(porAmigo)}%</span>
               </div>
               <p className="text-[16px] leading-relaxed text-[#3e2f24]">
-                Cada amigo que se cadastrar pelo <Marcado gesto="sublinhado" cor="tinta"><b>seu link</b></Marcado> vira {numero(porAmigo)}% de desconto na sua próxima tattoo. Dá pra juntar até <b>{max}%</b>.
+                Cada amigo que se cadastrar pelo <b>seu link</b> vira {numero(porAmigo)}% de desconto na sua próxima tattoo. Dá pra juntar até <b>{max}%</b>.
               </p>
             </div>
           </div>
@@ -107,19 +106,23 @@ export function Indique() {
           </div>
         </Revelar>
 
-        {/* o como, em três frases */}
+        {/* a promessa e o como, em três frases */}
         <Revelar atraso={120}>
-          <ul className="space-y-6">
+          <h2 className="titulo text-[clamp(34px,5vw,54px)]">
+            Até <span className="text-ambar">{max}%</span> de desconto na sua próxima tattoo
+          </h2>
+          <span className="linha-ambar" />
+          <ul className="mt-9 space-y-6">
             {[
               ['Faz seu cadastro', 'Nome, CPF, WhatsApp e aniversário. O seu link sai na hora.'],
               ['Manda o link', 'No WhatsApp, no direct do Instagram, no grupo da família. Pra quem você quiser.'],
               ['Acompanha na sua área', 'Cada cadastro pelo seu link entra lá. Na sessão, é só avisar que quer usar o desconto.'],
-            ].map(([t, d]) => (
+            ].map(([t, d], i) => (
               <li key={t} className="flex gap-4">
-                <Marca className="mt-1 h-12 w-auto shrink-0 text-ambar" titulo="" />
+                <span className="w-9 shrink-0 font-corpo text-[22px] font-extrabold leading-none text-ambar">0{i + 1}</span>
                 <div>
-                  <div className="font-gotica text-[30px] font-semibold leading-none text-osso">{t}</div>
-                  <p className="mt-1.5 text-[16px] leading-relaxed text-osso-2">{d}</p>
+                  <div className="font-corpo text-[17px] font-extrabold uppercase tracking-[0.06em] text-osso">{t}</div>
+                  <p className="mt-1.5 text-[15.5px] leading-relaxed text-osso-2">{d}</p>
                 </div>
               </li>
             ))}
@@ -137,7 +140,6 @@ export function Indique() {
           </p>
         </Revelar>
       </div>
-      <Prateleira variante={2} className="mt-16 px-2" />
     </section>
   );
 }
