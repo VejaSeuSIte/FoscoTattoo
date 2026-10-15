@@ -18,8 +18,8 @@ export default function Estudio() {
     <section id="estudio" className="parede relative scroll-mt-16 overflow-hidden py-20 sm:py-28" style={{ '--luz-x': '25%', '--luz-y': '30%', '--luz-abre': '95%' }}>
       <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1.1fr_1fr]">
         <Revelar className="grid grid-cols-[1.5fr_1fr] gap-3">
-          <img src={`${BASE}/estudio/02.webp`} alt="O salão do estúdio" loading="lazy" className="row-span-2 h-full w-full rounded-2xl border border-osso/10 object-cover" />
-          <img src={`${BASE}/estudio/01.webp`} alt="A recepção do estúdio" loading="lazy" className="aspect-[4/5] w-full rounded-2xl border border-osso/10 object-cover" />
+          <img src={`${BASE}/estudio/02.webp`} alt="O balcão com a marca do Fosco, os quadros na parede e a maca" loading="lazy" className="row-span-2 h-full w-full rounded-2xl border border-osso/10 object-cover" />
+          <img src={`${BASE}/estudio/04.webp`} alt="A maca de tatuagem, com a almofada laranja e a luminária" loading="lazy" className="aspect-[4/5] w-full rounded-2xl border border-osso/10 object-cover" />
           <img src={`${BASE}/estudio/03.webp`} alt="Um artista tatuando no estúdio" loading="lazy" className="aspect-[4/5] w-full rounded-2xl border border-osso/10 object-cover" />
         </Revelar>
         <Revelar atraso={120}>

@@ -1,58 +1,38 @@
 'use client';
 import Link from 'next/link';
-import Quadro from '../Quadro';
-import { IconeSeta, IconeZap } from '../Icones';
+import { IconePino, IconeSeta, IconeZap } from '../Icones';
 import { useVitrine } from '@/lib/vitrine';
+import { BASE } from '@/lib/config';
 import { linkOrcamento } from '@/lib/formatos';
 
-// três retratos de reserva, para a abertura não piscar enquanto o banco responde
-const RESERVA = [
-  { id: 'a', foto: 'equipe/08.webp', nome: '', funcao: '' },
-  { id: 'b', foto: 'equipe/04.webp', nome: '', funcao: '' },
-  { id: 'c', foto: 'equipe/02.webp', nome: '', funcao: '' },
-];
-
-// luminária pendente que acende a parede
-function Luminaria({ className = '' }) {
-  return (
-    <svg viewBox="0 0 120 260" className={className} overflow="visible" aria-hidden="true">
-      <defs>
-        <radialGradient id="lum-luz" cx="50%" cy="0%" r="100%">
-          <stop offset="0" stopColor="#ffe2b0" />
-          <stop offset=".35" stopColor="#f2a556" stopOpacity=".5" />
-          <stop offset="1" stopColor="#f2a556" stopOpacity="0" />
-        </radialGradient>
-        <linearGradient id="lum-cupula" x1="0" x2="1">
-          <stop offset="0" stopColor="#0d0907" />
-          <stop offset=".45" stopColor="#2a1d14" />
-          <stop offset=".7" stopColor="#3a291c" />
-          <stop offset="1" stopColor="#120c08" />
-        </linearGradient>
-      </defs>
-      <line x1="60" y1="-1200" x2="60" y2="150" stroke="#2a1f17" strokeWidth="1.6" />
-      <rect x="55" y="146" width="10" height="16" rx="2" fill="#1d150f" />
-      <path d="M60 160 L22 214 Q60 224 98 214 Z" fill="url(#lum-cupula)" />
-      <path d="M22 214 Q60 224 98 214" fill="none" stroke="#c99a5c" strokeOpacity=".55" strokeWidth="1.2" />
-      <ellipse cx="60" cy="219" rx="22" ry="6" fill="#ffe6bd" />
-      <ellipse cx="60" cy="236" rx="56" ry="26" fill="url(#lum-luz)" />
-    </svg>
-  );
-}
-
+// a abertura é o próprio salão do estúdio: as máscaras, a fita de luz e o tijolo no fundo
 export default function Abertura() {
-  const { estudio, programa, artistas } = useVitrine();
-  const lista = artistas && artistas.length >= 3 ? artistas : RESERVA;
-  const [a, b, c] = [lista[1] ?? lista[0], lista[0], lista[2] ?? lista[1]];
+  const { estudio, programa } = useVitrine();
   const max = Number(programa.desconto_maximo) || 50;
 
   return (
-    <section className="parede relative overflow-hidden pt-[68px]" style={{ '--luz-x': '70%', '--luz-y': '30%', '--luz-abre': '85%' }}>
-      <div className="relative mx-auto grid min-h-[calc(100svh-68px)] max-w-6xl items-center gap-8 px-4 pb-16 pt-8 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:gap-12">
-        <div className="relative z-10 order-2 lg:order-1">
-          <h1 className="font-gotica text-[clamp(84px,17vw,168px)] font-bold leading-[0.88] text-osso [text-shadow:0_6px_30px_rgba(0,0,0,.6)]">
+    <section className="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-noite">
+      {/* no celular a foto fica em cima e o texto embaixo; no computador ela ocupa tudo */}
+      <div className="absolute inset-x-0 top-0 -z-10 h-[68%] overflow-hidden md:inset-0 md:h-full">
+        <picture>
+          <source media="(min-width: 768px)" srcSet={`${BASE}/estudio/abertura-larga.webp`} />
+          <img
+            src={`${BASE}/estudio/abertura-alta.webp`}
+            alt="O salão do Fosco: máscaras na parede, as poltronas, a fita de luz no teto e o tijolo no fundo"
+            fetchPriority="high"
+            decoding="async"
+            className="abertura-foto h-full w-full object-cover object-[55%_45%] md:object-[60%_50%]"
+          />
+        </picture>
+        <div className="abertura-veu absolute inset-0" aria-hidden="true" />
+      </div>
+
+      <div className="relative mx-auto flex w-full max-w-6xl flex-1 flex-col justify-end px-4 pb-16 pt-[120px] sm:px-6 md:justify-center md:pb-24">
+        <div className="abertura-texto max-w-[34rem]">
+          <h1 className="font-gotica text-[clamp(88px,15vw,156px)] font-bold leading-[0.86] text-osso [text-shadow:0_6px_30px_rgba(0,0,0,.55)]">
             {estudio.nome_curto || 'Fosco'}
           </h1>
-          <p className="mt-4 font-corpo text-[clamp(17px,2.2vw,22px)] font-extrabold uppercase tracking-[0.14em] text-ambar-claro">
+          <p className="mt-4 font-corpo text-[clamp(15px,2vw,19px)] font-extrabold uppercase tracking-[0.2em] text-ambar-claro">
             Tattoo &amp; piercing · Recife
           </p>
           <span className="linha-ambar" />
@@ -65,7 +45,7 @@ export default function Abertura() {
                 Indique e ganhe até {max}% <IconeSeta width={17} height={17} />
               </Link>
             )}
-            <a href={linkOrcamento(estudio)} target="_blank" rel="noopener noreferrer" className="botao-linha">
+            <a href={linkOrcamento(estudio)} target="_blank" rel="noopener noreferrer" className="botao-linha bg-noite/40">
               <IconeZap width={17} height={17} /> Pedir orçamento
             </a>
           </div>
@@ -76,18 +56,22 @@ export default function Abertura() {
             </Link>
           </p>
         </div>
+      </div>
 
-        <div className="relative order-1 mx-auto w-full max-w-[520px] lg:order-2">
-          <div className="pointer-events-none absolute -top-[68px] left-1/2 z-20 -translate-x-1/2">
-            <Luminaria className="h-[150px] w-auto sm:h-[190px] lg:h-[230px]" />
-          </div>
-          <div className="relative grid grid-cols-[1fr_1.18fr_1fr] items-end gap-3 pt-16 sm:gap-5 sm:pt-24 lg:pt-32">
-            <Quadro artista={a} placa={false} prioridade className="mb-6" />
-            <Quadro artista={b} placa={false} prioridade />
-            <Quadro artista={c} placa={false} prioridade className="mb-6" />
+      {estudio.endereco && (
+        <div className="pointer-events-none absolute inset-x-0 bottom-7 hidden md:block">
+          <div className="mx-auto max-w-6xl px-6">
+            <a
+              href={estudio.mapa || undefined}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="pointer-events-auto inline-flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.16em] text-osso-3 transition hover:text-ambar-claro"
+            >
+              <IconePino width={15} height={15} className="text-ambar" /> {estudio.endereco}
+            </a>
           </div>
         </div>
-      </div>
+      )}
       <div className="led" />
     </section>
   );
