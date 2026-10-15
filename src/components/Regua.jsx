@@ -32,7 +32,7 @@ export default function Regua({ valor = 0, maximo = 50, marcos = [], legenda, cl
         {marcos.length > 0 && (
           <div className="relative mt-1 h-10">
             {marcos.map((m) => (
-              <span key={m} className="absolute top-0 -translate-x-1/2 whitespace-nowrap text-center font-mono text-[10.5px] text-osso-2" style={{ left: pos(m) }}>
+              <span key={m} className={`absolute top-0 whitespace-nowrap font-mono text-[10.5px] text-osso-2 ${m / max > 0.85 ? '-translate-x-full text-right' : m / max < 0.15 ? 'text-left' : '-translate-x-1/2 text-center'}`} style={{ left: pos(m) }}>
                 <b className="block text-[13px] text-osso">{m}%</b>
                 {legenda ? legenda(m) : ''}
               </span>
