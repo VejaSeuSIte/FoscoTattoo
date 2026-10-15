@@ -1,9 +1,54 @@
 'use client';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { IconePino, IconeSeta, IconeZap } from '../Icones';
 import { useVitrine } from '@/lib/vitrine';
 import { BASE } from '@/lib/config';
 import { linkOrcamento } from '@/lib/formatos';
+
+// o vídeo do salão entra por cima do primeiro quadro quando começa a tocar; quem pede
+// menos movimento ou economia de dados fica só com o quadro parado
+function Fundo() {
+  const [video, setVideo] = useState(null);
+  const [tocando, setTocando] = useState(false);
+  useEffect(() => {
+    const calmo = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (calmo || navigator.connection?.saveData) return;
+    setVideo(window.matchMedia('(min-width: 768px)').matches ? 'abertura-larga.mp4' : 'abertura-alta.mp4');
+  }, []);
+  return (
+    <div className="abertura-foto absolute inset-0">
+      <picture>
+        <source media="(min-width: 768px)" srcSet={`${BASE}/estudio/video-larga.webp`} />
+        <img
+          src={`${BASE}/estudio/video-alta.webp`}
+          alt="O salão do Fosco: máscaras na parede, as poltronas, a fita de luz no teto e o tijolo no fundo"
+          fetchPriority="high"
+          decoding="async"
+          className="h-full w-full object-cover"
+        />
+      </picture>
+      {video && (
+        <video
+          ref={(el) => {
+            if (!el) return;
+            el.muted = true;
+            el.play().catch(() => {});
+          }}
+          src={`${BASE}/estudio/${video}`}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          aria-hidden="true"
+          onPlaying={() => setTocando(true)}
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${tocando ? 'opacity-100' : 'opacity-0'}`}
+        />
+      )}
+    </div>
+  );
+}
 
 // a abertura é o próprio salão do estúdio: as máscaras, a fita de luz e o tijolo no fundo
 export default function Abertura() {
@@ -12,18 +57,9 @@ export default function Abertura() {
 
   return (
     <section className="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-noite">
-      {/* no celular a foto fica em cima e o texto embaixo; no computador ela ocupa tudo */}
+      {/* no celular o vídeo fica em cima e o texto embaixo; no computador ele ocupa tudo */}
       <div className="absolute inset-x-0 top-0 -z-10 h-[68%] overflow-hidden md:inset-0 md:h-full">
-        <picture>
-          <source media="(min-width: 768px)" srcSet={`${BASE}/estudio/abertura-larga.webp`} />
-          <img
-            src={`${BASE}/estudio/abertura-alta.webp`}
-            alt="O salão do Fosco: máscaras na parede, as poltronas, a fita de luz no teto e o tijolo no fundo"
-            fetchPriority="high"
-            decoding="async"
-            className="abertura-foto h-full w-full object-cover object-[55%_45%] md:object-[60%_50%]"
-          />
-        </picture>
+        <Fundo />
         <div className="abertura-veu absolute inset-0" aria-hidden="true" />
       </div>
 

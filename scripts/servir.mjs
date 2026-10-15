@@ -5,7 +5,7 @@ import { extname, join, normalize } from 'node:path';
 const porta = Number(process.argv[2] || 3000);
 const base = process.argv[3] || '';
 const raiz = new URL('../out/', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
-const tipos = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.webp': 'image/webp', '.png': 'image/png', '.jpg': 'image/jpeg', '.woff2': 'font/woff2', '.json': 'application/json', '.txt': 'text/plain', '.ico': 'image/x-icon' };
+const tipos = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.webp': 'image/webp', '.png': 'image/png', '.jpg': 'image/jpeg', '.woff2': 'font/woff2', '.json': 'application/json', '.txt': 'text/plain', '.ico': 'image/x-icon', '.mp4': 'video/mp4' };
 createServer(async (req, res) => {
   let p = decodeURIComponent(new URL(req.url, 'http://x').pathname);
   if (base && p.startsWith(base)) p = p.slice(base.length) || '/';
