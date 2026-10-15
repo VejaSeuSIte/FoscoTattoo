@@ -5,7 +5,7 @@ export default function Quadro({ artista, giro = 0, placa = true, prioridade = f
   const { nome, funcao, instagram, foto } = artista;
   const conteudo = (
     <>
-      <div className="quadro quadro-prego" style={{ transform: `rotate(${giro}deg)` }}>
+      <div className="quadro quadro-prego" style={{ transform: `rotate(${giro}deg)`, '--giro': `${giro}deg` }}>
         <div className="quadro-passe aspect-[3/4] overflow-hidden">
           <img
             src={urlFoto(foto)}
@@ -16,7 +16,7 @@ export default function Quadro({ artista, giro = 0, placa = true, prioridade = f
           />
         </div>
       </div>
-      {placa && (nome || funcao) && (
+      {placa && nome && (
         <div className="placa mx-auto mt-5 w-fit max-w-full rounded-[3px] px-4 py-1.5 text-center">
           {nome && <div className="font-gotica text-[19px] font-bold leading-tight">{nome}</div>}
           <div className="font-mono text-[9.5px] uppercase tracking-[0.24em] opacity-80">

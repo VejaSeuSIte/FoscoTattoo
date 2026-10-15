@@ -3,8 +3,10 @@ import Rodape from '@/components/Rodape';
 import Abertura from '@/components/inicio/Abertura';
 import Equipe from '@/components/inicio/Equipe';
 import Trabalhos from '@/components/inicio/Trabalhos';
+import Quadrinhos from '@/components/inicio/Quadrinhos';
+import Estudio from '@/components/inicio/Estudio';
 import { Indique, Fidelidade } from '@/components/inicio/Programa';
-import { ChamadaCuidados, ChamadaOrcamento, Comunidade } from '@/components/inicio/Chamadas';
+import { ChamadaCuidados, ChamadaOrcamento, Comunidade, Dicionario } from '@/components/inicio/Chamadas';
 
 export default function Inicio() {
   return (
@@ -14,9 +16,12 @@ export default function Inicio() {
         <Abertura />
         <Equipe />
         <Trabalhos />
+        <Quadrinhos />
         <Indique />
         <Fidelidade />
+        <Estudio />
         <ChamadaCuidados />
+        <Dicionario />
         <Comunidade />
         <ChamadaOrcamento />
       </main>

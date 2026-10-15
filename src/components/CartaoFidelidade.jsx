@@ -5,7 +5,7 @@ import { reais } from '@/lib/formatos';
 const GIROS = [-9, 6, -4, 11, -12, 3, 8, -6, 5, -10, 7, -3];
 
 // o cartão de papel com os carimbos das sessões
-export default function CartaoFidelidade({ total = 6, carimbos = 0, premio = 200, animar = false, giro = -1.2, className = '' }) {
+export default function CartaoFidelidade({ total = 6, carimbos = 0, premio = 200, animar = false, giro = -1.2, numerador = false, className = '' }) {
   const n = Math.max(1, Math.min(12, Number(total) || 6));
   return (
     <div className={`papel picote relative rounded-xl px-5 py-5 pl-8 sm:px-6 sm:pl-9 ${className}`} style={{ transform: `rotate(${giro}deg)` }}>
@@ -17,11 +17,17 @@ export default function CartaoFidelidade({ total = 6, carimbos = 0, premio = 200
             <div className="mt-1 font-mono text-[9px] uppercase tracking-[0.26em] text-[#6b5640]">uma marca por sessão</div>
           </div>
         </div>
-        <div className="shrink-0 rounded border border-[#6b5640]/50 px-2 py-1 text-right font-mono text-[10px] uppercase leading-tight tracking-wider text-[#6b5640]">
-          {n} sessões
-          <br />
-          <b className="dinheiro text-[14px] text-selo-escuro">{reais(premio)}</b>
-        </div>
+        {numerador ? (
+          <div className="flex h-[46px] w-[74px] shrink-0 -rotate-6 items-center justify-center rounded-[50%] bg-papel-tinta font-corpo text-[19px] font-extrabold text-papel">
+            {Math.min(carimbos, n)}/{n}
+          </div>
+        ) : (
+          <div className="shrink-0 rounded border border-[#6b5640]/50 px-2 py-1 text-right font-mono text-[10px] uppercase leading-tight tracking-wider text-[#6b5640]">
+            {n} sessões
+            <br />
+            <b className="dinheiro text-[14px] text-selo-escuro">{reais(premio)}</b>
+          </div>
+        )}
       </div>
       <div className={`mt-5 grid gap-2.5 sm:gap-3 ${n > 6 ? 'grid-cols-4 sm:grid-cols-6' : 'grid-cols-3 sm:grid-cols-6'}`}>
         {Array.from({ length: n }, (_, i) => {

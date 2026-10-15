@@ -5,6 +5,8 @@ import Revelar from '../Revelar';
 import Marca from '../Marca';
 import CartaoFidelidade from '../CartaoFidelidade';
 import { IconeSeta } from '../Icones';
+import Prateleira from '../Prateleira';
+import { GravuraFundo, Marcado } from '../Emprestimos';
 import { useVitrine } from '@/lib/vitrine';
 import { numero, reais } from '@/lib/formatos';
 
@@ -49,7 +51,7 @@ export function Indique() {
   const tiras = [...new Set(passos)].map((pct) => ({ pct, amigos: Math.ceil(pct / porAmigo) }));
 
   return (
-    <section id="indique" className="parede relative scroll-mt-16 overflow-hidden py-20 sm:py-28" style={{ '--luz-x': '30%', '--luz-y': '30%', '--luz-abre': '90%' }}>
+    <section id="indique" className="parede relative scroll-mt-16 overflow-hidden pt-20 sm:pt-28" style={{ '--luz-x': '30%', '--luz-y': '30%', '--luz-abre': '90%' }}>
       <div className="mx-auto grid max-w-6xl items-center gap-14 px-4 sm:px-6 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
         {/* o cartaz colado na parede */}
         <Revelar className="relative mx-auto w-full max-w-[520px]">
@@ -71,7 +73,7 @@ export function Indique() {
                 <span className="font-gotica text-[44px] font-bold">{numero(porAmigo)}%</span>
               </div>
               <p className="text-[16px] leading-relaxed text-[#3e2f24]">
-                Cada amigo que se cadastrar pelo <b>seu link</b> vira {numero(porAmigo)}% de desconto na sua próxima tattoo. Dá pra juntar até <b>{max}%</b>.
+                Cada amigo que se cadastrar pelo <Marcado gesto="sublinhado" cor="tinta"><b>seu link</b></Marcado> vira {numero(porAmigo)}% de desconto na sua próxima tattoo. Dá pra juntar até <b>{max}%</b>.
               </p>
             </div>
           </div>
@@ -135,7 +137,28 @@ export function Indique() {
           </p>
         </Revelar>
       </div>
+      <Prateleira variante={2} className="mt-16 px-2" />
     </section>
+  );
+}
+
+// o carimbo de borracha e a almofada de tinta, em cima do balcão
+function Carimbo({ className = '' }) {
+  return (
+    <svg viewBox="0 0 180 120" className={className} aria-hidden="true">
+      <ellipse cx="128" cy="108" rx="44" ry="7" fill="#000" opacity=".45" />
+      <rect x="88" y="78" width="80" height="26" rx="5" fill="#2b1d15" />
+      <rect x="94" y="82" width="68" height="14" rx="3" fill="#8e2d20" />
+      <rect x="94" y="82" width="68" height="4" rx="2" fill="#c4503c" opacity=".7" />
+      <g transform="rotate(-14 52 92)">
+        <ellipse cx="52" cy="108" rx="30" ry="5" fill="#000" opacity=".4" />
+        <rect x="26" y="88" width="52" height="16" rx="3" fill="#5a3820" />
+        <rect x="26" y="100" width="52" height="5" rx="1.5" fill="#b5402e" />
+        <rect x="44" y="52" width="16" height="38" rx="6" fill="#7a4e2c" />
+        <ellipse cx="52" cy="46" rx="16" ry="13" fill="#8a5a32" />
+        <ellipse cx="47" cy="41" rx="6" ry="4" fill="#c9965c" opacity=".7" />
+      </g>
+    </svg>
   );
 }
 
@@ -145,17 +168,27 @@ export function Fidelidade() {
   if (programa.fidelidade_ativa === false) return null;
   const n = Number(programa.fidelidade_sessoes) || 6;
   const premio = Number(programa.fidelidade_premio) || 200;
+  const carimbos = viu ? Math.min(n - 1, Math.ceil(n * 0.66)) : 0;
   return (
-    <section id="fidelidade" className="relative scroll-mt-16 overflow-hidden bg-carvao py-20 sm:py-28">
-      <div className="mx-auto grid max-w-6xl items-center gap-14 px-4 sm:px-6 lg:grid-cols-[1.1fr_1fr]">
-        <div ref={ref} className="order-2 lg:order-1">
-          <CartaoFidelidade total={n} carimbos={viu ? Math.min(n - 1, Math.ceil(n * 0.66)) : 0} premio={premio} animar />
+    <section
+      id="fidelidade"
+      className="relative scroll-mt-16 overflow-hidden bg-carvao bg-[linear-gradient(180deg,#2a1416_0_52%,#14100c_52%_100%)] py-20 sm:py-28 lg:bg-[linear-gradient(90deg,#2a1416_0_50%,#14100c_50%_100%)]"
+    >
+      <GravuraFundo nome="besouro2" className="-left-[6%] top-[6%] w-[48%] rotate-[18deg] lg:w-[34%]" opacidade={0.06} />
+      <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-4 sm:px-6 lg:grid-cols-[1.1fr_1fr]">
+        <div ref={ref} className="relative order-2 lg:order-1">
+          <CartaoFidelidade total={n} carimbos={carimbos} premio={premio} animar numerador className="relative z-10" />
+          {/* o balcão de madeira onde o cartão está apoiado */}
+          <div className="relative -mx-4 -mt-6 h-12 rounded-[3px] sm:-mx-8" style={{ background: 'linear-gradient(180deg,#7a4e2c,#5a3820 30%,#2e1c10)', boxShadow: '0 18px 30px -12px rgba(0,0,0,.8)' }}>
+            <div className="absolute inset-x-0 top-0 h-[2px] bg-[#b07a46] opacity-80" />
+          </div>
+          <Carimbo className="absolute -bottom-2 right-0 z-20 w-36 sm:-right-6 sm:w-44" />
         </div>
         <Revelar className="order-1 lg:order-2">
           <h2 className="titulo text-[clamp(46px,7.5vw,82px)]">
-            A cada {n} sessões, <span className="brasa dinheiro">{reais(premio)}</span> em tattoo.
+            {n} sessões, <Marcado gesto="sublinhado_ondulado" cor="ambar"><span className="dinheiro text-ambar">{reais(premio)}</span></Marcado> em tattoo.
           </h2>
-          <p className="mt-5 max-w-lg text-[17px] leading-relaxed text-osso-2">
+          <p className="mt-6 max-w-lg text-[17px] leading-relaxed text-osso-2">
             Toda sessão no Fosco ganha um carimbo no seu cartão. Fechou {n}, os {reais(premio)} são seus pra usar na próxima. O cartão fica na sua área do site, sem papel pra perder.
           </p>
           <Link href="/entrar/" className="botao mt-8">

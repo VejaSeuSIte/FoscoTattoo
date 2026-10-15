@@ -2,6 +2,8 @@
 import Revelar from '../Revelar';
 import Marca from '../Marca';
 import { IconeExterno, IconeInsta } from '../Icones';
+import Padrao from '../Padrao';
+import { GravuraFundo, Marcado } from '../Emprestimos';
 import { useVitrine } from '@/lib/vitrine';
 import { arroba, instagramUrl, urlFoto } from '@/lib/formatos';
 
@@ -43,10 +45,15 @@ export default function Trabalhos() {
   const seguidores = perfil?.seguidores ? Number(perfil.seguidores).toLocaleString('pt-BR') : null;
 
   return (
-    <section id="trabalhos" className="relative scroll-mt-16 bg-noite py-20 sm:py-28">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+    <section id="trabalhos" className="relative scroll-mt-16 overflow-hidden bg-noite py-20 sm:py-28">
+      {/* o fundo da tatuagem japonesa (ondas) tom sobre tom e uma mariposa de gravura quase apagada */}
+      <Padrao nome="seigaiha" cor="#d8954c" opacidade={0.05} tam={64} degrade={false} className="[mask-image:linear-gradient(180deg,transparent,#000_30%,#000_70%,transparent)]" />
+      <GravuraFundo nome="mariposa2" className="-right-[10%] -top-[4%] w-[62%] rotate-[-12deg] sm:w-[46%]" opacidade={0.08} />
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
         <Revelar className="max-w-2xl">
-          <h2 className="titulo text-[clamp(48px,8vw,84px)]">Tinta na pele</h2>
+          <h2 className="titulo text-[clamp(48px,8vw,84px)]">
+            Tinta na <Marcado gesto="sublinhado_zigzag" cor="ambar">pele</Marcado>
+          </h2>
           <p className="mt-3 text-[16px] leading-relaxed text-osso-2">O que saiu da agulha nas últimas semanas, direto do nosso Instagram.</p>
         </Revelar>
 

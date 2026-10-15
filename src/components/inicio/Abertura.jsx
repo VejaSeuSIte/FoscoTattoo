@@ -2,6 +2,8 @@
 import Link from 'next/link';
 import Quadro from '../Quadro';
 import Marca from '../Marca';
+import Prateleira from '../Prateleira';
+import { Marcado, Poeira, SombraBambu } from '../Emprestimos';
 import { IconeSeta } from '../Icones';
 import { useVitrine } from '@/lib/vitrine';
 
@@ -50,7 +52,8 @@ export default function Abertura() {
       className="parede relative overflow-hidden pt-[68px]"
       style={{ '--luz-x': '70%', '--luz-y': '30%', '--luz-abre': '85%' }}
     >
-      <div className="mx-auto grid min-h-[calc(100svh-68px)] max-w-6xl items-center gap-6 px-4 pb-24 pt-8 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:gap-10 lg:pb-16">
+      <SombraBambu className="-left-[6%] top-0 hidden h-[115%] origin-top -skew-x-6 sm:block" opacidade={0.38} />
+      <div className="relative mx-auto grid min-h-[calc(100svh-68px-190px)] max-w-6xl items-center gap-6 px-4 pb-10 pt-8 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:gap-10 lg:pb-6">
         <div className="relative z-10 order-2 lg:order-1">
           <p className="inline-flex items-center gap-2 font-mono text-[11px] font-medium uppercase tracking-[0.22em] text-ambar-claro">
             <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-selo" />
@@ -62,7 +65,7 @@ export default function Abertura() {
           </h1>
           <p className="mt-1 font-gotica text-[clamp(22px,3.4vw,32px)] font-medium text-osso-2">arte · tattoo · piercing</p>
           <p className="mt-6 max-w-[30rem] text-[17px] leading-relaxed text-osso-2">
-            {estudio.chamada} Manda sua ideia que a gente responde com o orçamento.
+            {estudio.chamada} Manda sua <Marcado gesto="sublinhado_ondulado" cor="ambar">ideia</Marcado> que a gente responde com o orçamento.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link href="/orcamento/" className="botao">
@@ -83,7 +86,10 @@ export default function Abertura() {
         </div>
 
         <div className="relative order-1 mx-auto w-full max-w-[520px] lg:order-2">
-          <Luminaria className="pointer-events-none absolute -top-[68px] left-1/2 z-20 h-[150px] w-auto -translate-x-1/2 sm:h-[190px] lg:h-[230px]" />
+          <div className="balanca pointer-events-none absolute -top-[68px] left-1/2 z-20 -translate-x-1/2">
+            <Luminaria className="h-[150px] w-auto sm:h-[190px] lg:h-[230px]" />
+          </div>
+          <Poeira className="left-[18%] top-[60px] z-20 h-[260px] w-[64%] sm:top-[90px] lg:top-[120px]" />
           <div className="relative grid grid-cols-[1fr_1.18fr_1fr] items-start gap-3 pt-16 sm:gap-5 sm:pt-24 lg:pt-32">
             <Quadro artista={a} giro={-3.5} placa={false} prioridade className="mt-10" />
             <Quadro artista={b} giro={1.5} placa={false} prioridade />
@@ -92,15 +98,7 @@ export default function Abertura() {
         </div>
       </div>
 
-      <Link
-        href="/#equipe"
-        className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-osso-3 transition hover:text-ambar-claro sm:flex"
-        aria-label="Descer para a equipe"
-      >
-        <span className="font-mono text-[10px] uppercase tracking-[0.3em]">role</span>
-        <Marca className="boiar h-9 w-auto" titulo="" />
-      </Link>
-      <div className="led" />
+      <Prateleira variante={0} className="-mt-2 px-2" />
     </section>
   );
 }

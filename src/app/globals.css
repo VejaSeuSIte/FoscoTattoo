@@ -126,7 +126,15 @@ body::after {
    Tipografia
    --------------------------------------------------------------------- */
 .kicker {
-  @apply font-mono text-[11px] uppercase tracking-[0.28em] text-osso-2;
+  @apply inline-flex items-center gap-2 font-corpo text-[12px] font-semibold uppercase tracking-[0.16em] text-ambar-claro;
+}
+.kicker::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #b5402e;
+  flex: none;
 }
 .titulo {
   @apply font-gotica font-semibold leading-[0.92] text-osso;
@@ -256,8 +264,10 @@ body::after {
   color: #261a14;
   background-color: #e8dabd;
   background-image:
-    radial-gradient(120% 90% at 50% 40%, rgba(255, 250, 238, 0.55), rgba(0, 0, 0, 0) 60%),
-    var(--grao-escuro);
+    radial-gradient(120% 90% at 50% 40%, rgba(255, 250, 238, 0.45), rgba(0, 0, 0, 0) 60%),
+    url('../../public/textura/papel.jpg');
+  background-size: auto, cover;
+  background-position: center;
   box-shadow: inset 0 0 40px rgba(120, 80, 40, 0.28), 0 22px 40px -18px rgba(0, 0, 0, 0.9);
 }
 .picote {
@@ -316,8 +326,18 @@ body::after {
   background: radial-gradient(circle at 35% 35%, #d6c09a, #6b5537 70%);
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.7);
 }
+.quadro {
+  transform-origin: 50% -28px;
+}
 .grupo-quadro:hover .quadro {
-  transform: rotate(0deg) translateY(-6px) !important;
+  animation: pendulo 1.6s cubic-bezier(0.3, 0.6, 0.3, 1) both;
+}
+@keyframes pendulo {
+  0% { transform: rotate(var(--giro, 0deg)); }
+  25% { transform: rotate(calc(var(--giro, 0deg) * -1 + 2.4deg)); }
+  50% { transform: rotate(-1.4deg); }
+  75% { transform: rotate(0.7deg); }
+  100% { transform: rotate(0deg); }
 }
 .grupo-quadro:hover .quadro-passe img {
   filter: brightness(1.08) saturate(1.05);
@@ -413,6 +433,61 @@ select.campo {
   .parede { background: none !important; }
   .parede::before, .parede::after { display: none; }
   main { padding-top: 0 !important; }
+}
+
+/* ---------------------------------------------------------------------
+   Empréstimos (UmRabiscoPsi e Raposa), traduzidos para o Fosco
+   --------------------------------------------------------------------- */
+/* o traço de canetão se desenha quando a frase aparece */
+.gesto {
+  clip-path: inset(0 0 0 0);
+}
+.revelar .gesto {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.9s cubic-bezier(0.6, 0.1, 0.3, 1) 0.45s;
+}
+.revelar.visivel .gesto {
+  clip-path: inset(0 0 0 0);
+}
+/* a luminária balança no fio, como as lanternas da Raposa */
+@keyframes balanca {
+  0%, 100% { transform: rotate(-1.6deg); }
+  50% { transform: rotate(1.6deg); }
+}
+.balanca {
+  transform-origin: 50% -600px;
+  animation: balanca 7s ease-in-out infinite;
+}
+/* poeira boiando no feixe de luz (o vaga-lume do Fosco) */
+@keyframes poeira {
+  0% { transform: translate(0, 0); opacity: 0; }
+  15% { opacity: var(--brilho, 0.7); }
+  85% { opacity: var(--brilho, 0.7); }
+  100% { transform: translate(var(--dx, 12px), var(--dy, -60px)); opacity: 0; }
+}
+.cisco {
+  position: absolute;
+  border-radius: 999px;
+  background: #ffe2b0;
+  box-shadow: 0 0 6px rgba(255, 200, 120, 0.8);
+  animation: poeira var(--tempo, 9s) linear infinite;
+  animation-delay: var(--atraso, 0s);
+}
+/* chama de vela */
+@keyframes chama {
+  0%, 100% { transform: scale(1, 1) rotate(-1deg); }
+  30% { transform: scale(0.94, 1.06) rotate(2deg); }
+  60% { transform: scale(1.04, 0.95) rotate(-2deg); }
+}
+.chama {
+  transform-origin: 50% 100%;
+  transform-box: fill-box;
+  animation: chama 1.8s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .balanca, .cisco, .chama { animation: none; }
+  .grupo-quadro:hover .quadro { animation: none; }
+  .revelar .gesto { clip-path: none; transition: none; }
 }
 
 /* barra de rolagem discreta */

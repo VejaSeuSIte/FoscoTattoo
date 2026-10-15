@@ -4,18 +4,18 @@ import { useEffect, useRef, useState } from 'react';
 import { Aviso, Campo, Fichas, encolherImagem } from '@/components/Formulario';
 import { IconeFechar, IconeMais, IconeSeta } from '@/components/Icones';
 import Marca from '@/components/Marca';
+import { Marcado } from '@/components/Emprestimos';
+import { MapaCorpo, ReguaTamanho } from './Corpo';
 import { supa, erroLegivel, minhaArea } from '@/lib/supabase';
 import { useVitrine } from '@/lib/vitrine';
 import { BALDE_REFERENCIAS } from '@/lib/config';
 import { mascaraZap, soDigitos, primeiroNome } from '@/lib/formatos';
 
-const LOCAIS = ['Braço', 'Antebraço', 'Mão', 'Perna', 'Panturrilha', 'Costas', 'Peito', 'Costela', 'Pescoço', 'Outro lugar'];
-const TAMANHOS = ['Até 5 cm', '5 a 10 cm', '10 a 15 cm', '15 a 25 cm', 'Fechamento'];
 const CORES = ['Preto e cinza', 'Colorida', 'Tanto faz'];
 const MAX_FOTOS = 5;
 
 export default function FormOrcamento() {
-  const { artistas, promocoes } = useVitrine();
+  const { artistas, promocoes, programa } = useVitrine();
   const [f, setF] = useState({ nome: '', whatsapp: '', email: '', artista_id: '', ideia: '', local_corpo: '', tamanho: '', estilo: '', cor: '', disponibilidade: '' });
   const [fotos, setFotos] = useState([]);
   const [enviando, setEnviando] = useState(false);
@@ -116,9 +116,10 @@ export default function FormOrcamento() {
   const comNome = artistas?.filter((a) => a.nome) ?? [];
 
   return (
-    <div className="mx-auto max-w-3xl px-4 sm:px-6">
-      <p className="kicker">orçamento</p>
-      <h1 className="titulo mt-3 text-[clamp(52px,10vw,92px)]">Conta sua ideia</h1>
+    <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <h1 className="titulo text-[clamp(52px,10vw,92px)]">
+        Conta sua <Marcado gesto="sublinhado_ondulado" cor="ambar">ideia</Marcado>
+      </h1>
       <p className="mt-4 max-w-xl text-[17px] leading-relaxed text-osso-2">
         Quanto mais detalhe, mais certeiro o valor. A gente responde pelo WhatsApp.
       </p>
@@ -130,7 +131,8 @@ export default function FormOrcamento() {
         </div>
       )}
 
-      <form onSubmit={enviar} className="mt-10 space-y-10" noValidate>
+      <div className="mt-10 grid items-start gap-10 lg:grid-cols-[1fr_340px]">
+      <form onSubmit={enviar} className="space-y-10" noValidate>
         <fieldset className="cartao space-y-6 p-5 sm:p-8">
           <legend className="sr-only">Sobre a tattoo</legend>
           <div className="flex items-baseline gap-3">
@@ -141,10 +143,10 @@ export default function FormOrcamento() {
             <textarea id="ideia" className="campo min-h-[130px] resize-y" value={f.ideia} onChange={mudar('ideia')} maxLength={3000} placeholder="Ex.: uma carpa subindo o antebraço, traço fino, com umas ondas atrás." />
           </Campo>
           <Campo rotulo="Onde no corpo?">
-            <Fichas opcoes={LOCAIS} valor={f.local_corpo} aoMudar={mudar('local_corpo')} nome="Local do corpo" />
+            <MapaCorpo valor={f.local_corpo} aoMudar={mudar('local_corpo')} />
           </Campo>
           <Campo rotulo="Tamanho aproximado">
-            <Fichas opcoes={TAMANHOS} valor={f.tamanho} aoMudar={mudar('tamanho')} nome="Tamanho" />
+            <ReguaTamanho valor={f.tamanho} aoMudar={mudar('tamanho')} />
           </Campo>
           <div className="grid gap-6 sm:grid-cols-2">
             <Campo rotulo="Cor">
@@ -241,6 +243,48 @@ export default function FormOrcamento() {
           <span className="text-[13px] text-osso-3">Seus dados ficam só com o estúdio.</span>
         </div>
       </form>
+      <Resumo f={f} fotos={fotos.length} artista={comNome.find((a) => a.id === f.artista_id)?.nome} sinal={programa?.sinal_percentual} />
+      </div>
     </div>
+  );
+}
+
+// o pedido se escrevendo ao lado, num papel (só no computador)
+function Resumo({ f, fotos, artista, sinal }) {
+  const linhas = [
+    ['Onde', f.local_corpo],
+    ['Tamanho', f.tamanho],
+    ['Cor', f.cor],
+    ['Estilo', f.estilo],
+    ['Com quem', artista],
+    ['Referências', fotos ? `${fotos} ${fotos === 1 ? 'foto' : 'fotos'}` : ''],
+  ];
+  return (
+    <aside className="sticky top-24 hidden lg:block">
+      <div className="papel relative rounded-[4px] px-6 pb-6 pt-8" style={{ transform: 'rotate(1.2deg)' }}>
+        <span
+          aria-hidden="true"
+          className="absolute -top-3 left-8 h-7 w-24 -rotate-6"
+          style={{ background: 'rgba(214,196,150,.75)', clipPath: 'polygon(3% 8%,0 30%,4% 52%,0 74%,3% 96%,97% 92%,100% 70%,96% 48%,100% 26%,97% 4%)' }}
+        />
+        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#6b5640]">seu pedido</p>
+        <p className="mt-3 min-h-[3.2em] font-corpo text-[16px] font-semibold italic leading-snug text-[#2e221a]">
+          {f.ideia ? (f.ideia.length > 110 ? f.ideia.slice(0, 107) + '...' : f.ideia) : 'A ideia aparece aqui enquanto você escreve.'}
+        </p>
+        <dl className="mt-4 space-y-2 border-t border-dashed border-[#7a6248]/50 pt-4 text-[14px]">
+          {linhas.map(([k, v]) => (
+            <div key={k} className="flex justify-between gap-3">
+              <dt className="text-[#7a6248]">{k}</dt>
+              <dd className={`text-right font-semibold ${v ? 'text-papel-tinta' : 'text-[#b3a283]'}`}>{v || '—'}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+      <ol className="mt-8 space-y-3 px-1 text-[14.5px] leading-relaxed text-osso-2">
+        <li><b className="font-gotica text-[20px] text-ambar">1</b> A gente olha sua ideia com calma.</li>
+        <li><b className="font-gotica text-[20px] text-ambar">2</b> Responde no WhatsApp com o valor.</li>
+        <li><b className="font-gotica text-[20px] text-ambar">3</b> Um sinal de {sinal || 30}% no Pix garante o horário.</li>
+      </ol>
+    </aside>
   );
 }

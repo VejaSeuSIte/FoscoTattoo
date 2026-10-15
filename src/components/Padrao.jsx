@@ -25,6 +25,18 @@ const DESENHOS = {
       strokeWidth={t * 0.07}
     />
   ),
+  // ondas do fundo da tatuagem japonesa (seigaiha)
+  seigaiha: (t) => (
+    <g fill="none" stroke="currentColor" strokeWidth={t * 0.035}>
+      {[0, 1].map((linha) =>
+        [-0.5, 0, 0.5, 1].map((col) => {
+          const cx = (col + (linha ? 0.25 : 0.75)) * t;
+          const cy = (linha ? 0.5 : 1) * t;
+          return [0.48, 0.36, 0.24].map((r) => <path key={`${linha}${col}${r}`} d={`M${cx - r * t} ${cy} A${r * t} ${r * t} 0 0 1 ${cx + r * t} ${cy}`} />);
+        }),
+      )}
+    </g>
+  ),
   teia: (t) => (
     <path
       d={`M0 0 L${t} ${t} M${t} 0 L0 ${t} M${t / 2} 0 V${t} M0 ${t / 2} H${t} M${t * 0.2} ${t / 2} Q${t / 2} ${t * 0.35} ${t * 0.8} ${t / 2} Q${t / 2} ${t * 0.65} ${t * 0.2} ${t / 2}`}

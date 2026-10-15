@@ -4,6 +4,8 @@ import {
   IconeCamarao, IconeCasquinha, IconeCheck, IconeCompartilhar, IconeHaltere, IconeImprimir, IconeOndas, IconePata, IconeSol, IconeZap,
 } from '@/components/Icones';
 import { useVitrine } from '@/lib/vitrine';
+import { Marcado } from '@/components/Emprestimos';
+import { BASE } from '@/lib/config';
 import { linkZap, urlSite } from '@/lib/formatos';
 
 // o texto é o do cartão de cuidados que o estúdio entrega
@@ -20,6 +22,25 @@ const EVITAR = [
   [IconeCamarao, 'Frutos do mar, carne de porco e seus derivados'],
   [IconePata, 'Contato da região tatuada com animais'],
   [IconeCasquinha, 'Atrito na região e arrancar as casquinhas'],
+];
+
+// desenhinhos de cada passo, no traço dos ícones do site
+const DESENHOS = [
+  <svg key="t" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M8 16h18a6 6 0 0 1 6 6v4" />
+    <path d="M14 16v-5h6v5M12 11h10" />
+    <path d="M32 31c0 2-1.5 3.5-3 3.5S26 33 26 31c0-2 3-5 3-5s3 3 3 5zM30 40c0 1.2-.9 2-2 2s-2-.8-2-2c0-1.2 2-3.2 2-3.2s2 2 2 3.2z" />
+  </svg>,
+  <svg key="p" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9 18h24l6 4v4l-6 4H9a2 2 0 0 1-2-2V20a2 2 0 0 1 2-2z" />
+    <path d="M39 22h4v4h-4M11 18v12M14 18v12M20 23h8" />
+    <path d="M43 24c2 0 3 1.5 3 3" />
+  </svg>,
+  <svg key="r" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="24" cy="26" r="15" />
+    <path d="M24 17v9l6 4M18 6h12M24 6v5" />
+    <text x="36" y="44" fontSize="11" fontWeight="700" fill="currentColor" stroke="none" fontFamily="var(--fonte-corpo)">2x</text>
+  </svg>,
 ];
 
 // faixa de pincel com o texto por cima, como no cartão impresso
@@ -112,7 +133,7 @@ export default function Cuidados() {
           <aside className="relative rotate-[2.5deg] rounded-[3px] bg-[#f4ead4] px-5 py-4 shadow-[0_8px_18px_-10px_rgba(0,0,0,.6)]">
             <Fita className="-top-3 left-1/2 -translate-x-1/2" giro={-3} />
             <p className="font-corpo text-[15.5px] font-semibold italic leading-snug text-[#3e2f24]">
-              No estúdio a gente aplica uma película protetora na sua tattoo, que pode durar até <b className="text-selo-escuro">3 dias</b>.
+              No estúdio a gente aplica uma película protetora na sua tattoo, que pode durar até <Marcado gesto="sublinhado" cor="selo"><b className="text-selo-escuro">3 dias</b></Marcado>.
             </p>
           </aside>
         </div>
@@ -121,7 +142,10 @@ export default function Cuidados() {
           {PASSOS.map((p, i) => (
             <li key={i} className="flex gap-5">
               <span className="w-10 shrink-0 text-center font-gotica text-[56px] font-bold leading-[0.8] text-selo-escuro">{i + 1}</span>
-              <p className="pt-1 text-[17px] font-medium leading-relaxed text-[#2e221a]">{p}</p>
+              <p className="flex-1 pt-1 text-[17px] font-medium leading-relaxed text-[#2e221a]">{p}</p>
+              <span className="hidden h-14 w-14 shrink-0 text-[#6b5640] sm:block" aria-hidden="true">
+                {DESENHOS[i]}
+              </span>
             </li>
           ))}
         </ol>
@@ -150,6 +174,14 @@ export default function Cuidados() {
             </li>
           ))}
         </ul>
+        {/* o recurso do UmRabiscoPsi: o errado riscado, o certo embaixo */}
+        <p className="mt-10 border-t border-osso/10 pt-6 text-[17px] text-osso-2">
+          <span className="relative inline-block">
+            <img src={`${BASE}/gestos/sublinhado-selo.webp`} alt="" aria-hidden="true" className="pointer-events-none absolute -left-[2%] top-[38%] h-[0.5em] w-[104%] max-w-none" />
+            <span className="relative">Arrancar a casquinha</span>
+          </span>
+          <span className="mt-1 block font-gotica text-[30px] font-semibold leading-tight text-osso">Deixa ela cair sozinha.</span>
+        </p>
       </article>
 
       <div className="mt-14 flex flex-col items-start gap-5 print:hidden sm:flex-row sm:items-center">

@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 import { Aviso, Campo, CampoSenha } from '@/components/Formulario';
 import { IconeSeta } from '@/components/Icones';
 import Regua from '@/components/Regua';
+import Marca from '@/components/Marca';
+import { Marcado } from '@/components/Emprestimos';
 import { funcao, supa, minhaArea } from '@/lib/supabase';
 import { useVitrine, lerIndicacao, esquecerIndicacao } from '@/lib/vitrine';
 import { cpfValido, mascaraCpf, mascaraZap, numero, soDigitos } from '@/lib/formatos';
@@ -88,19 +90,27 @@ export default function FormCadastro() {
       <div className="lg:pt-6">
         {quem ? (
           <>
-            <p className="kicker">convite</p>
-            <h1 className="titulo mt-3 text-[clamp(50px,9vw,88px)]">
-              <span className="brasa">{quem}</span> te chamou pro Fosco
-            </h1>
-            <p className="mt-5 max-w-md text-[17px] leading-relaxed text-osso-2">
+            {/* o convite é um ingresso de papel, com o nome de quem chamou */}
+            <div className="papel picote relative max-w-md rounded-xl py-6 pl-10 pr-6" style={{ transform: 'rotate(-1.4deg)' }}>
+              <Marca className="absolute right-5 top-5 h-16 w-auto text-papel-tinta/15" titulo="" />
+              <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-[#7a6248]">convite · fosco tattoo studio</p>
+              <h1 className="mt-2 font-gotica text-[clamp(44px,8vw,68px)] font-bold leading-[0.92] text-papel-tinta">
+                <Marcado gesto="sublinhado_ondulado" cor="selo">{quem}</Marcado> te chamou pro Fosco
+              </h1>
+              <div className="mt-4 flex items-center gap-3 border-t border-dashed border-[#7a6248]/50 pt-3 font-mono text-[12px] text-[#6b5640]">
+                <span>vale um cadastro</span>
+                <span className="h-1 w-1 rounded-full bg-[#7a6248]" />
+                <span>vale desconto</span>
+              </div>
+            </div>
+            <p className="mt-8 max-w-md text-[17px] leading-relaxed text-osso-2">
               Faz seu cadastro e você também ganha um link. Cada amigo que entrar por ele vale {numero(porAmigo)}% de desconto na sua tattoo, até {max}%.
             </p>
           </>
         ) : (
           <>
-            <p className="kicker">indique e ganhe</p>
-            <h1 className="titulo mt-3 text-[clamp(50px,9vw,88px)]">
-              Seu link, <span className="brasa">seu desconto</span>
+            <h1 className="titulo text-[clamp(50px,9vw,88px)]">
+              Seu link, <Marcado gesto="sublinhado_ondulado" cor="ambar"><span className="brasa">seu desconto</span></Marcado>
             </h1>
             <p className="mt-5 max-w-md text-[17px] leading-relaxed text-osso-2">
               Cadastre-se e ganhe na hora um link só seu. Cada pessoa que se cadastrar por ele vale {numero(porAmigo)}% de desconto na sua próxima tattoo, até {max}%.

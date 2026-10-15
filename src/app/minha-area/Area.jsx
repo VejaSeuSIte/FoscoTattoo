@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import Regua from '@/components/Regua';
+import Marca from '@/components/Marca';
 import CartaoFidelidade from '@/components/CartaoFidelidade';
 import { Aviso, Campo, CampoSenha } from '@/components/Formulario';
 import { IconeCheck, IconeCompartilhar, IconeCopiar, IconeSair, IconeZap } from '@/components/Icones';
@@ -55,7 +56,12 @@ function Compartilhar({ codigo, nome }) {
   }
   return (
     <div>
-      <div className="flex items-center gap-2 rounded-xl border border-ambar/30 bg-noite/70 p-2 pl-4">
+      <div className="relative flex items-center gap-2 rounded-xl border-2 border-dashed border-ambar/60 bg-noite/70 p-2 pl-4">
+        <svg viewBox="0 0 24 24" className="absolute -left-3 -top-3 h-6 w-6 -rotate-12 bg-carvao text-ambar" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden="true">
+          <circle cx="6" cy="7" r="2.6" />
+          <circle cx="6" cy="17" r="2.6" />
+          <path d="M8.2 8.4L20 16M8.2 15.6L20 8" />
+        </svg>
         <span className="min-w-0 flex-1 truncate font-mono text-[13.5px] text-ambar-claro">{link.replace(/^https?:\/\//, '')}</span>
         <button type="button" onClick={copiar} className="botao-mini shrink-0">
           {copiou ? <IconeCheck width={16} height={16} /> : <IconeCopiar width={16} height={16} />}
@@ -193,14 +199,32 @@ export default function Area() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 sm:px-6">
-      <div className="flex flex-wrap items-end justify-between gap-4">
+      <div className="grid items-center gap-8 md:grid-cols-[1fr_380px]">
         <div>
-          <p className="kicker">minha área · código {cliente.codigo}</p>
-          <h1 className="titulo mt-2 text-[clamp(52px,10vw,84px)]">E aí, {primeiroNome(cliente.nome)}</h1>
+          <h1 className="titulo text-[clamp(52px,10vw,84px)]">E aí, {primeiroNome(cliente.nome)}</h1>
+          <button type="button" onClick={sair} className="botao-mini mt-4">
+            <IconeSair width={16} height={16} /> Sair
+          </button>
         </div>
-        <button type="button" onClick={sair} className="botao-mini">
-          <IconeSair width={16} height={16} /> Sair
-        </button>
+        {/* a carteirinha do cliente, com o desconto carimbado */}
+        <div className="papel relative overflow-hidden rounded-xl px-6 py-5" style={{ transform: 'rotate(-1.5deg)' }}>
+          <div className="flex items-center gap-2.5">
+            <Marca className="h-10 w-auto text-papel-tinta" titulo="" />
+            <div className="leading-none">
+              <div className="font-gotica text-[22px] font-bold text-papel-tinta">Carteirinha Fosco</div>
+              <div className="mt-1 font-mono text-[9.5px] uppercase tracking-[0.22em] text-[#6b5640]">cliente desde {dataCurta(cliente.criado_em)}</div>
+            </div>
+          </div>
+          <div className="mt-4 pr-24 font-gotica text-[28px] font-bold leading-[1.02] text-papel-tinta sm:text-[32px]">{cliente.nome}</div>
+          <div className="mt-2 font-mono text-[13px] text-[#6b5640]">código {cliente.codigo}</div>
+          <div
+            className="absolute -right-1 bottom-3 flex h-[86px] w-[86px] rotate-[-14deg] flex-col items-center justify-center rounded-full border-[3px] border-double border-selo-escuro text-center leading-none text-selo-escuro"
+            aria-label={`Desconto atual: ${numero(desconto)}%`}
+          >
+            <span className="font-mono text-[9px] uppercase tracking-[0.16em]">desconto</span>
+            <span className="font-gotica text-[34px] font-bold">{numero(desconto)}%</span>
+          </div>
+        </div>
       </div>
       {novo && (
         <div className="mt-6">

@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Aviso, Campo, CampoSenha } from '@/components/Formulario';
 import Marca from '@/components/Marca';
+import CartaoFidelidade from '@/components/CartaoFidelidade';
 import { IconeInsta, IconeZap } from '@/components/Icones';
 import { supa, erroLegivel } from '@/lib/supabase';
 import { useVitrine } from '@/lib/vitrine';
@@ -54,7 +55,12 @@ export default function FormEntrar() {
           <Aviso tipo="ok">Cadastro feito! Entre com seu CPF e a senha que você criou.</Aviso>
         </div>
       )}
-      <form onSubmit={entrar} className="cartao mt-8 space-y-5 p-6 sm:p-8" noValidate>
+      <div className="relative mt-8">
+      {/* o cartão fidelidade aparece atrás do formulário: é por ele que a pessoa entra */}
+      <div className="pointer-events-none absolute -right-20 top-12 hidden w-[340px] rotate-[8deg] opacity-90 sm:block lg:-right-52">
+        <CartaoFidelidade total={6} carimbos={3} premio={200} giro={0} />
+      </div>
+      <form onSubmit={entrar} className="cartao relative space-y-5 bg-carvao p-6 sm:p-8" noValidate>
         <Campo rotulo="CPF" id="cpf">
           <input id="cpf" className="campo font-mono" inputMode="numeric" autoComplete="username" value={cpf} onChange={(e) => setCpf(mascaraCpf(e.target.value))} placeholder="000.000.000-00" />
         </Campo>
@@ -86,6 +92,7 @@ export default function FormEntrar() {
           </div>
         )}
       </form>
+      </div>
       <p className="mt-6 text-center text-[15px] text-osso-2">
         Ainda não tem cadastro?{' '}
         <Link href="/cadastro/" className="font-semibold text-ambar-claro underline underline-offset-4">
