@@ -20,6 +20,16 @@ cadastro com link de indicação, cartão fidelidade, área do cliente e painel 
 | `/entrar/`, `/minha-area/` | login (CPF + senha) e área do cliente |
 | `/painel/` | painel do estúdio (e-mail + senha de quem está em `fosco_admins`) |
 
+## Equipe: cartões de duas faces
+
+Cada artista tem um cartão que vira: na frente o retrato, no verso até 4 artes (como os
+compilados dos stories do estúdio), o nome completo, os estilos, duas ou três linhas sobre a
+pessoa e os botões do Instagram e do portfólio. No computador vira com o mouse; no celular vira
+sozinho quando a equipe passa do meio da tela, e um toque troca o cartão. Sem artes, não vira.
+Os campos ficam em `fosco_artistas` (`nome_completo`, `estilos`, `bio`, `site`, `trabalhos`) e o
+painel edita tudo em Vitrine → Equipe. As artes da primeira leva estão em `public/equipe/artes/`
+e vieram do Instagram de cada um com `scripts/instagram-artistas.cjs`.
+
 ## Domínio próprio
 
 1. Em «Settings → Secrets and variables → Actions → Variables», crie `DOMINIO` com o domínio (ex.: `foscotattoo.com.br`).

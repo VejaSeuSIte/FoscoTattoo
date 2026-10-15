@@ -33,6 +33,67 @@ function Texto({ valor, aoSalvar, rotulo, id, multi = false, placeholder }) {
   return <Campo rotulo={rotulo} id={id}>{multi ? <textarea {...props} /> : <input {...props} />}</Campo>;
 }
 
+// as 4 artes que aparecem no verso do cartão do artista
+function ArtesDoVerso({ artista, aoSalvar }) {
+  const avisar = useAvisar();
+  const entrada = useRef(null);
+  const [vaga, setVaga] = useState(null);
+  const [subindo, setSubindo] = useState(false);
+  const lista = [0, 1, 2, 3].map((i) => (artista.trabalhos || [])[i] || '');
+
+  async function trocar(e) {
+    const arq = e.target.files?.[0];
+    e.target.value = '';
+    if (!arq || vaga === null) return;
+    setSubindo(true);
+    try {
+      const nova = [...lista];
+      nova[vaga] = await subirFoto(arq, 'equipe/artes');
+      await aoSalvar(nova.filter(Boolean));
+    } catch (err) {
+      avisar(erroLegivel(err), 'erro');
+    }
+    setSubindo(false);
+    setVaga(null);
+  }
+
+  return (
+    <div>
+      <p className="mb-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-latao">Artes do verso do cartão</p>
+      <div className="grid max-w-[340px] grid-cols-4 gap-2">
+        {lista.map((t, i) => (
+          <div key={i} className="relative">
+            <button
+              type="button"
+              className="block aspect-square w-full overflow-hidden rounded-lg border border-dashed border-osso/25 bg-noite text-[12px] text-osso-3 hover:border-ambar"
+              onClick={() => {
+                setVaga(t ? i : lista.filter(Boolean).length);
+                entrada.current?.click();
+              }}
+              disabled={subindo}
+              aria-label={t ? `Trocar a arte ${i + 1}` : 'Adicionar arte'}
+            >
+              {t ? <img src={urlFoto(t)} alt="" className="h-full w-full object-cover" /> : '+'}
+            </button>
+            {t && (
+              <button
+                type="button"
+                className="absolute -right-1.5 -top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-carvao text-[13px] text-osso ring-1 ring-osso/30 hover:text-[#f0a596]"
+                onClick={() => aoSalvar(lista.filter((x, j) => x && j !== i))}
+                aria-label={`Tirar a arte ${i + 1}`}
+              >
+                ×
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+      <p className="mt-1.5 text-[12.5px] text-osso-3">{subindo ? 'Subindo a foto...' : 'Toque num quadrado para trocar. Sem artes, o cartão não vira.'}</p>
+      <input ref={entrada} type="file" accept="image/*" className="hidden" onChange={trocar} />
+    </div>
+  );
+}
+
 // ------------------------------------------------------------------ equipe
 function Equipe() {
   const { artistas, setArtistas, recarregarBase } = usePainel();
@@ -108,6 +169,12 @@ function Equipe() {
                 <Texto id={`a-i-${a.id}`} rotulo="Instagram" valor={a.instagram} placeholder="@usuario" aoSalvar={(v) => salvar(a.id, { instagram: v.trim().replace(/^@/, '') })} />
               </div>
               <Texto id={`a-e-${a.id}`} rotulo="Estilos" valor={a.estilos} placeholder="fineline, blackwork..." aoSalvar={(v) => salvar(a.id, { estilos: v })} />
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Texto id={`a-c-${a.id}`} rotulo="Nome completo (verso do cartão)" valor={a.nome_completo} aoSalvar={(v) => salvar(a.id, { nome_completo: v.trim() })} />
+                <Texto id={`a-s-${a.id}`} rotulo="Site ou portfólio (opcional)" valor={a.site} placeholder="https://..." aoSalvar={(v) => salvar(a.id, { site: v.trim() })} />
+              </div>
+              <Texto id={`a-b-${a.id}`} rotulo="Sobre (duas linhas no verso)" valor={a.bio} multi aoSalvar={(v) => salvar(a.id, { bio: v.trim() })} />
+              <ArtesDoVerso artista={a} aoSalvar={(trabalhos) => salvar(a.id, { trabalhos })} />
               <div className="flex flex-wrap items-center gap-3">
                 <Interruptor ligado={a.ativo} aoMudar={(v) => salvar(a.id, { ativo: v })} rotulo={a.ativo ? 'Aparece no site' : 'Escondido'} />
                 <span className="flex-1" />

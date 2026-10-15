@@ -64,7 +64,7 @@ function Redondo({ href, rotulo, children }) {
 
 export default function Bio() {
   const { estudio, programa, artistas, instagram } = useVitrine();
-  const rostos = (artistas ?? Array.from({ length: 8 }, (_, i) => ({ id: i, foto: `equipe/0${i + 1}.webp` }))).slice(0, 8);
+  const rostos = artistas ?? Array.from({ length: 8 }, (_, i) => ({ id: i, foto: `equipe/0${i + 1}.webp` }));
   const porAmigo = Number(programa.pontos_por_indicacao) * Number(programa.percentual_por_ponto) || 1;
   const fotos = (instagram || []).slice(0, 6);
 

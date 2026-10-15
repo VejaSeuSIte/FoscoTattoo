@@ -118,6 +118,46 @@ body {
 .trilho::-webkit-scrollbar {
   display: none;
 }
+/* cartão da equipe com duas faces: frente (retrato) e verso (artes) */
+.cartao-giro {
+  perspective: 1600px;
+}
+.cartao-giro-miolo {
+  transform-style: preserve-3d;
+  transition: transform 0.85s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.cartao-face {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+.cartao-verso {
+  transform: rotateY(180deg);
+  pointer-events: none;
+}
+.cartao-giro.com-verso {
+  cursor: pointer;
+}
+.cartao-giro[data-virado] .cartao-giro-miolo {
+  transform: rotateY(180deg);
+}
+.cartao-giro[data-virado] .cartao-verso {
+  pointer-events: auto;
+}
+@media (hover: hover) {
+  .cartao-giro.com-verso:hover .cartao-giro-miolo,
+  .cartao-giro.com-verso:focus-within .cartao-giro-miolo {
+    transform: rotateY(180deg);
+  }
+  .cartao-giro.com-verso:hover .cartao-verso,
+  .cartao-giro.com-verso:focus-within .cartao-verso {
+    pointer-events: auto;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cartao-giro-miolo {
+    transition: none;
+  }
+}
 .botao-seta {
   display: inline-flex;
   height: 44px;

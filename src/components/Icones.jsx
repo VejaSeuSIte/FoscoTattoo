@@ -223,3 +223,10 @@ export const IconeExterno = (p) => (
     <path d="M14 4.5h5.5V10M19.5 4.5L11 13M17 14v4.5a1.5 1.5 0 0 1-1.5 1.5h-10A1.5 1.5 0 0 1 4 18.5v-10A1.5 1.5 0 0 1 5.5 7H10" />
   </svg>
 );
+// duas setas em volta de um cartão: «vira pra ver o verso»
+export const IconeVirar = (p) => (
+  <svg {...base} {...p}>
+    <rect x="8.5" y="6.5" width="7" height="11" rx="1.2" />
+    <path d="M4.5 10.5a8 8 0 0 1 3-5M19.5 13.5a8 8 0 0 1-3 5M6.5 3.8l1 1.7-1.9.6M17.5 20.2l-1-1.7 1.9-.6" />
+  </svg>
+);
