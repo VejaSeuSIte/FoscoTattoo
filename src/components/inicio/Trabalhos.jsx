@@ -48,7 +48,6 @@ export default function Trabalhos() {
         <Revelar className="max-w-2xl">
           <h2 className="titulo text-[clamp(30px,4.4vw,46px)]">Trabalhos recentes</h2>
           <span className="linha-ambar" />
-          <p className="subtitulo">O que saiu da agulha nas últimas semanas, direto do nosso Instagram.</p>
         </Revelar>
 
         <Revelar className="mt-10 overflow-hidden rounded-[22px] border-2 border-osso/15 bg-carvao">

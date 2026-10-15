@@ -117,7 +117,7 @@ export default function Cuidados() {
       <div className="max-w-2xl">
         <h1 className="titulo text-[clamp(50px,10vw,92px)]">Tattoo nova pede cuidado</h1>
         <p className="mt-4 text-[17px] leading-relaxed text-osso-2">
-          O passo a passo do Fosco pra sua tattoo cicatrizar bonita. Salva esse link: você vai voltar aqui nos próximos dias.
+          O que fazer e o que evitar nos primeiros dias.
         </p>
       </div>
 

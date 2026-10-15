@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import Revelar from '../Revelar';
 import Marca from '../Marca';
 import CartaoFidelidade from '../CartaoFidelidade';
-import { IconeSeta } from '../Icones';
+import { IconeCompartilhar, IconeLapis, IconePresente, IconeSeta } from '../Icones';
+import Passos from '../Passos';
 import { GravuraFundo, Marcado } from '../Emprestimos';
 import { useVitrine } from '@/lib/vitrine';
 import { numero, reais, regraIndicacao } from '@/lib/formatos';
@@ -112,7 +113,15 @@ export function Indique() {
             Faça sua 1ª indicação e ganhe <span className="text-ambar">{numero(primeira)}%</span> de desconto
           </h2>
           <span className="linha-ambar" />
-          <ul className="mt-9 space-y-6">
+          <Passos
+            className="mt-9 lg:hidden"
+            itens={[
+              { Icone: IconeLapis, titulo: 'Cadastre-se', texto: 'Leva um minuto e seu link sai na hora.' },
+              { Icone: IconeCompartilhar, titulo: 'Mande o link', texto: 'No WhatsApp, no direct ou no grupo.' },
+              { Icone: IconePresente, titulo: 'Ganhe desconto', texto: `${numero(primeira)}% na 1ª indicação e +${numero(depois)}% a cada amigo, até ${max}%.` },
+            ]}
+          />
+          <ul className="mt-9 hidden space-y-6 lg:block">
             {[
               ['Faz seu cadastro', 'Leva um minuto. O seu link sai na hora.'],
               ['Manda pros amigos', 'No WhatsApp, no direct do Instagram, no grupo da família.'],

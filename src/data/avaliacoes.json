@@ -1,0 +1,53 @@
+{
+ "nota": 5,
+ "total": 62,
+ "url": "https://www.google.com/maps/place/Fosco+Tattoo+Studio/@-8.0418154,-34.9334011,17z/data=!3m1!4b1!4m6!3m5!1s0x7ab19f57bb9e755:0x769bbc1ec87f8e71!8m2!3d-8.0418154!4d-34.9308262!16s%2Fg%2F11mlsdwp8t",
+ "atualizado_em": "2026-10-15",
+ "avaliacoes": [
+  {
+   "nome": "Mauro Melo",
+   "foto": "avaliacoes/01-pessoa.jpg",
+   "nota": 5,
+   "quando": "2026-07-15T23:07:02.347Z",
+   "texto": "Vim tatuar aqui e achei massa. Ambiente climatizado e artistas simpáticos. Recomendo!",
+   "fotos": [
+    "avaliacoes/01-foto1.jpg",
+    "avaliacoes/01-foto2.jpg"
+   ]
+  },
+  {
+   "nome": "Pol4r",
+   "foto": "avaliacoes/02-pessoa.jpg",
+   "nota": 5,
+   "quando": "2026-06-15T23:07:02.347Z",
+   "texto": "Ótimo ambiente, profissionais de altíssima qualidade além de serem todos muito gentis e educados, durante a sessão pessoal rindo e brincando disfarça a dor que a gente sente kkkkkk, nota mil!!!",
+   "fotos": []
+  },
+  {
+   "nome": "Rebeca Vitoria",
+   "foto": "avaliacoes/03-pessoa.jpg",
+   "nota": 5,
+   "quando": "2026-09-15T23:07:02.347Z",
+   "texto": "Lugar agradável, Marcelo um ótimo profissional! Fiz a primeira tatuagem com ele e desde o início sempre atencioso!",
+   "fotos": []
+  },
+  {
+   "nome": "Lucas Oliveira",
+   "foto": "avaliacoes/04-pessoa.jpg",
+   "nota": 5,
+   "quando": "2026-08-15T23:07:02.347Z",
+   "texto": "Lugar excelente com profissionais extremamente simpáticos, carismáticos e ótimos no que fazem!!! Recomendo 100%",
+   "fotos": []
+  },
+  {
+   "nome": "Charles Falcão",
+   "foto": "avaliacoes/05-pessoa.jpg",
+   "nota": 5,
+   "quando": "2026-07-15T23:07:02.347Z",
+   "texto": "Melhor estúdio de tatuagem do Recife, só faço minhas tattoos lá.",
+   "fotos": [
+    "avaliacoes/05-foto1.jpg"
+   ]
+  }
+ ]
+}

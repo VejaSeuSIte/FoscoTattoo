@@ -121,7 +121,7 @@ export const nomeBonito = (n) => {
 export function regraIndicacao(programa = {}) {
   const pp = Number(programa.percentual_por_ponto) || 1;
   const depois = Number(programa.pontos_por_indicacao ?? 1) * pp || 0;
-  const primeira = Number(programa.pontos_primeira_indicacao ?? programa.pontos_por_indicacao ?? 10) * pp || 0;
+  const primeira = Number(programa.pontos_primeira_indicacao ?? 10) * pp || 0;
   const max = Number(programa.desconto_maximo) || 50;
   const desconto = (n) => (n <= 0 ? 0 : Math.min(max, primeira + (n - 1) * depois));
   const amigos = (pct) => (pct <= 0 ? 0 : pct <= primeira ? 1 : depois > 0 ? 1 + Math.ceil((pct - primeira) / depois) : 0);

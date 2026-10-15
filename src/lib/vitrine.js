@@ -4,7 +4,7 @@
 import { createContext, createElement, useContext, useEffect, useState } from 'react';
 import { SUPABASE_URL, SUPABASE_CHAVE, ESTUDIO_PADRAO, PROGRAMA_PADRAO } from './config';
 
-const CHAVE_CACHE = 'fosco-vitrine-v3';
+const CHAVE_CACHE = 'fosco-vitrine-v4';
 
 async function ler(tabela, consulta) {
   const r = await fetch(`${SUPABASE_URL}/rest/v1/${tabela}?${consulta}`, {

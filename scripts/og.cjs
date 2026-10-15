@@ -50,7 +50,7 @@ const cuidados = base(`
 <div style="position:absolute;left:80px;top:96px;width:700px">
   <div class="k">fosco tattoo studio</div>
   <div class="t" style="font-size:76px;margin-top:22px">Como cuidar<br>da sua <span style="color:#ecbd7c">tattoo</span></div>
-  <div class="s" style="margin-top:26px">O passo a passo pra cicatrizar bonito:<br>o que fazer e o que evitar nos primeiros dias.</div>
+  <div class="s" style="margin-top:26px">O que fazer e o que evitar<br>nos primeiros dias.</div>
 </div>
 <div style="position:absolute;right:70px;bottom:60px;width:250px;opacity:.95">${logo}</div>`);
 

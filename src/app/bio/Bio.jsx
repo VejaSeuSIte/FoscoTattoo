@@ -71,7 +71,7 @@ export default function Bio() {
   const opcoes = [
     programa.indicacao_ativa !== false && { href: '/cadastro/', icone: IconePresente, titulo: `Indique e ganhe até ${programa.desconto_maximo}%`, sub: `Sua 1ª indicação já vale ${numero(primeira)}% de desconto`, destaque: true },
     { href: linkOrcamento(estudio), externo: true, icone: IconeZap, titulo: 'Pedir orçamento', sub: 'Conta sua ideia no WhatsApp' },
-    { href: '/cuidados/', icone: IconeGota, titulo: 'Como cuidar da sua tattoo', sub: 'O passo a passo pra cicatrizar bonito' },
+    { href: '/cuidados/', icone: IconeGota, titulo: 'Como cuidar da sua tattoo', sub: 'O que fazer e o que evitar nos primeiros dias' },
     { href: '/entrar/', icone: IconePessoas, titulo: 'Minha área', sub: 'Seus pontos, seu link e o cartão fidelidade' },
     estudio.mapa && { href: estudio.mapa, externo: true, icone: IconePino, titulo: 'Como chegar', sub: estudio.endereco },
   ].filter(Boolean);

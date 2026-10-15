@@ -4,6 +4,7 @@ import Abertura from '@/components/inicio/Abertura';
 import Equipe from '@/components/inicio/Equipe';
 import Trabalhos from '@/components/inicio/Trabalhos';
 import Estudio from '@/components/inicio/Estudio';
+import Avaliacoes from '@/components/inicio/Avaliacoes';
 import { Indique } from '@/components/inicio/Programa';
 import { ChamadaCuidados, ChamadaOrcamento, Comunidade } from '@/components/inicio/Chamadas';
 
@@ -18,6 +19,7 @@ export default function Inicio() {
         <Indique />
         <Equipe />
         <Estudio />
+        <Avaliacoes />
         <ChamadaCuidados />
         <Trabalhos />
         <Comunidade />

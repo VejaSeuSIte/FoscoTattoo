@@ -1,18 +1,17 @@
 'use client';
 import Revelar from '../Revelar';
-import { IconeCheck, IconePino, IconeZap } from '../Icones';
+import { IconeAgulha, IconeCartao, IconeCheck, IconePessoas, IconePino, IconePresente, IconeZap } from '../Icones';
 import { useVitrine } from '@/lib/vitrine';
 import { BASE } from '@/lib/config';
 import { linkOrcamento } from '@/lib/formatos';
 
 export default function Estudio() {
-  const { estudio, programa } = useVitrine();
+  const { estudio, programa, artistas } = useVitrine();
   const itens = [
-    'Estúdio privado, com hora marcada',
-    'Tatuagem e piercing',
-    'Artistas de estilos diferentes',
-    `Indique e ganhe até ${programa.desconto_maximo || 50}% de desconto`,
-    `Cartão fidelidade: a cada ${programa.fidelidade_sessoes || 6} sessões, R$ ${programa.fidelidade_premio || 200} em tattoo`,
+    { Icone: IconeAgulha, titulo: 'Tattoo e piercing', texto: 'Os dois no mesmo lugar' },
+    { Icone: IconePessoas, titulo: artistas?.length ? `${artistas.length} artistas` : 'A equipe', texto: 'Cada um com o seu estilo' },
+    { Icone: IconePresente, titulo: `Até ${programa.desconto_maximo || 50}% off`, texto: 'Indicando amigos' },
+    { Icone: IconeCartao, titulo: 'Fidelidade', texto: `${programa.fidelidade_sessoes || 6} sessões, R$ ${programa.fidelidade_premio || 200} em tattoo` },
   ];
   return (
     <section id="estudio" className="parede relative scroll-mt-16 overflow-hidden py-20 sm:py-28" style={{ '--luz-x': '25%', '--luz-y': '30%', '--luz-abre': '95%' }}>
@@ -26,10 +25,24 @@ export default function Estudio() {
           <h2 className="titulo text-[clamp(30px,4.4vw,46px)]">O estúdio</h2>
           <span className="linha-ambar" />
           <p className="subtitulo max-w-lg">
-            O Fosco é um estúdio privado de tatuagem e piercing no Recife. A gente atende com hora marcada, pra cada sessão ter o tempo e o cuidado que ela pede.
+            O Fosco é um estúdio de tatuagem e piercing no Recife, com uma equipe de artistas de estilos diferentes e o tempo e o cuidado que cada sessão pede.
           </p>
-          <ul className="mt-7 space-y-3">
-            {itens.map((t) => (
+          <ul className="mt-7 grid grid-cols-2 gap-2.5 sm:gap-3 lg:hidden">
+            {itens.map(({ Icone, titulo, texto }) => (
+              <li key={titulo} className="rounded-2xl border border-osso/10 bg-noite/60 p-3.5 sm:p-4">
+                <Icone width={22} height={22} className="text-ambar" />
+                <div className="mt-2.5 font-corpo text-[14px] font-extrabold uppercase leading-tight tracking-[0.04em] text-osso sm:text-[15px]">{titulo}</div>
+                <p className="mt-1 text-[13px] leading-snug text-osso-2 sm:text-[14px]">{texto}</p>
+              </li>
+            ))}
+          </ul>
+          <ul className="mt-7 hidden space-y-3 lg:block">
+            {[
+              'Tatuagem e piercing',
+              'Artistas de estilos diferentes',
+              `Indique e ganhe até ${programa.desconto_maximo || 50}% de desconto`,
+              `Cartão fidelidade: a cada ${programa.fidelidade_sessoes || 6} sessões, R$ ${programa.fidelidade_premio || 200} em tattoo`,
+            ].map((t) => (
               <li key={t} className="flex items-start gap-3 text-[15.5px] text-osso">
                 <IconeCheck width={18} height={18} className="mt-0.5 shrink-0 text-ambar" /> {t}
               </li>

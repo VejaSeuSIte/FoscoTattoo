@@ -40,7 +40,7 @@ export function ChamadaCuidados() {
           </span>
           <span className="flex-1">
             <span className="block font-corpo text-[19px] font-extrabold uppercase tracking-[0.06em] text-osso">Como cuidar da sua tattoo</span>
-            <span className="mt-1 block text-[15px] leading-relaxed text-osso-2">O passo a passo do Fosco pra cicatrizar bonito: o que fazer e o que evitar nos primeiros dias.</span>
+            <span className="mt-1 block text-[15px] leading-relaxed text-osso-2">O que fazer e o que evitar nos primeiros dias.</span>
           </span>
           <span className="botao-linha shrink-0">
             Ver os cuidados <IconeSeta width={16} height={16} />

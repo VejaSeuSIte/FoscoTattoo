@@ -30,6 +30,20 @@ Os campos ficam em `fosco_artistas` (`nome_completo`, `estilos`, `bio`, `site`, 
 painel edita tudo em Vitrine → Equipe. As artes da primeira leva estão em `public/equipe/artes/`
 e vieram do Instagram de cada um com `scripts/instagram-artistas.cjs`.
 
+## Avaliações do Google
+
+A seção «O que dizem do Fosco» (depois do Estúdio) mostra a nota, o total e as avaliações com
+foto, passando sozinhas. Os dados ficam em `src/data/avaliacoes.json` e as imagens em
+`public/avaliacoes/`, gerados por `node scripts/google-avaliacoes.cjs` (Google Maps sem login).
+Sem login o Google só mostra 5 avaliações; para trazer todas, é preciso uma conta do Google
+entrando no navegador do robô.
+
+## Vídeo da abertura
+
+`public/estudio/abertura-larga.mp4` (computador, 1920×1080) e `abertura-alta.mp4` (celular,
+540×720) saem do vídeo do Gemini: trecho de 2,5 s a 6,5 s, para a frente e de volta (emenda sem
+pulo e não chega na parede), sem câmera lenta inventada, com nitidez leve.
+
 ## Domínio próprio
 
 1. Em «Settings → Secrets and variables → Actions → Variables», crie `DOMINIO` com o domínio (ex.: `foscotattoo.com.br`).

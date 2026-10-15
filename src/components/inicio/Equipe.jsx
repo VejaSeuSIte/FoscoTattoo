@@ -207,7 +207,7 @@ export default function Equipe() {
         <Revelar className="mx-auto max-w-2xl text-center">
           <h2 className="titulo text-[clamp(30px,4.4vw,46px)]">Nossa equipe</h2>
           <span className="linha-ambar mx-auto" />
-          <p className="subtitulo">Cada artista com o seu traço. Na conversa do orçamento você escolhe com quem quer fazer, ou deixa que a gente indica.</p>
+          <p className="subtitulo">Cada artista com seu traço e seu estilo. Na conversa, você escolhe com quem quer fazer.</p>
         </Revelar>
         <div className="mt-12">
           <CarrosselEquipe artistas={lista} />

@@ -6,7 +6,8 @@ import { Logotipo } from '@/components/Marca';
 import Rodape from '@/components/Rodape';
 import { Fundo } from '@/components/inicio/Abertura';
 import { CarrosselEquipe, useListaEquipe } from '@/components/inicio/Equipe';
-import { IconeCheck, IconeInsta, IconeSeta } from '@/components/Icones';
+import { IconeAgulha, IconeCheck, IconeInsta, IconeLapis, IconePresente, IconeSeta } from '@/components/Icones';
+import Passos from '@/components/Passos';
 import { FormularioCadastro } from '../cadastro/FormCadastro';
 import { supa, minhaArea } from '@/lib/supabase';
 import { useVitrine, guardarIndicacao, lerIndicacao } from '@/lib/vitrine';
@@ -160,7 +161,15 @@ export default function Convite() {
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <h2 className="titulo text-[clamp(28px,4.2vw,42px)]">Como funciona</h2>
             <span className="linha-ambar" />
-            <ol className="mt-10 grid gap-8 md:grid-cols-3">
+            <Passos
+              className="mt-10 md:hidden"
+              itens={[
+                { Icone: IconeLapis, titulo: 'Cadastre-se', texto: 'Um minuto, com CPF e WhatsApp. O link sai na hora.' },
+                { Icone: IconePresente, titulo: 'Indique', texto: `${pct} na 1ª indicação e +${mais} a cada amigo, até ${max}%.` },
+                { Icone: IconeAgulha, titulo: 'Tatue', texto: 'Conta sua ideia no WhatsApp e avisa na sessão.' },
+              ]}
+            />
+            <ol className="mt-10 hidden gap-8 md:grid md:grid-cols-3">
               {[
                 ['Faz o cadastro', 'Um minuto, com CPF e WhatsApp. Seu link de indicação sai na hora.'],
                 ['Manda pros amigos', `A 1ª indicação vale ${pct} de desconto pra você, e cada amigo depois soma mais ${mais}, até ${max}%.`],
@@ -184,15 +193,15 @@ export default function Convite() {
                 Sua 1ª indicação já vale <span className="text-ambar">{pct}</span>
               </h2>
               <span className="linha-ambar" />
-              <ul className="mt-8 space-y-3.5">
+              <ul className="mt-8 grid grid-cols-2 gap-2.5 lg:grid-cols-1 lg:gap-3.5">
                 {[
                   'Não custa nada',
                   'Seu link de indicação sai na hora',
-                  `Depois, cada amigo a mais soma ${mais}, até ${max}%`,
+                  `+${mais} a cada amigo depois, até ${max}%`,
                   'Sem spam: só os avisos do programa',
                 ].map((t) => (
-                  <li key={t} className="flex items-start gap-3 text-[16px] text-osso">
-                    <IconeCheck width={19} height={19} className="mt-0.5 shrink-0 text-ambar" /> {t}
+                  <li key={t} className="flex items-start gap-2.5 rounded-xl border border-osso/10 bg-noite/60 px-3 py-3 text-[14px] leading-snug text-osso sm:text-[15px] lg:gap-3 lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:text-[16px]">
+                    <IconeCheck width={18} height={18} className="mt-0.5 shrink-0 text-ambar" /> {t}
                   </li>
                 ))}
               </ul>

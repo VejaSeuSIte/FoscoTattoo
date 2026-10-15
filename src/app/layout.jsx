@@ -14,7 +14,7 @@ const SITE = process.env.NEXT_PUBLIC_SITE_URL || 'https://vejaseusite.github.io/
 export const metadata = {
   metadataBase: new URL(SITE.endsWith('/') ? SITE : SITE + '/'),
   title: { default: 'Fosco Tattoo Studio · Recife', template: '%s · Fosco Tattoo Studio' },
-  description: 'Arte, tattoo e piercing num estúdio privado no Recife. Peça seu orçamento, conheça a equipe e ganhe desconto indicando amigos.',
+  description: 'Arte, tattoo e piercing no Recife. Peça seu orçamento, conheça a equipe e ganhe desconto indicando amigos.',
   openGraph: {
     type: 'website',
     locale: 'pt_BR',
