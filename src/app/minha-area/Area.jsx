@@ -11,6 +11,34 @@ import { supa, erroLegivel } from '@/lib/supabase';
 import { useVitrine } from '@/lib/vitrine';
 import { dataCurta, haQuanto, linkIndicacao, linkOrcamento, linkZap, mascaraZap, numero, primeiroNome, reais, regraIndicacao } from '@/lib/formatos';
 
+// quem se cadastrou pelo site confirma o WhatsApp mandando o código pro estúdio;
+// a indicação só vale depois disso
+function ConfirmarZap() {
+  const { estudio } = useVitrine();
+  const [c, setC] = useState(null);
+  useEffect(() => {
+    supa().rpc('fosco_minha_confirmacao').then(({ data }) => setC(data));
+  }, []);
+  if (!c || c.confirmado) return null;
+  const texto = `Confirmo meu cadastro no Fosco. Código ${c.codigo}`;
+  return (
+    <div className="mb-8 rounded-2xl border border-ambar/60 bg-ambar/10 p-5 sm:p-6">
+      <p className="kicker text-ambar-claro">falta um passo</p>
+      <h2 className="mt-1 font-corpo text-[22px] font-bold uppercase tracking-[0.04em] text-osso">Confirme seu WhatsApp</h2>
+      <p className="mt-2 max-w-2xl text-[15px] text-osso-2">
+        Toque no botão e envie a mensagem pronta para o WhatsApp do estúdio, do mesmo número que você cadastrou.
+        {c.indicado ? ' É assim que a sua indicação passa a valer para quem te convidou.' : ' É assim que a gente sabe que o cadastro é seu de verdade.'}
+      </p>
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        <a href={linkZap(estudio?.whatsapp || '81996912850', texto)} target="_blank" rel="noopener noreferrer" className="botao">
+          <IconeZap width={18} height={18} /> Confirmar meu WhatsApp
+        </a>
+        <span className="font-mono text-[13px] text-osso-3">seu código: <b className="text-osso">{c.codigo}</b></span>
+      </div>
+    </div>
+  );
+}
+
 const MOTIVOS = {
   indicacao: 'Indicação',
   boas_vindas: 'Boas-vindas',
@@ -206,6 +234,7 @@ export default function Area() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 sm:px-6">
+      <ConfirmarZap />
       <div className="grid items-center gap-8 md:grid-cols-[1fr_380px]">
         <div>
           <h1 className="titulo text-[clamp(52px,10vw,84px)]">E aí, {primeiroNome(cliente.nome)}</h1>

@@ -22,6 +22,13 @@ const ABAS = [
   { id: 'ajustes', rotulo: 'Ajustes', icone: IconeAjustes, Comp: Ajustes },
 ];
 
+// quem é da equipe pode entrar pelo nome: «Marcelo Morais» vira marcelomorais@fosco.admin
+export function loginDaEquipe(v) {
+  const t = v.trim().toLowerCase();
+  if (t.includes('@')) return t;
+  return `${t.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]/g, '')}@fosco.admin`;
+}
+
 function Entrada({ aoEntrar }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
@@ -31,9 +38,9 @@ function Entrada({ aoEntrar }) {
     e.preventDefault();
     setErro('');
     setIndo(true);
-    const { error } = await supa().auth.signInWithPassword({ email: email.trim().toLowerCase(), password: senha });
+    const { error } = await supa().auth.signInWithPassword({ email: loginDaEquipe(email), password: senha });
     setIndo(false);
-    if (error) return setErro(/Invalid login/i.test(error.message) ? 'E-mail ou senha não conferem.' : erroLegivel(error));
+    if (error) return setErro(/Invalid login/i.test(error.message) ? 'Usuário ou senha não conferem.' : erroLegivel(error));
     aoEntrar();
   }
   return (
@@ -44,8 +51,8 @@ function Entrada({ aoEntrar }) {
           <h1 className="titulo mt-5 text-[34px]">Painel</h1>
           <p className="text-[14px] text-osso-3">Só para a equipe do estúdio.</p>
         </div>
-        <Campo rotulo="E-mail" id="p-email">
-          <input id="p-email" type="email" className="campo" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" required />
+        <Campo rotulo="Usuário ou e-mail" id="p-email">
+          <input id="p-email" type="text" autoCapitalize="words" placeholder="ex.: Marcelo Morais" className="campo" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" required />
         </Campo>
         <Campo rotulo="Senha" id="p-senha">
           <CampoSenha id="p-senha" valor={senha} aoMudar={setSenha} placeholder="sua senha" />

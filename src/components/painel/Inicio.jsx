@@ -12,7 +12,7 @@ const hojeMD = () => {
 };
 
 export default function Inicio() {
-  const { usuario, clientes, config, modelos, irPara } = usePainel();
+  const { usuario, clientes, config, modelos, irPara, recarregarClientes } = usePainel();
   const [resumo, setResumo] = useState(null);
 
   useEffect(() => {
@@ -31,6 +31,11 @@ export default function Inicio() {
     .filter((c) => Number(c.nascimento.split('-')[1]) === mes)
     .sort((a, b) => Number(a.nascimento.slice(8)) - Number(b.nascimento.slice(8)));
   const topo = [...lista].filter((c) => c.indicados > 0).sort((a, b) => b.indicados - a.indicados).slice(0, 5);
+  const pendentes = lista.filter((c) => !c.whatsapp_confirmado_em);
+  async function confirmar(c) {
+    const { error } = await supa().rpc('fosco_admin_confirmar_whatsapp', { p_cliente: c.id });
+    if (!error) recarregarClientes();
+  }
   const modeloNiver = modelos.find((m) => m.chave === 'aniversario');
 
   return (
@@ -57,6 +62,25 @@ export default function Inicio() {
       </div>
 
       <div className="grid gap-8">
+        {pendentes.length > 0 && (
+          <Secao titulo="Esperando confirmar o WhatsApp">
+            <p className="mb-3 text-[14px] text-osso-3">Confirme quando chegar no WhatsApp do estúdio uma mensagem do número da pessoa (normalmente com o código). O ponto de quem indicou só entra depois disso.</p>
+            <ul className="divide-y divide-osso/[0.07] rounded-2xl border border-ambar/40 bg-carvao/70">
+              {pendentes.map((c) => (
+                <li key={c.id} className="flex flex-wrap items-center gap-3 px-4 py-3">
+                  <button type="button" onClick={() => irPara('clientes', { id: c.id })} className="min-w-0 flex-1 text-left">
+                    <span className="block truncate font-semibold text-osso">{c.nome}</span>
+                    <span className="block font-mono text-[12px] text-osso-3">
+                      {mascaraZap(c.whatsapp)} · código {c.codigo_confirmacao || ''} · {haQuanto(c.criado_em)}{c.indicador_nome ? ` · indicado por ${c.indicador_nome}` : ''}
+                    </span>
+                  </button>
+                  <a href={linkZap(c.whatsapp)} target="_blank" rel="noopener noreferrer" className="botao-mini"><IconeZap width={15} height={15} /> Abrir conversa</a>
+                  <button type="button" className="botao-mini" onClick={() => confirmar(c)}>✓ Confirmar</button>
+                </li>
+              ))}
+            </ul>
+          </Secao>
+        )}
         <Secao
           titulo="Aniversários"
           acao={doMes.length > 0 && (

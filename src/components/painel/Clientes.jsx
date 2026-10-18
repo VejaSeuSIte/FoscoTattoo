@@ -11,6 +11,7 @@ const MOTIVOS = { indicacao: 'Indicação', boas_vindas: 'Boas-vindas', indicado
 
 export const FILTROS = [
   ['todos', 'Todos'],
+  ['pendentes', 'Falta confirmar WhatsApp'],
   ['aniver_mes', 'Aniversário no mês'],
   ['com_desconto', 'Com desconto'],
   ['premio', 'Prêmio pra usar'],
@@ -26,6 +27,8 @@ export function filtrar(lista, filtro, programa) {
   return lista.filter((c) => {
     const k = contas(c, programa);
     switch (filtro) {
+      case 'pendentes':
+        return !c.whatsapp_confirmado_em;
       case 'aniver_mes':
         return c.nascimento && Number(c.nascimento.split('-')[1]) === mes;
       case 'com_desconto':
@@ -205,10 +208,11 @@ function Detalhe({ id, aoFechar, abrirOutro, sessaoAberta }) {
     atualizar();
   }
 
-  async function ajustarPontos(e) {
-    e.preventDefault();
-    const p = parseInt(ajuste.pontos, 10);
-    if (!p) return;
+  async function ajustarPontos(sinal) {
+    const p = sinal * Math.abs(parseInt(ajuste.pontos, 10) || 0);
+    if (!p) return avisar('Escreva quantos pontos', 'erro');
+    if (!ajuste.obs.trim()) return avisar('Escreva o motivo', 'erro');
+    if (p < 0 && d.pontos + p < 0) return avisar(`${d.cliente.nome.split(' ')[0]} só tem ${d.pontos} pontos`, 'erro');
     const { error } = await supa().rpc('fosco_admin_ajustar_pontos', { p_cliente: id, p_pontos: p, p_obs: ajuste.obs });
     if (error) return avisar(erroLegivel(error), 'erro');
     avisar(`${p > 0 ? '+' : ''}${p} pontos`);
@@ -231,9 +235,39 @@ function Detalhe({ id, aoFechar, abrirOutro, sessaoAberta }) {
     setSenha(dados.senha);
   }
 
+  async function confirmarZap() {
+    const { error } = await supa().rpc('fosco_admin_confirmar_whatsapp', { p_cliente: id });
+    if (error) return avisar(erroLegivel(error), 'erro');
+    avisar(d.indicador ? `WhatsApp confirmado: ${d.indicador.nome.split(' ')[0]} ganhou o ponto da indicação` : 'WhatsApp confirmado');
+    atualizar();
+  }
+
+  // cartão de carimbos: tocar no próximo vazio marca uma sessão; tocar no último desmarca
+  async function marcarCarimbo() {
+    const { error } = await supa().rpc('fosco_admin_registrar_sessao', {
+      p_cliente: id, p_artista: null, p_data: null, p_valor: null, p_descricao: 'carimbo no cartão',
+      p_conta_fidelidade: true, p_usar_desconto: false, p_usar_premio: false,
+    });
+    if (error) return avisar(erroLegivel(error), 'erro');
+    avisar('Carimbo marcado');
+    atualizar();
+  }
+  async function desmarcarCarimbo() {
+    const s = d.sessoes.find((x) => x.conta_fidelidade);
+    if (!s) return;
+    if (!confirm(`Desmarcar o último carimbo (sessão de ${dataCurta(s.data)}${s.descricao ? `, ${s.descricao}` : ''})? A sessão é apagada.`)) return;
+    const { error } = await supa().rpc('fosco_admin_apagar_sessao', { p_id: s.id });
+    if (error) return avisar(erroLegivel(error), 'erro');
+    avisar('Carimbo desmarcado');
+    atualizar();
+  }
+
   async function apagar() {
     const nome = d.cliente.nome;
-    if (!confirm(`Apagar o cadastro de ${nome}? Some o extrato, as sessões e o ponto que ele rendeu pra quem indicou. Não dá pra desfazer.`)) return;
+    const primeiro = nome.split(' ')[0];
+    const digitado = prompt(`Apagar o cadastro de ${nome}? Some o extrato, as sessões e o ponto que rendeu pra quem indicou. Não dá pra desfazer.\n\nPara confirmar, escreva: ${primeiro}`);
+    if (digitado === null) return;
+    if (digitado.trim().toLowerCase() !== primeiro.toLowerCase()) return avisar('O nome não confere; nada foi apagado', 'erro');
     const { erro } = await funcao('fosco-admin', { acao: 'excluir_cliente', cliente_id: id });
     if (erro) return avisar(erro, 'erro');
     avisar('Cadastro apagado');
@@ -269,6 +303,19 @@ function Detalhe({ id, aoFechar, abrirOutro, sessaoAberta }) {
         </a>
       </div>
 
+      {!c.whatsapp_confirmado_em && (
+        <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-ambar/50 bg-ambar/10 p-4">
+          <p className="min-w-[14rem] flex-1 text-[14px] text-osso-2">
+            <b className="text-ambar-claro">WhatsApp ainda não confirmado.</b> Quando chegar no WhatsApp do estúdio uma mensagem desse número
+            {c.codigo_confirmacao ? <> (código <b className="font-mono">{c.codigo_confirmacao}</b>)</> : ''}, confirme aqui.
+            {d.indicador ? ` O ponto de ${d.indicador.nome.split(' ')[0]} só entra depois disso.` : ''}
+          </p>
+          <button type="button" className="botao-mini" onClick={confirmarZap}>
+            ✓ Confirmar WhatsApp
+          </button>
+        </div>
+      )}
+
       <div className="grid grid-cols-3 gap-2">
         <div className="rounded-2xl border border-osso/10 bg-noite/60 p-3 text-center">
           <div className="font-gotica text-[34px] font-bold leading-none">{numero(d.desconto)}%</div>
@@ -284,6 +331,36 @@ function Detalhe({ id, aoFechar, abrirOutro, sessaoAberta }) {
           <div className="font-gotica text-[34px] font-bold leading-none">{fid.disponiveis}</div>
           <div className="mt-1 font-mono text-[10px] uppercase tracking-wider text-osso-3">prêmio pra usar</div>
         </div>
+      </div>
+
+      <div>
+        <h4 className="kicker mb-2">cartão fidelidade · toque no próximo carimbo pra marcar, no último pra desmarcar</h4>
+        <div className="flex flex-wrap gap-2">
+          {Array.from({ length: fid.necessarias }, (_, i) => {
+            const cheio = i < fid.no_cartao;
+            const ultimo = i === fid.no_cartao - 1;
+            const proximo = i === fid.no_cartao;
+            return (
+              <button
+                key={i}
+                type="button"
+                disabled={!ultimo && !proximo}
+                onClick={ultimo ? desmarcarCarimbo : marcarCarimbo}
+                aria-label={ultimo ? 'Desmarcar o último carimbo' : proximo ? 'Marcar carimbo' : `Carimbo ${i + 1}`}
+                className={`flex h-12 w-12 items-center justify-center rounded-full border-2 font-gotica text-[20px] font-bold transition ${
+                  cheio ? 'border-[#b8432f] bg-[#b8432f]/85 text-osso' : 'border-dashed border-osso/25 text-osso-4'
+                } ${proximo ? 'hover:border-ambar hover:text-ambar-claro' : ''} ${ultimo ? 'hover:opacity-70' : ''} disabled:cursor-default`}
+              >
+                {cheio ? 'f' : i + 1}
+              </button>
+            );
+          })}
+        </div>
+        {fid.contadas > 0 && fid.no_cartao === 0 && (
+          <button type="button" onClick={desmarcarCarimbo} className="mt-2 text-[12.5px] text-osso-3 underline underline-offset-4 hover:text-osso">
+            desmarcar o último carimbo (do cartão completo)
+          </button>
+        )}
       </div>
 
       <div>
@@ -367,15 +444,18 @@ function Detalhe({ id, aoFechar, abrirOutro, sessaoAberta }) {
             ))}
           </ul>
         )}
-        <form onSubmit={ajustarPontos} className="mt-3 flex flex-wrap items-end gap-2">
-          <Campo rotulo="Ajustar pontos" id="aj-p" className="w-28">
-            <input id="aj-p" className="campo py-2" inputMode="numeric" value={ajuste.pontos} onChange={(e) => setAjuste({ ...ajuste, pontos: e.target.value.replace(/[^\d-]/g, '') })} placeholder="+5 ou -3" />
+        <form onSubmit={(e) => { e.preventDefault(); ajustarPontos(1); }} className="mt-3 flex flex-wrap items-end gap-2">
+          <Campo rotulo="Pontos" id="aj-p" className="w-24">
+            <input id="aj-p" className="campo py-2" inputMode="numeric" value={ajuste.pontos} onChange={(e) => setAjuste({ ...ajuste, pontos: e.target.value.replace(/\D/g, '') })} placeholder="5" />
           </Campo>
-          <Campo rotulo="Motivo" id="aj-o" className="min-w-[10rem] flex-1">
-            <input id="aj-o" className="campo py-2" value={ajuste.obs} onChange={(e) => setAjuste({ ...ajuste, obs: e.target.value })} placeholder="ex.: cortesia" />
+          <Campo rotulo="Motivo (obrigatório)" id="aj-o" className="min-w-[10rem] flex-1">
+            <input id="aj-o" className="campo py-2" value={ajuste.obs} onChange={(e) => setAjuste({ ...ajuste, obs: e.target.value })} placeholder="ex.: cortesia, indicação feita no balcão" />
           </Campo>
           <button type="submit" className="botao-mini mb-1">
-            Lançar
+            + Dar pontos
+          </button>
+          <button type="button" className="botao-perigo mb-1" onClick={() => ajustarPontos(-1)}>
+            − Tirar pontos
           </button>
         </form>
       </div>
@@ -592,7 +672,7 @@ export default function Clientes() {
                 >
                   <span className="flex items-start justify-between gap-3">
                     <span className="min-w-0">
-                      <span className="block truncate text-[16px] font-semibold text-osso">{c.nome}</span>
+                      <span className="block truncate text-[16px] font-semibold text-osso">{c.nome}{!c.whatsapp_confirmado_em && <span className="ml-2 rounded-full bg-ambar/15 px-2 py-0.5 align-middle font-mono text-[10px] font-normal text-ambar-claro">confirmar zap</span>}</span>
                       <span className="font-mono text-[12px] text-osso-3">
                         {mascaraZap(c.whatsapp)} · {c.codigo}
                       </span>

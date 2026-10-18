@@ -4,7 +4,7 @@
 import { createContext, createElement, useContext, useEffect, useState } from 'react';
 import { SUPABASE_URL, SUPABASE_CHAVE, ESTUDIO_PADRAO, PROGRAMA_PADRAO } from './config';
 
-const CHAVE_CACHE = 'fosco-vitrine-v4';
+const CHAVE_CACHE = 'fosco-vitrine-v5';
 
 async function ler(tabela, consulta) {
   const r = await fetch(`${SUPABASE_URL}/rest/v1/${tabela}?${consulta}`, {
@@ -15,11 +15,12 @@ async function ler(tabela, consulta) {
 }
 
 export async function carregarVitrine() {
-  const [config, artistas, trabalhos, instagram] = await Promise.all([
+  const [config, artistas, trabalhos, instagram, bio] = await Promise.all([
     ler('fosco_config', 'select=estudio,programa,instagram&id=eq.1'),
     ler('fosco_artistas', 'select=id,nome,nome_completo,funcao,estilos,bio,instagram,site,foto,trabalhos,ordem&ativo=eq.true&order=ordem.asc,criado_em.asc'),
     ler('fosco_trabalhos', 'select=id,artista_id,imagem,legenda,estilo,ordem&publicado=eq.true&order=ordem.asc,criado_em.desc&limit=60'),
     ler('fosco_instagram', 'select=shortcode,imagem,legenda,video&order=ordem.asc&limit=12'),
+    ler('fosco_bio_links', 'select=id,titulo,sub,link,icone,destaque&ativo=eq.true&order=ordem.asc,criado_em.asc').catch(() => null),
   ]);
   return {
     estudio: { ...ESTUDIO_PADRAO, ...(config[0]?.estudio || {}) },
@@ -28,6 +29,7 @@ export async function carregarVitrine() {
     artistas,
     trabalhos,
     instagram,
+    bio,
     carregado: true,
   };
 }
@@ -39,6 +41,7 @@ const VAZIO = {
   artistas: null,
   trabalhos: [],
   instagram: [],
+  bio: null,
   carregado: false,
 };
 

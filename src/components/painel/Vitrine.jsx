@@ -1,13 +1,13 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { Campo, encolherImagem } from '../Formulario';
-import { IconeLixo, IconeMais } from '../Icones';
+import { IconeExterno, IconeGota, IconeInsta, IconeLixo, IconeMais, IconePessoas, IconePino, IconePresente, IconeSeta, IconeZap } from '../Icones';
 import { Carregando, Chip, Interruptor, Vazio, useAvisar } from './ui';
 import { usePainel } from './contexto';
 import { supa, erroLegivel } from '@/lib/supabase';
 import { BALDE_PUBLICO } from '@/lib/config';
 import { limparCacheVitrine } from '@/lib/vitrine';
-import { haQuanto, urlFoto } from '@/lib/formatos';
+import { haQuanto, urlFoto, urlSite } from '@/lib/formatos';
 
 async function subirFoto(arquivo, pasta) {
   const arq = await encolherImagem(arquivo, 1600, 0.86);
@@ -300,6 +300,144 @@ function Trabalhos() {
   );
 }
 
+
+// ------------------------------------------------------------------ bio
+export const ICONES_BIO = { presente: IconePresente, zap: IconeZap, gota: IconeGota, pessoas: IconePessoas, pino: IconePino, insta: IconeInsta, seta: IconeSeta, externo: IconeExterno };
+const ATALHOS = [
+  ['@indique', 'Indique e ganhe (cadastro)'],
+  ['@orcamento', 'Orçamento no WhatsApp'],
+  ['@whatsapp', 'WhatsApp do estúdio'],
+  ['@instagram', 'Instagram do estúdio'],
+  ['@mapa', 'Como chegar (Google Maps)'],
+];
+
+function BioLinks() {
+  const { config, setConfig } = usePainel();
+  const avisar = useAvisar();
+  const [links, setLinks] = useState(null);
+
+  async function carregar() {
+    const { data, error } = await supa().from('fosco_bio_links').select('*').order('ordem').order('criado_em');
+    if (error) return avisar(erroLegivel(error), 'erro');
+    setLinks(data);
+  }
+  useEffect(() => {
+    carregar();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  async function salvar(id, campos) {
+    const { error } = await supa().from('fosco_bio_links').update(campos).eq('id', id);
+    if (error) return avisar(erroLegivel(error), 'erro');
+    setLinks((l) => l.map((x) => (x.id === id ? { ...x, ...campos } : x)));
+    limparCacheVitrine();
+    avisar('Salvo');
+  }
+  async function novo() {
+    const { error } = await supa().from('fosco_bio_links').insert({ titulo: 'Link novo', link: 'https://', icone: 'externo', ordem: (links?.length || 0) + 1 });
+    if (error) return avisar(erroLegivel(error), 'erro');
+    limparCacheVitrine();
+    carregar();
+  }
+  async function mover(i, d) {
+    const j = i + d;
+    if (j < 0 || j >= links.length) return;
+    await supa().from('fosco_bio_links').update({ ordem: j + 1 }).eq('id', links[i].id);
+    await supa().from('fosco_bio_links').update({ ordem: i + 1 }).eq('id', links[j].id);
+    limparCacheVitrine();
+    carregar();
+  }
+  async function apagar(x) {
+    if (!confirm(`Tirar «${x.titulo}» da bio de vez? (Pra esconder só por um tempo, use o liga/desliga.)`)) return;
+    const { error } = await supa().from('fosco_bio_links').delete().eq('id', x.id);
+    if (error) return avisar(erroLegivel(error), 'erro');
+    limparCacheVitrine();
+    carregar();
+  }
+  async function mostrarBloco(chave, v) {
+    const estudio = { ...config.estudio, [chave]: v };
+    const { error } = await supa().from('fosco_config').update({ estudio, atualizado_em: new Date().toISOString() }).eq('id', 1);
+    if (error) return avisar(erroLegivel(error), 'erro');
+    setConfig({ ...config, estudio });
+    limparCacheVitrine();
+    avisar('Salvo');
+  }
+
+  if (!links) return <Carregando />;
+  return (
+    <div className="space-y-4">
+      <p className="text-[14px] text-osso-3">
+        Os botões da página{' '}
+        <a href={urlSite('/bio/')} target="_blank" rel="noopener noreferrer" className="text-ambar-claro underline underline-offset-4">
+          /bio
+        </a>
+        , na ordem daqui. No link, use um endereço (https://..., /cuidados/) ou um atalho. Nos textos, {'{max}'} e {'{primeira}'} viram os números da indicação.
+      </p>
+      <ul className="space-y-3">
+        {links.map((x, i) => {
+          const Icone = ICONES_BIO[x.icone] || IconeSeta;
+          return (
+            <li key={x.id} className={`space-y-3 rounded-2xl border bg-carvao/70 p-4 ${x.destaque ? 'border-ambar/60' : 'border-osso/10'} ${x.ativo ? '' : 'opacity-60'}`}>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Texto id={`b-t-${x.id}`} rotulo="Título" valor={x.titulo} aoSalvar={(v) => salvar(x.id, { titulo: v.trim() })} />
+                <Texto id={`b-s-${x.id}`} rotulo="Linha de baixo (opcional)" valor={x.sub} aoSalvar={(v) => salvar(x.id, { sub: v.trim() })} />
+              </div>
+              <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
+                <Texto id={`b-l-${x.id}`} rotulo="Link" valor={x.link} placeholder="https://... ou @orcamento" aoSalvar={(v) => salvar(x.id, { link: v.trim() })} />
+                <Campo rotulo="Atalho" id={`b-a-${x.id}`}>
+                  <select id={`b-a-${x.id}`} className="campo py-2" value="" onChange={(e) => e.target.value && salvar(x.id, { link: e.target.value })}>
+                    <option value="">escolher...</option>
+                    {ATALHOS.map(([v, r]) => (
+                      <option key={v} value={v}>
+                        {r}
+                      </option>
+                    ))}
+                  </select>
+                </Campo>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {Object.entries(ICONES_BIO).map(([k, I]) => (
+                  <button
+                    key={k}
+                    type="button"
+                    onClick={() => salvar(x.id, { icone: k })}
+                    aria-label={`Ícone ${k}`}
+                    className={`flex h-9 w-9 items-center justify-center rounded-full border ${x.icone === k ? 'border-ambar bg-ambar/15 text-ambar-claro' : 'border-osso/15 text-osso-3 hover:text-osso'}`}
+                  >
+                    <I width={17} height={17} />
+                  </button>
+                ))}
+              </div>
+              <div className="flex flex-wrap items-center gap-3">
+                <Interruptor ligado={x.ativo} aoMudar={(v) => salvar(x.id, { ativo: v })} rotulo={x.ativo ? 'Aparece' : 'Escondido'} />
+                <Interruptor ligado={x.destaque} aoMudar={(v) => salvar(x.id, { destaque: v })} rotulo="Destaque âmbar" />
+                <span className="flex-1" />
+                <Icone width={18} height={18} className="text-osso-3" />
+                <button type="button" className="botao-mini" onClick={() => mover(i, -1)} disabled={i === 0} aria-label="Subir">
+                  ↑
+                </button>
+                <button type="button" className="botao-mini" onClick={() => mover(i, 1)} disabled={i === links.length - 1} aria-label="Descer">
+                  ↓
+                </button>
+                <button type="button" className="botao-perigo" onClick={() => apagar(x)} aria-label="Apagar">
+                  <IconeLixo width={15} height={15} />
+                </button>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+      <button type="button" className="botao" onClick={novo}>
+        <IconeMais width={18} height={18} /> Adicionar botão
+      </button>
+      <div className="space-y-3 border-t border-osso/10 pt-4">
+        <p className="kicker">blocos de baixo</p>
+        <Interruptor ligado={config.estudio.bio_equipe !== false} aoMudar={(v) => mostrarBloco('bio_equipe', v)} rotulo="Mostrar «Nossa equipe»" />
+        <Interruptor ligado={config.estudio.bio_trabalhos !== false} aoMudar={(v) => mostrarBloco('bio_trabalhos', v)} rotulo="Mostrar «Trabalhos recentes»" />
+      </div>
+    </div>
+  );
+}
+
 export default function Vitrine() {
   const [aba, setAba] = useState('equipe');
   return (
@@ -315,9 +453,13 @@ export default function Vitrine() {
         <Chip ativo={aba === 'trabalhos'} aoClicar={() => setAba('trabalhos')}>
           Trabalhos
         </Chip>
+        <Chip ativo={aba === 'bio'} aoClicar={() => setAba('bio')}>
+          Bio
+        </Chip>
       </div>
       {aba === 'equipe' && <Equipe />}
       {aba === 'trabalhos' && <Trabalhos />}
+      {aba === 'bio' && <BioLinks />}
     </div>
   );
 }

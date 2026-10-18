@@ -94,7 +94,7 @@ export default function Rodape() {
       <div className="relative border-t border-osso/[0.07]">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-5 font-mono text-[11px] text-osso-4 sm:px-6">
           <span>© {ano} {estudio.nome}</span>
-          <Link href="/painel/" className="opacity-60 hover:text-osso-2 hover:opacity-100">painel</Link>
+          <Link href="/admin/" className="opacity-60 hover:text-osso-2 hover:opacity-100">painel</Link>
         </div>
       </div>
     </footer>

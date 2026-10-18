@@ -8,6 +8,8 @@ import { useVitrine } from '@/lib/vitrine';
 import { BASE } from '@/lib/config';
 import { instagramUrl, linkOrcamento, linkZap, numero, regraIndicacao, urlFoto } from '@/lib/formatos';
 
+const ICONES = { presente: IconePresente, zap: IconeZap, gota: IconeGota, pessoas: IconePessoas, pino: IconePino, insta: IconeInsta, seta: IconeSeta, externo: IconeExterno };
+
 // cada link é um cartão escuro e reto; só o indique e ganhe vem em âmbar
 function Opcao({ href, externo, icone: Icone, titulo, sub, destaque, i }) {
   const classe = `group flex items-center gap-4 rounded-2xl border px-4 py-3.5 transition-colors duration-200 ${
@@ -63,12 +65,38 @@ function Redondo({ href, rotulo, children }) {
 }
 
 export default function Bio() {
-  const { estudio, programa, artistas, instagram } = useVitrine();
+  const { estudio, programa, artistas, instagram, bio } = useVitrine();
   const rostos = artistas ?? Array.from({ length: 8 }, (_, i) => ({ id: i, foto: `equipe/0${i + 1}.webp` }));
   const { primeira } = regraIndicacao(programa);
-  const fotos = (instagram || []).slice(0, 6);
+  const fotos = estudio.bio_trabalhos === false ? [] : (instagram || []).slice(0, 6);
 
-  const opcoes = [
+  // os botões vêm do painel (Vitrine → Bio); a lista fixa é só a reserva
+  const trocar = (t) => (t || '').replace(/\{max\}/g, numero(programa.desconto_maximo)).replace(/\{primeira\}/g, numero(primeira));
+  const atalho = {
+    '@indique': programa.indicacao_ativa !== false && '/cadastro/',
+    '@orcamento': linkOrcamento(estudio),
+    '@whatsapp': estudio.whatsapp && linkZap(estudio.whatsapp),
+    '@instagram': estudio.instagram && instagramUrl(estudio.instagram),
+    '@mapa': estudio.mapa,
+  };
+  const doBanco = bio?.length
+    ? bio
+        .map((b) => {
+          const href = b.link.startsWith('@') ? atalho[b.link] : b.link;
+          if (!href) return null;
+          return {
+            href,
+            externo: /^https?:/.test(href),
+            icone: ICONES[b.icone] || IconeSeta,
+            titulo: trocar(b.titulo),
+            sub: trocar(b.sub) || (b.link === '@mapa' ? estudio.endereco : ''),
+            destaque: b.destaque,
+          };
+        })
+        .filter(Boolean)
+    : null;
+
+  const opcoes = doBanco || [
     programa.indicacao_ativa !== false && { href: '/cadastro/', icone: IconePresente, titulo: `Indique e ganhe até ${programa.desconto_maximo}%`, sub: `Sua 1ª indicação já vale ${numero(primeira)}% de desconto`, destaque: true },
     { href: linkOrcamento(estudio), externo: true, icone: IconeZap, titulo: 'Pedir orçamento', sub: 'Conta sua ideia no WhatsApp' },
     { href: '/cuidados/', icone: IconeGota, titulo: 'Como cuidar da sua tattoo', sub: 'O que fazer e o que evitar nos primeiros dias' },
@@ -119,7 +147,7 @@ export default function Bio() {
           ))}
         </ul>
 
-        <Link
+        {estudio.bio_equipe !== false && <Link
           href="/#equipe"
           className="bio-entra mt-8 flex items-center gap-4 rounded-2xl border border-osso/15 px-4 py-3.5 transition-colors hover:border-ambar/55"
           style={{ animationDelay: `${0.06 * opcoes.length + 0.15}s` }}
@@ -136,7 +164,7 @@ export default function Bio() {
             <span className="block text-[13px] text-osso-3">{rostos.length} artistas, cada um com seu traço</span>
           </span>
           <IconeSeta width={17} height={17} className="shrink-0 text-osso-3" />
-        </Link>
+        </Link>}
 
         {fotos.length > 0 && (
           <section className="mt-10">
